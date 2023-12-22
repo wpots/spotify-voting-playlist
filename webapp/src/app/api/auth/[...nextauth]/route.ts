@@ -1,6 +1,6 @@
 import NextAuth, { AuthOptions, SessionStrategy } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
-import { isVerifiedUser } from "./verifyUser.service";
+import FireStoreService from "@/utils/firebase/firebase.service";
 
 /** Route Handler for Authentication
  * https://nextjs.org/docs/app/api-reference/file-conventions/route
@@ -12,6 +12,17 @@ export const authOptions: AuthOptions = {
     SpotifyProvider({
       clientId: process.env.SPOTIFY_CLIENT_ID as string,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string,
+      authorization: {
+        url: `https://accounts.spotify.com/authorize`,
+        params: {
+          scope: `user-read-email`,
+        },
+      },
+      async profile(profile) {
+        const fireStoreProfile = await FireStoreService.isVerifiedUser(profile.id);
+        console.log("p", fireStoreProfile);
+        return { ...profile, memberships: fireStoreProfile?.memberships };
+      },
     }),
   ],
   session: {
@@ -23,18 +34,22 @@ export const authOptions: AuthOptions = {
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     // @ts-ignore
-    async signIn(payload) {
-      console.log("signin", payload);
+    async signIn({ user }) {
+      const userHasMemberships = user?.memberships?.length && user?.memberships?.length > 0;
+      return userHasMemberships || "/";
+    },
+    async jwt({ account, user, token }) {
+      if (user?.memberships) token.memberships = user.memberships;
+      if (account?.access_token) token.accessToken = account.access_token;
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.memberships = token?.memberships;
+        session.token = token.accessToken;
+      }
 
-      //   if (account?.provider === "google" && profile?.email) {
-      //     try {
-      //       return await isVerifiedUser(profile.email);
-      //     } catch (error) {
-      //       console.log(error);
-      //       return false;
-      //     }
-      //   }
-      //   return false;
+      return session;
     },
   },
 };
