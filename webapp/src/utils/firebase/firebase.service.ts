@@ -1,10 +1,14 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { fireStore, firebaseApp } from "@/utils/firebase/firebaseClient";
-type FireStoreUser = {
-  id?: string;
-  memberships?: string[];
-};
+import type { Band, User, Vote } from "@firebase/api";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 const FireStoreService = {
+  async getUserId() {
+    const session = getServerSession(authOptions);
+    console.log(session);
+  },
   async getDocumentsByCollectionName(name: string) {
     const documentsSnapshot = await getDocs(collection(fireStore, name));
     if (documentsSnapshot) return documentsSnapshot.docs.map(doc => doc.data());
@@ -14,15 +18,18 @@ const FireStoreService = {
   },
   async getUsersById(ids: string[]) {},
   async getUserById(id: string) {
-    const allUsers = await this.getAllUsers();
-    return allUsers?.find(u => u.id === id);
+    return doc(fireStore, "users", id);
   },
-  async isVerifiedUser(id: string): Promise<FireStoreUser | undefined> {
+  async isVerifiedUser(id: string) {
     return await this.getUserById(id);
   },
   async getBandById(id: string) {
-    const allBands = await this.getDocumentsByCollectionName("bands");
-    return allBands?.find(b => b.id === id);
+    return doc(fireStore, "bands", id);
+  },
+  async setVote(payload: Partial<Vote>) {
+    this.getUserId();
+    // const voteRef = doc(fireStore, "votes", userId);
+    // setDoc(voteRef, payload);
   },
 };
 

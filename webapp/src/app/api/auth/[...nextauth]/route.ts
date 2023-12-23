@@ -20,7 +20,6 @@ export const authOptions: AuthOptions = {
       },
       async profile(profile) {
         const fireStoreProfile = await FireStoreService.isVerifiedUser(profile.id);
-        console.log("p", fireStoreProfile);
         return { ...profile, memberships: fireStoreProfile?.memberships };
       },
     }),
@@ -39,8 +38,13 @@ export const authOptions: AuthOptions = {
       return userHasMemberships || "/";
     },
     async jwt({ account, user, token }) {
-      if (user?.memberships) token.memberships = user.memberships;
-      if (account?.access_token) token.accessToken = account.access_token;
+      if (account && user) {
+        token.memberships = user.memberships;
+        token.accessToken = account.access_token;
+        token.accessTokenExpires = Date.now() + account.expires_in * 1000;
+        token.refreshToken = account.refresh_token;
+      }
+
       return token;
     },
     async session({ session, token }) {
