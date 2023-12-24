@@ -44,7 +44,7 @@ export const authOptions: AuthOptions = {
         token.accessTokenExpires = Date.now() + account.expires_in * 1000;
         token.refreshToken = account.refresh_token;
       }
-
+      console.log("token", token);
       return token;
     },
     async session({ session, token }) {
@@ -52,7 +52,7 @@ export const authOptions: AuthOptions = {
         session.user.memberships = token?.memberships;
         session.token = token.accessToken;
       }
-
+      console.log("session", session);
       return session;
     },
   },

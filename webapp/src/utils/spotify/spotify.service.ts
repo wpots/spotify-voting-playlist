@@ -21,7 +21,7 @@ const SpotifyService = {
       throw new Error("oops", { cause: error });
     }
   },
-  async getPlaylistById(id: string) {
+  async getPlaylistById(id: string): Promise<IPlaylist | undefined> {
     const response = await this.useSpotifyFetch(`playlists/${id}`);
     return spotifyMapper.toDomain.parsePlaylist(response);
   },

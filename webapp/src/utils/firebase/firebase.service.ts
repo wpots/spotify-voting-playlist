@@ -5,9 +5,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const FireStoreService = {
-  async getUserId() {
-    const session = getServerSession(authOptions);
-    console.log(session);
+  async getUserToken() {
+    const session = await getServerSession(authOptions);
+    return session?.token;
   },
   async getDocumentsByCollectionName(name: string) {
     const documentsSnapshot = await getDocs(collection(fireStore, name));
@@ -24,10 +24,11 @@ const FireStoreService = {
     return await this.getUserById(id);
   },
   async getBandById(id: string) {
-    return doc(fireStore, "bands", id);
+    return doc(fireStore, "bands", id) as unknown as Band;
   },
   async setVote(payload: Partial<Vote>) {
-    this.getUserId();
+    const token = await this.getUserToken();
+    console.log(token);
     // const voteRef = doc(fireStore, "votes", userId);
     // setDoc(voteRef, payload);
   },

@@ -1,6 +1,6 @@
 # Spotify Voting Playlist
 
-Collaborate with musicians on repertoire. A Contextual Spotify playlist
+Collaborate with musicians on repertoire. A contextual Spotify playlist
 
 ## Features
 
