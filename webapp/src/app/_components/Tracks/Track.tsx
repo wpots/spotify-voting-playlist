@@ -10,7 +10,7 @@ import FireStoreService from "@/utils/firebase/firebase.service";
 
 export default function Track({ track, divider }: { track: ITrack; divider: number }) {
   const handleSetVote = async (vote: number) => {
-    return await FireStoreService.setVote({ trackId: track.id, vote });
+    return await fetch(`/api/votes/${track.id}?vote=${vote}`, { method: "POST" });
   };
   const members = [0, 1, 2, 3, 4];
   return (

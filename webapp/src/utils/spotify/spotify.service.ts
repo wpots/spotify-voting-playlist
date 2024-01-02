@@ -11,15 +11,15 @@ const SpotifyService = {
   async useSpotifyFetch(uri?: string, options?: any) {
     try {
       const session = await getServerSession(authOptions);
+      console.log(session);
       const baseUrl = `https://api.spotify.com/v1`;
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${session?.token}` },
       });
-      if (!response?.ok) throw new Error("Something wrong", { cause: response });
+      if (!response?.ok) throw new Error("SPOTIFY SERVICE FETCH", { cause: response });
       return await response.json();
     } catch (error) {
-      console.error(error);
-      throw new Error("oops", { cause: error });
+      throw new Error("SPOTIFY SERVICE", { cause: error });
     }
   },
   async getPlaylistById(id: string): Promise<IPlaylist | undefined> {

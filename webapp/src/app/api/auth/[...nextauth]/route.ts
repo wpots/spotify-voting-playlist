@@ -1,12 +1,15 @@
 import NextAuth, { AuthOptions, SessionStrategy } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 import FireStoreService from "@/utils/firebase/firebase.service";
+import { JWT } from "next-auth/jwt";
+import { getRefreshToken } from "@/utils/authentication/spotify.provider";
 
 /** Route Handler for Authentication
  * https://nextjs.org/docs/app/api-reference/file-conventions/route
  *
  * https://next-auth.js.org/configuration/initialization#route-handlers-app
  */
+
 export const authOptions: AuthOptions = {
   providers: [
     SpotifyProvider({
@@ -21,14 +24,13 @@ export const authOptions: AuthOptions = {
       async profile(profile) {
         const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
         const userProfile = {
-          id: verifiedUser.id,
-          email: verifiedUser.email,
-          image: verifiedUser.images?.[0]?.url,
-          name: verifiedUser.display_name,
+          id: profile.id,
+          email: profile.email,
+          image: profile.images?.[0]?.url,
+          name: profile.display_name,
           memberships: verifiedUser?.memberships,
         };
-        const fireStoreProfile = await FireStoreService.setUserProfile(userProfile);
-        return fireStoreProfile;
+        return await FireStoreService.setUserProfile(userProfile);
       },
     }),
   ],
@@ -54,12 +56,17 @@ export const authOptions: AuthOptions = {
         token.refreshToken = account.refresh_token;
       }
 
+      if (Date.now() > token.accessTokenExpires) {
+        token = await getRefreshToken(token);
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.memberships = token?.memberships;
         session.token = token.accessToken;
+        session.error = token.error;
       }
 
       return session;

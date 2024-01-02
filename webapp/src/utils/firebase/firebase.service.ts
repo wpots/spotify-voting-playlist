@@ -29,6 +29,10 @@ const FireStoreService = {
     const allVotes = await this.getAllVotes();
     return { userVotes: allVotes?.filter(vote => vote.userId === id), allVotes };
   },
+  async getVotesByTrackId(id: string) {
+    const allVotes = await this.getAllVotes();
+    return allVotes?.filter(vote => vote.trackId === id);
+  },
   async getUsersById(ids: string[]) {},
   async getUserById(id: string) {
     const userRef = doc(fireStore, "users", id);
@@ -40,6 +44,7 @@ const FireStoreService = {
   async setUserProfile(profile: IUser) {
     const userRef = doc(fireStore, "users", profile.id);
     await setDoc(userRef, profile);
+    return profile;
   },
   async getBandById(id: string) {
     const bandRef = doc(fireStore, "bands", id);

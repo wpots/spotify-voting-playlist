@@ -8,7 +8,6 @@ import LogoutButton from "../_components/Auth/LogoutButton";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  console.log("page", session);
   // TODO add refresh flow
   const bandId = session?.user?.memberships?.[0];
   let band;
@@ -20,7 +19,11 @@ export default async function Home() {
   }
 
   if (playlistId) {
-    playlist = await SpotifyService.getPlaylistById(playlistId);
+    try {
+      playlist = await SpotifyService.getPlaylistById(playlistId);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   if (!session) return <main>Your are not logged in....</main>;
@@ -29,7 +32,7 @@ export default async function Home() {
       <small>you are logged in</small>
       <h2>Hi {session.user.name}</h2>
       <p>your band: {band?.name}</p>
-      {<Playlist playlist={playlist} />}
+      {playlist && <Playlist playlist={playlist} />}
       <LogoutButton>Log out</LogoutButton>
     </main>
   );
