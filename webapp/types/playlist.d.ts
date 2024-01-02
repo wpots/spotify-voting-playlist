@@ -1,10 +1,28 @@
 declare module "@domain/playlist" {
+  interface IVote {
+    trackId: string; // spotifyId
+    userId: string;
+    vote: number;
+    comment?: string;
+  }
+
   interface ITrack {
+    url: string;
     id: string;
     name: string;
-    href: string;
-    artists: Record<string, any>[];
+    added_by?: {
+      href: string;
+      id: string;
+    };
+    artists: [
+      {
+        name: string;
+      }
+    ];
+    [key]: any;
+    votes?: IVote[];
   }
+
   interface IPlaylist {
     description: string;
     external_urls: {
@@ -29,23 +47,7 @@ declare module "@domain/playlist" {
       offset: number;
       previous: string;
       total: number;
-      items: [
-        {
-          url: string;
-          added_by: {
-            href: string;
-            id: string;
-          };
-          artists: [
-            {
-              name: string;
-            }
-          ];
-          id: string;
-          name: string;
-          [key]: any;
-        }
-      ];
+      items: ITrack[];
     };
   }
 }

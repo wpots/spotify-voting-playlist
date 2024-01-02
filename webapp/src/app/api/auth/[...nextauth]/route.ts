@@ -25,12 +25,15 @@ export const authOptions: AuthOptions = {
         const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
         const userProfile = {
           id: profile.id,
+          name: profile.display_name,
           email: profile.email,
           image: profile.images?.[0]?.url,
-          name: profile.display_name,
-          memberships: verifiedUser?.memberships,
         };
-        return await FireStoreService.setUserProfile(userProfile);
+        if (verifiedUser) {
+          // update users profile info to match spotify
+          await FireStoreService.setUserProfile(userProfile);
+        }
+        return userProfile;
       },
     }),
   ],
@@ -43,14 +46,12 @@ export const authOptions: AuthOptions = {
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     // @ts-ignore
-    async signIn({ user }) {
-      const userHasMemberships = user?.memberships?.length && user?.memberships?.length > 0;
-
-      return userHasMemberships || "/";
+    async signIn() {
+      return "/";
     },
     async jwt({ account, user, token }) {
+      token.error = null;
       if (account && user) {
-        token.memberships = user.memberships;
         token.accessToken = account.access_token;
         token.accessTokenExpires = Date.now() + account.expires_in * 1000;
         token.refreshToken = account.refresh_token;
@@ -64,7 +65,6 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.memberships = token?.memberships;
         session.token = token.accessToken;
         session.error = token.error;
       }

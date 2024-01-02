@@ -1,3 +1,4 @@
+import "server-only";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import spotifyMapper from "./spotify.mapper";
@@ -11,7 +12,6 @@ const SpotifyService = {
   async useSpotifyFetch(uri?: string, options?: any) {
     try {
       const session = await getServerSession(authOptions);
-      console.log(session);
       const baseUrl = `https://api.spotify.com/v1`;
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${session?.token}` },
@@ -19,6 +19,7 @@ const SpotifyService = {
       if (!response?.ok) throw new Error("SPOTIFY SERVICE FETCH", { cause: response });
       return await response.json();
     } catch (error) {
+      console.log(error, error.state.body);
       throw new Error("SPOTIFY SERVICE", { cause: error });
     }
   },

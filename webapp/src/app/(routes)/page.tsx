@@ -5,34 +5,21 @@ import FireStoreService from "@/utils/firebase/firebase.service";
 import SpotifyService from "@/utils/spotify/spotify.service";
 import Playlist from "../_components/Playlist/Playlist";
 import LogoutButton from "../_components/Auth/LogoutButton";
+import { IBand } from "@domain/band";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
   // TODO add refresh flow
-  const bandId = session?.user?.memberships?.[0];
-  let band;
-  let playlistId;
-  let playlist;
-  if (bandId) {
-    band = await FireStoreService.getBandById(bandId);
-    playlistId = band?.playlists[0]; // hardcoded for now
-  }
+  const bands = userId && ((await FireStoreService.getBandsByUserId(userId)) as IBand[]);
 
-  if (playlistId) {
-    try {
-      playlist = await SpotifyService.getPlaylistById(playlistId);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  if (!session) return <main>Your are not logged in....</main>;
+  if (!userId) return <main>You are currently not logged in</main>;
+  if (bands?.length === 0) return <main>You do not seem to be granted acces to a collaborative Spotify Playlist</main>;
   return (
     <main>
-      <small>you are logged in</small>
-      <h2>Hi {session.user.name}</h2>
-      <p>your band: {band?.name}</p>
-      {playlist && <Playlist playlist={playlist} />}
+      <h2>Hi {session?.user?.name}</h2>
+      <p>your bands: {bands?.map(band => band.name).toString()}</p>
+
       <LogoutButton>Log out</LogoutButton>
     </main>
   );

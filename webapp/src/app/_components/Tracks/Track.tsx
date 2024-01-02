@@ -6,7 +6,6 @@ import { AvatarGroup, Avatar, Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import type { ITrack } from "@domain/playlist";
 import Voting from "../Voting/Voting";
-import FireStoreService from "@/utils/firebase/firebase.service";
 
 export default function Track({ track, divider }: { track: ITrack; divider: number }) {
   const handleSetVote = async (vote: number) => {
@@ -15,10 +14,10 @@ export default function Track({ track, divider }: { track: ITrack; divider: numb
   const members = [0, 1, 2, 3, 4];
   return (
     <>
-      {divider && <Divider variant="inset" component="li" />}
+      {divider > 0 && <Divider variant="inset" component="li" />}
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Travis Howard" src={`https://loremflickr.com/100/100/music`} />
+          <Avatar alt="Travis Howard" src={`https://loremflickr.com/100/100/music?${divider}`} />
         </ListItemAvatar>
         <ListItemText
           primary={track.name}
@@ -33,7 +32,11 @@ export default function Track({ track, divider }: { track: ITrack; divider: numb
         <Voting onSetVote={handleSetVote} />
         <AvatarGroup>
           {members.map((member, idx) => (
-            <Avatar src={`https://loremflickr.com/100/100/cat/?${idx}`} key={`avatar-${idx}`} />
+            <Avatar
+              src={`https://loremflickr.com/100/100/cat/?${idx}`}
+              key={`avatar-${idx}`}
+              sx={{ width: 24, height: 24 }}
+            />
           ))}
         </AvatarGroup>
       </ListItem>
