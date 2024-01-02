@@ -1,6 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import spotifyMapper from "./spotify.mapper";
+import { IPlaylist } from "@domain/playlist";
 
 const playlistParams = {
   fields: `id,name,external_urls.spotify,tracks.items(added_by.id, track(id,name,href,artists(name),external_urls.spotify))`,
@@ -21,7 +22,7 @@ const SpotifyService = {
       throw new Error("oops", { cause: error });
     }
   },
-  async getPlaylistById(id: string) {
+  async getPlaylistById(id: string): Promise<IPlaylist | undefined> {
     const response = await this.useSpotifyFetch(`playlists/${id}`);
     return spotifyMapper.toDomain.parsePlaylist(response);
   },

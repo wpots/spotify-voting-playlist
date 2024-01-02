@@ -1,5 +1,5 @@
 import Tracklist from "../Tracks/TrackList";
-import type { ITrack } from "@domain/playlist";
+import type { IPlaylist } from "@domain/playlist";
 /**
  * Playlist component has:
  * Title (child)
@@ -7,13 +7,7 @@ import type { ITrack } from "@domain/playlist";
  * Tracks
  * AlbumArt? (child)
  */
-interface IPlaylistProps {
-  title: string;
-  href: string;
-  albumart: string;
-  tracks: { items: ITrack[]; limit: number };
-}
 
-export default function Playlist({ playlist }: { playlist: IPlaylistProps }) {
+export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   return playlist.tracks.items?.length > 0 && <Tracklist tracks={playlist.tracks.items} />;
 }

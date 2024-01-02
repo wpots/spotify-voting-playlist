@@ -1,8 +1,14 @@
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, addDoc } from "firebase/firestore";
 import { fireStore, firebaseApp } from "@/utils/firebase/firebaseClient";
 import type { Band, User, Vote } from "@firebase/api";
+import type { IUser } from "@domain/user";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+type IVote = {
+  userId: string;
+  trackId: string;
+  vote: number;
+};
 
 const FireStoreService = {
   async getUserId() {
@@ -16,20 +22,41 @@ const FireStoreService = {
   async getAllUsers() {
     return this.getDocumentsByCollectionName("users");
   },
+  async getAllVotes() {
+    return this.getDocumentsByCollectionName("votes");
+  },
+  async getUserVotes(id: string) {
+    const allVotes = await this.getAllVotes();
+    return { userVotes: allVotes?.filter(vote => vote.userId === id), allVotes };
+  },
   async getUsersById(ids: string[]) {},
   async getUserById(id: string) {
-    return doc(fireStore, "users", id);
+    const userRef = doc(fireStore, "users", id);
+    return (await getDoc(userRef)).data();
   },
-  async isVerifiedUser(id: string) {
+  async getVerifiedUser(id: string) {
     return await this.getUserById(id);
   },
-  async getBandById(id: string) {
-    return doc(fireStore, "bands", id);
+  async setUserProfile(profile: IUser) {
+    const userRef = doc(fireStore, "users", profile.id);
+    await setDoc(userRef, profile);
   },
-  async setVote(payload: Partial<Vote>) {
-    this.getUserId();
-    // const voteRef = doc(fireStore, "votes", userId);
-    // setDoc(voteRef, payload);
+  async getBandById(id: string) {
+    const bandRef = doc(fireStore, "bands", id);
+    return (await getDoc(bandRef)).data();
+  },
+  async addVote(payload: IVote) {
+    return addDoc(collection(fireStore, "votes"), payload);
+  },
+  async updateVote(payload: IVote) {},
+  async setVote(payload: IVote) {
+    const { userVotes, allVotes } = await this.getUserVotes(payload.userId);
+    const existingVote = userVotes?.find(vote => vote.trackId === payload.trackId);
+    if (existingVote) {
+      await this.updateVote(payload);
+    } else {
+      await this.addVote(payload);
+    }
   },
 };
 

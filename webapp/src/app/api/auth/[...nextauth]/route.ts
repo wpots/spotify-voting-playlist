@@ -19,8 +19,16 @@ export const authOptions: AuthOptions = {
         },
       },
       async profile(profile) {
-        const fireStoreProfile = await FireStoreService.isVerifiedUser(profile.id);
-        return { ...profile, memberships: fireStoreProfile?.memberships };
+        const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
+        const userProfile = {
+          id: verifiedUser.id,
+          email: verifiedUser.email,
+          image: verifiedUser.images?.[0]?.url,
+          name: verifiedUser.display_name,
+          memberships: verifiedUser?.memberships,
+        };
+        const fireStoreProfile = await FireStoreService.setUserProfile(userProfile);
+        return fireStoreProfile;
       },
     }),
   ],
@@ -35,6 +43,7 @@ export const authOptions: AuthOptions = {
     // @ts-ignore
     async signIn({ user }) {
       const userHasMemberships = user?.memberships?.length && user?.memberships?.length > 0;
+
       return userHasMemberships || "/";
     },
     async jwt({ account, user, token }) {

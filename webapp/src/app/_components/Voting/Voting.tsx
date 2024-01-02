@@ -8,7 +8,7 @@ import FireStoreService from "@/utils/firebase/firebase.service";
 
 export default function Voting({ onSetVote }: { onSetVote: Function }) {
   const handleVote = (e: React.SyntheticEvent, value: number | null) => {
-    // onSetVote(value);
+    onSetVote(value);
   };
   return (
     <Stack spacing={1}>
