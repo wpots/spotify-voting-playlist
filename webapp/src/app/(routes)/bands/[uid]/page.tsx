@@ -13,8 +13,11 @@ interface BandPageProps {
 
 export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const bands = userId && ((await FireStoreService.getBandsByUserId(userId)) as IBand[]);
+  const currentBand = bands?.find((band: IBand) => band.id === params.uid);
 
-  const playlists = band.playlists && (await SpotifyService.getPlaylistById(band.playlists[0]));
+  const playlists = currentBand.playlists && (await SpotifyService.getPlaylistById(currentBand.playlists[0]));
   const trackIds = playlists?.[0]?.tracks.items.map((i: ITrack) => i.id);
   const votes = trackIds ? await FireStoreService.getVotesByBandMembers(band.members, trackIds) : [];
   const playlist = {

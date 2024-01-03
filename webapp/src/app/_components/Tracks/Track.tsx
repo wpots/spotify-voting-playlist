@@ -6,12 +6,13 @@ import { AvatarGroup, Avatar, Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import type { ITrack } from "@domain/playlist";
 import Voting from "../Voting/Voting";
+import BandMembers from "../Band/BandMembers";
 
 export default function Track({ track, divider }: { track: ITrack; divider: number }) {
   const handleSetVote = async (vote: number) => {
     return await fetch(`/api/votes/${track.id}?vote=${vote}`, { method: "POST" });
   };
-  const members = [0, 1, 2, 3, 4];
+  const members = ['0', '1', '2', '3', '4'];
   return (
     <>
       {divider > 0 && <Divider variant="inset" component="li" />}
@@ -30,15 +31,7 @@ export default function Track({ track, divider }: { track: ITrack; divider: numb
           }
         />
         <Voting onSetVote={handleSetVote} />
-        <AvatarGroup>
-          {members.map((member, idx) => (
-            <Avatar
-              src={`https://loremflickr.com/100/100/cat/?${idx}`}
-              key={`avatar-${idx}`}
-              sx={{ width: 24, height: 24 }}
-            />
-          ))}
-        </AvatarGroup>
+        <BandMembers members={members} />
       </ListItem>
     </>
   );
