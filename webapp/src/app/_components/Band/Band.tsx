@@ -4,7 +4,7 @@ import Rating from "@mui/material/Rating";
 import Stack from "@mui/material/Stack";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FireStoreService from "@/utils/firebase/firebase.service";
+import * as FireStoreService from "@/utils/firebase/firebase.service";
 
 export default function BandTeaser({ onSetVote }: { onSetVote: Function }) {
   const handleVote = (e: React.SyntheticEvent, value: number | null) => {

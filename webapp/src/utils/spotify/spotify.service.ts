@@ -1,5 +1,5 @@
 import "server-only";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/utils/authentication/authOptions";
 import { getServerSession } from "next-auth";
 import spotifyMapper from "./spotify.mapper";
 import { IPlaylist } from "@domain/playlist";
@@ -19,7 +19,7 @@ const SpotifyService = {
       if (!response?.ok) throw new Error("SPOTIFY SERVICE FETCH", { cause: response });
       return await response.json();
     } catch (error) {
-      console.log(error, error.state.body);
+      console.error(error, error.state.body);
       throw new Error("SPOTIFY SERVICE", { cause: error });
     }
   },

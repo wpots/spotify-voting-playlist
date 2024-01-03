@@ -1,3 +1,4 @@
+import * as FireStoreService from "@/utils/firebase/firebase.service";
 const getRefreshToken = async token => {
   try {
     const body = new URLSearchParams({ grant_type: "refresh_token", refresh_token: token.refreshToken });
@@ -30,4 +31,29 @@ const getRefreshToken = async token => {
   }
 };
 
-export { getRefreshToken };
+const providerOptions = {
+  clientId: process.env.SPOTIFY_CLIENT_ID as string,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string,
+  authorization: {
+    url: `https://accounts.spotify.com/authorize`,
+    params: {
+      scope: `user-read-email`,
+    },
+  },
+  async profile(profile) {
+    const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
+    const userProfile = {
+      id: profile.id,
+      name: profile.display_name,
+      email: profile.email,
+      image: profile.images?.[0]?.url,
+    };
+    if (verifiedUser) {
+      // update users profile info to match spotify
+      await FireStoreService.setUserProfile(userProfile);
+    }
+    return userProfile;
+  },
+};
+
+export { providerOptions, getRefreshToken };

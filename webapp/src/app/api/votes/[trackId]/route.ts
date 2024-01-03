@@ -1,4 +1,4 @@
-import FireStoreService from "@/utils/firebase/firebase.service";
+import * as FireStoreService from "@/utils/firebase/firebase.service";
 import { NextRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
 /**
@@ -25,4 +25,4 @@ const votingHandler = async (req: NextRequest, { params }: { params: { trackId: 
   }
 };
 
-export { votingHandler as POST, votingHandler as GET };
+export { votingHandler as POST };
