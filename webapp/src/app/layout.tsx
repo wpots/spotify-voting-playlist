@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth";
 import Provider from "@/app/_context/client-session-provider";
 import { Inter } from "next/font/google";
 import { authOptions } from "@/utils/authentication/authOptions";
+import AppFooter from "./_components/UI/AppFooter";
+import AppHeader from "./_components/UI/AppHeader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +27,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Provider session={session}>{children}</Provider>
+        <Provider session={session}>
+          <header>
+            <AppHeader />
+          </header>
+          {children}
+          <footer>
+            <AppFooter />
+          </footer>
+        </Provider>
       </body>
     </html>
   );

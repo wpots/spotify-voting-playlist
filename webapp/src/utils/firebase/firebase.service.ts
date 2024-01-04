@@ -80,5 +80,4 @@ const setVote = async (payload: IVote) => {
   }
 };
 
-export { getVerifiedUser, setUserProfile, getBandsByUserId, getAllVotes, setVote };
-5cvf` `
+export { getVerifiedUser, setUserProfile, getBandsByUserId, getAllVotes, getVotesByBandMembers, setVote };

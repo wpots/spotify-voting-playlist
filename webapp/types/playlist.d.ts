@@ -19,8 +19,8 @@ declare module "@domain/playlist" {
         name: string;
       }
     ];
-    [key]: any;
     votes?: IVote[];
+    [key]: any;
   }
 
   interface IPlaylist {
@@ -31,6 +31,7 @@ declare module "@domain/playlist" {
     url: string;
     href: string;
     id: string;
+    image: string;
     images: [
       {
         url: string;
@@ -40,14 +41,15 @@ declare module "@domain/playlist" {
     ];
     name: string;
     tracks: {
-      [key]: any;
-      href: string;
-      limit: number;
-      next: string;
-      offset: number;
-      previous: string;
-      total: number;
+      href?: string;
+      limit?: number;
+      next?: string;
+      offset?: number;
+      previous?: string;
+      total?: number;
       items: ITrack[];
+      refs?: string[];
+      [key]: any;
     };
   }
 }

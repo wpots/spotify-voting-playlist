@@ -16,5 +16,5 @@ import { getServerSession } from "next-auth";
 export default async function BandsPage() {
   const session = await getServerSession(authOptions);
 
-  return <h1>Hello Playlist</h1>;
+  return <h1>Hello Bands page</h1>;
 }
