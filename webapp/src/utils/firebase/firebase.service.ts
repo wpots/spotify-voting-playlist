@@ -41,6 +41,11 @@ const getBandsByUserId = cache(async (id: string) => {
   return bands as unknown as IBand[];
 });
 
+const getBandMembersById = cache(async (ids: string[]) => {
+  const allUsers = collection(fireStore, "users");
+  const membersQuery = query(allUsers, where("id", "in", ids));
+});
+
 const getAllVotes = async () => await getDocumentsByCollectionName("votes");
 
 const getUserVotes = async (id: string) => {
@@ -80,4 +85,12 @@ const setVote = async (payload: IVote) => {
   }
 };
 
-export { getVerifiedUser, setUserProfile, getBandsByUserId, getAllVotes, getVotesByBandMembers, setVote };
+export {
+  getVerifiedUser,
+  setUserProfile,
+  getBandsByUserId,
+  getBandMembersById,
+  getAllVotes,
+  getVotesByBandMembers,
+  setVote,
+};

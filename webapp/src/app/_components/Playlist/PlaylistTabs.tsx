@@ -8,7 +8,7 @@ import { useState } from "react";
 import Playlist from "./Playlist";
 
 export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) {
-  const [value, setValue] = useState(playlists[0].id);
+  const [value, setValue] = useState(playlists?.[0]?.id || "6F9aPJmG7lCIyz38NSA33q");
   const handleOnChange = (e: React.SyntheticEvent, val: string) => {
     setValue(val);
   };

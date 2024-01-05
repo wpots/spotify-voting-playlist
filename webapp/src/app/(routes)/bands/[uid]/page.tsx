@@ -22,6 +22,8 @@ export default async function BandPage({ params }: BandPageProps) {
   const currentBand: IBand | undefined = bands?.find((band: IBand) => band.id === params.uid);
   if (!currentBand) return notFound();
 
+  const bandMembers = await FireStoreService.getBandMembersById(currentBand.members);
+
   const playlists =
     currentBand.playlists?.length === 0 ? undefined : await SpotifyService.getPlaylistsByBulk(currentBand.playlists);
   let extendedPlaylists: IPlaylist[] = [];
@@ -40,12 +42,13 @@ export default async function BandPage({ params }: BandPageProps) {
     }
   }
   if (playlists?.length === 0) return <Typography align="center">No Playlist for this band yet...</Typography>;
+
   return (
     <>
       <Typography component="h1" variant="h1">
         {currentBand.name}
       </Typography>
-      {playlists && <PlaylistTabs playlists={playlists} />}
+      {extendedPlaylists && <PlaylistTabs playlists={extendedPlaylists} />}
     </>
   );
 }

@@ -10,7 +10,7 @@ declare module "@domain/playlist" {
     url: string;
     id: string;
     name: string;
-    added_by?: {
+    added_by: {
       href: string;
       id: string;
     };

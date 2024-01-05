@@ -1,8 +1,9 @@
 "use client";
 
 import { AvatarGroup, Avatar } from "@mui/material";
+import React from "react";
 
-export default function BandMembers({ members }: { members: string[] }) {
+export default function BandMembers({ members, action }: { members: string[]; action?: React.ReactNode }) {
   return (
     <AvatarGroup>
       {members.map((member, idx) => (
@@ -12,6 +13,7 @@ export default function BandMembers({ members }: { members: string[] }) {
           sx={{ width: 24, height: 24 }}
         />
       ))}
+      {action}
     </AvatarGroup>
   );
 }

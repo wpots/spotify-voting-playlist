@@ -17,7 +17,7 @@ export default async function Home() {
     : !bands || bands?.length === 0
     ? "You are not set up to collaborate yet."
     : false;
-  if (bands?.length === 1) redirect(`/bands/${bands[0].id}`);
+  if (bands?.length === 1) redirect(`/bands/${bands?.[0]?.id}`);
   return (
     <main>
       <Typography>Hi {session?.user?.name}</Typography>

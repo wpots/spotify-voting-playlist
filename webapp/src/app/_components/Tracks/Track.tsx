@@ -2,36 +2,70 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import { AvatarGroup, Avatar, Divider } from "@mui/material";
+import PlayIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+import StopIcon from "@mui/icons-material/Stop";
+import {
+  AvatarGroup,
+  Avatar,
+  Divider,
+  IconButton,
+  ListItemButton,
+  Stack,
+  ListItemSecondaryAction,
+  Button,
+  Box,
+  CircularProgress,
+  useMediaQuery,
+  Theme,
+  useTheme,
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import type { ITrack } from "@domain/playlist";
-import Voting from "../Voting/Voting";
+import Voting from "../Votes/VotingDetails";
 import BandMembers from "../Band/BandMembers";
+import React, { useState } from "react";
+import TrackControls from "./TrackControls";
+import VoteSummary from "../Votes/VoteSummary";
 
-export default function Track({ track, divider }: { track: ITrack; divider: number }) {
-  const handleSetVote = async (vote: number) => {
-    return await fetch(`/api/votes/${track.id}?vote=${vote}`, { method: "POST" });
-  };
-  const members = ['0', '1', '2', '3', '4'];
+interface TrackProps {
+  track: ITrack;
+  divider: number;
+  controls?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+export default function Track({ track, divider, controls, children }: TrackProps) {
+  const theme = useTheme();
+  const onlyDesktops = useMediaQuery(theme?.breakpoints.up("sm"));
   return (
     <>
-      {divider > 0 && <Divider variant="inset" component="li" />}
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Travis Howard" src={`https://loremflickr.com/100/100/music?${divider}`} />
-        </ListItemAvatar>
+      {divider > 0 && <Divider component="li" />}
+      <ListItem sx={{ justifyContent: "space-between", flexWrap: "wrap" }}>
         <ListItemText
+          sx={{ flex: ["1 1 50%", "1 1 auto"] }}
           primary={track.name}
           secondary={
             <>
-              <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
+              <Typography component="p" variant="body2" color="text.primary">
                 {track.artists.map(artist => artist.name).toString()}
               </Typography>
+              {onlyDesktops && <Typography variant="caption">added by: {track.added_by.id}</Typography>}
             </>
           }
         />
-        <Voting onSetVote={handleSetVote} />
-        <BandMembers members={members} />
+
+        <Box sx={{ flex: ["0 0 50%", "0 0 25%"], order: { xs: 10 } }}>{controls}</Box>
+        <Box
+          sx={{
+            flex: ["0 0 50%", "0 0 25%"],
+            order: { sm: 10 },
+            marginLeft: { sm: "2rem" },
+            marginBottom: { xs: "1rem" },
+          }}
+        >
+          {children}
+        </Box>
       </ListItem>
     </>
   );

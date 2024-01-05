@@ -13,6 +13,12 @@ const votesMapper = {
       },
     };
   },
+  unshiftCurrentUser(currentUser: string, array?: string[]) {
+    if (array?.some(i => i === currentUser)) {
+      const currentUserIdx = array.indexOf(currentUser);
+      array.unshift(array.slice(currentUserIdx, 1)[0]);
+    }
+  },
 };
 
 export default votesMapper;
