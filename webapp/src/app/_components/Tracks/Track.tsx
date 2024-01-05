@@ -58,10 +58,12 @@ export default function Track({ track, divider, controls, children }: TrackProps
         <Box sx={{ flex: ["0 0 50%", "0 0 25%"], order: { xs: 10 } }}>{controls}</Box>
         <Box
           sx={{
+            display: "flex",
+            flexDirection: "row",
             flex: ["0 0 50%", "0 0 25%"],
             order: { sm: 10 },
             marginLeft: { sm: "2rem" },
-            marginBottom: { xs: "1rem" },
+            marginBottom: { xs: "1rem", sm: "0" },
           }}
         >
           {children}

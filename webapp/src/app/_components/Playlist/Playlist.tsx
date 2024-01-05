@@ -12,12 +12,16 @@ import VotingDetails from "../Votes/VotingDetails";
 import VoteSummary from "../Votes/VoteSummary";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
-  const [isPlaying, setIsPlaying] = useState<string | null>(null);
+  const [playId, setPlayId] = useState<string | null>(null);
 
   const handlePlayback = (id: string, reset?: boolean) => {
-    if (id === isPlaying) {
+    if (id === playId) {
+      if (reset) {
+        // reset playhead to zero
+      }
+      setPlayId(null);
     } else {
-      setIsPlaying(id);
+      setPlayId(id); // isPlaying = "8734241"
     }
   };
   const tracks = playlist.tracks.items;
@@ -36,11 +40,11 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 controls={
                   <TrackControls
                     onPlayBack={(reset?: boolean) => handlePlayback(track.id, reset)}
-                    isPlaying={isPlaying}
+                    isPlaying={track.id === playId}
                   />
                 }
               >
-                <VoteSummary votes={track.votes} />
+                {track?.votes?.[0] && <VoteSummary votes={track.votes} members={[]} />}
               </Track>
             );
           })}

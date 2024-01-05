@@ -26,25 +26,14 @@ export default function TrackControls({ onPlayBack, isPlaying }: TrackControlPro
     if (onPlayBack) return onPlayBack(true);
   };
   return (
-    // <Stack direction="row" spacing={1}>
-    //   <IconButton onClick={handlePlayback} color={isPlaying ? "primary" : "inherit"} size="large">
-    //     <PlayIcon fontSize="inherit" />
-    //   </IconButton>
-    //   <IconButton onClick={handlePlayback} color="inherit" size="large">
-    //     <PauseIcon fontSize="inherit" />
-    //   </IconButton>
-    //   <IconButton onClick={handleStop} color="inherit" size="large">
-    //     <StopIcon fontSize="inherit" />
-    //   </IconButton>
-    // </Stack>
-    <ButtonGroup variant="outlined">
-      <Button onClick={handlePlayback} color={isPlaying ? "primary" : "inherit"} size="small">
+    <ButtonGroup variant={"outlined"}>
+      <Button onClick={handlePlayback} size="large" variant={isPlaying ? "contained" : "outlined"}>
         <PlayIcon fontSize="inherit" />
       </Button>
-      <Button onClick={handlePlayback} color="inherit" size="large">
+      <Button onClick={handlePlayback} size="large">
         <PauseIcon fontSize="inherit" />
       </Button>
-      <Button onClick={handleStop} color="inherit" size="large">
+      <Button onClick={handleStop} size="large">
         <StopIcon fontSize="inherit" />
       </Button>
     </ButtonGroup>

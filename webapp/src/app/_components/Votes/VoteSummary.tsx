@@ -11,7 +11,7 @@ import { IVote } from "@domain/playlist";
 import votesMapper from "@/utils/votes/votes.mapper";
 
 export default function VoteSummary({ votes, members }: { votes: IVote[]; members: string[] }) {
-  const isCurrentUser = "gerhsht";
+  const isCurrentUser = "gerhsht";//TODO user context provider
   const membersVoted = votes.reduce((acc, cv) => {
     if (!acc.includes(cv.userId)) acc.push(cv.userId);
     return acc;
@@ -23,13 +23,14 @@ export default function VoteSummary({ votes, members }: { votes: IVote[]; member
   });
 
   votesMapper.unshiftCurrentUser(isCurrentUser, membersPending);
-
+  
   return (
     <>
       <Stack spacing={1} alignItems="end">
         <Rating
           sx={{ color: "#ff3d47" }}
-          name="half-rating"
+          name="read-only"
+          readOnly
           defaultValue={0}
           precision={1}
           max={5}
@@ -38,7 +39,7 @@ export default function VoteSummary({ votes, members }: { votes: IVote[]; member
         />
         {membersVoted?.length > 0 && <BandMembers members={membersVoted}></BandMembers>}
         {membersVoted?.length > 0 && membersPending?.length > 0 && <>/</>}
-        {membersPending?.length > 0 && <BandMembers members={membersVoted}></BandMembers>}
+        {membersPending?.length > 0 && <BandMembers members={membersPending}></BandMembers>}
         {}
       </Stack>
     </>

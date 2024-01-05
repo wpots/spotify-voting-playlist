@@ -3,7 +3,7 @@ import { IBand } from "@domain/band";
 import { IVote } from "@domain/playlist";
 import React, { createContext } from "react";
 
-const UserContext = createContext({});
+export const UserContext = createContext<Record<any, any> | undefined>(undefined); //TODO better typing
 
 export default function UserContextProvider({
   children,
