@@ -8,14 +8,14 @@ import { useState } from "react";
 import Playlist from "./Playlist";
 
 export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) {
-  const [value, setValue] = useState(playlists?.[0]?.id || "6F9aPJmG7lCIyz38NSA33q");
+  const [value, setValue] = useState(playlists?.[0]?.id || "6F9aPJmG7lCIyz38NSA33q"); //TODO id of undefined
   const handleOnChange = (e: React.SyntheticEvent, val: string) => {
     setValue(val);
   };
   return (
-    <Box>
+    <Box sx={{ width: "100%", maxWidth: "900px" }}>
       <TabContext value={value}>
-        <Box>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleOnChange}>
             {playlists.map((list: IPlaylist) => {
               return <Tab label={list.name} value={list.id} key={list.id}></Tab>;

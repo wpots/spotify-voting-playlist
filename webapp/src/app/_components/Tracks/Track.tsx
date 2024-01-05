@@ -63,7 +63,8 @@ export default function Track({ track, divider, controls, children }: TrackProps
             flex: ["0 0 50%", "0 0 25%"],
             order: { sm: 10 },
             marginLeft: { sm: "2rem" },
-            marginBottom: { xs: "1rem", sm: "0" },
+            marginBottom: { xs: controls && "1rem", sm: "0" },
+            justifyContent: "flex-end",
           }}
         >
           {children}

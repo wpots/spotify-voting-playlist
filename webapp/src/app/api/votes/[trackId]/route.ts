@@ -13,7 +13,7 @@ const votingHandler = async (req: NextRequest, { params }: { params: { trackId: 
   if (req.method === "POST") {
     const searchParams = req.nextUrl.searchParams;
     const vote = searchParams.get("vote");
-    const payload = { trackId, userId: "wietekeozturk", vote };
+    const payload = { trackId, userId: "wietekeozturk", vote }; //todo dynamix userId
 
     const voted = await FireStoreService.setVote(payload);
     return Response.json({ voted });

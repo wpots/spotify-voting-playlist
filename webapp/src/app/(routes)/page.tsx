@@ -10,7 +10,7 @@ import { Typography } from "@mui/material";
 export default async function Home() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  const bands = userId && ((await FireStoreService.getBandsByUserId(userId)) as IBand[]);
+  const bands = userId ? ((await FireStoreService.getBandsByUserId(userId)) as IBand[]) : undefined;
 
   const errorMessage = !session?.user
     ? "You are not logged in."
@@ -27,3 +27,4 @@ export default async function Home() {
     </main>
   );
 }
+w;

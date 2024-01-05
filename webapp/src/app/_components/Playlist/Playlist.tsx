@@ -1,50 +1,51 @@
 "use client";
-import Tracklist from "../Tracks/TrackList";
-import type { IPlaylist } from "@domain/playlist";
-import PlaylistHeader from "./PlaylistHeader";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import Track from "../Tracks/Track";
-import type { ITrack } from "@domain/playlist";
 import React, { useState } from "react";
-import TrackControls from "../Tracks/TrackControls";
-import VotingDetails from "../Votes/VotingDetails";
+import List from "@mui/material/List";
+import PlaylistHeader from "./PlaylistHeader";
+import Track from "../Tracks/Track";
 import VoteSummary from "../Votes/VoteSummary";
+import type { IPlaylist, ITrack } from "@domain/playlist";
+import useUser from "@/app/_hooks/useUser";
+// import TrackControls from "../Tracks/TrackControls";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
-  const [playId, setPlayId] = useState<string | null>(null);
+  // const [playId, setPlayId] = useState<string | null>(null);
 
-  const handlePlayback = (id: string, reset?: boolean) => {
-    if (id === playId) {
-      if (reset) {
-        // reset playhead to zero
-      }
-      setPlayId(null);
-    } else {
-      setPlayId(id); // isPlaying = "8734241"
-    }
-  };
+  // const handlePlayback = (id: string, reset?: boolean) => {
+  //   if (id === playId) {
+  //     if (reset) {
+  //       // api call spotify to reset playhead to zero
+  //     } else {
+  //       // api call spotify to pause
+  //     }
+  //     setPlayId(null);
+  //   } else {
+  //     setPlayId(id);
+  //     // api call spotify to play
+  //   }
+  // };
   const tracks = playlist.tracks.items;
+
   return (
     <>
       <PlaylistHeader description={playlist.description} url={playlist.url} />
 
       {playlist.tracks.items?.length > 0 && (
-        <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+        <List sx={{ width: "100%", bgcolor: "background.paper", border: "1px solid lightgrey" }}>
           {tracks.map((track: ITrack, idx: number) => {
             return (
               <Track
                 track={track}
                 key={`track-${idx}`}
                 divider={idx}
-                controls={
-                  <TrackControls
-                    onPlayBack={(reset?: boolean) => handlePlayback(track.id, reset)}
-                    isPlaying={track.id === playId}
-                  />
-                }
+                // controls={
+                //   <TrackControls
+                //     onPlayBack={(reset?: boolean) => handlePlayback(track.id, reset)}
+                //     isPlaying={track.id === playId}
+                //   />
+                // }
               >
-                {track?.votes?.[0] && <VoteSummary votes={track.votes} members={[]} />}
+                {track?.votes && track.votes.length > 0 && <VoteSummary votes={track.votes} />}
               </Track>
             );
           })}

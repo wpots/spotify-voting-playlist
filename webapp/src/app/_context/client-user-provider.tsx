@@ -3,7 +3,12 @@ import { IBand } from "@domain/band";
 import { IVote } from "@domain/playlist";
 import React, { createContext } from "react";
 
-export const UserContext = createContext<Record<any, any> | undefined>(undefined); //TODO better typing
+interface IUserContext {
+  userInfo: any;
+  userBands?: IBand[];
+  currentBand?: IBand;
+}
+export const UserContext = createContext<IUserContext | undefined>(undefined); //TODO better typing
 
 export default function UserContextProvider({
   children,
@@ -11,8 +16,9 @@ export default function UserContextProvider({
 }: {
   children: React.ReactNode;
   userProfile: {
+    userInfo: any;
     userBands?: IBand[];
-    userInfo: Record<string, any>;
+    currentBand: IBand;
   };
 }): React.ReactNode {
   return <UserContext.Provider value={userProfile}>{children}</UserContext.Provider>;

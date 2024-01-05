@@ -9,21 +9,25 @@ import BandMembers from "../Band/BandMembers";
 import MoreIcon from "@mui/icons-material/More";
 import { IVote } from "@domain/playlist";
 import votesMapper from "@/utils/votes/votes.mapper";
+import useUser from "@/app/_hooks/useUser";
 
-export default function VoteSummary({ votes, members }: { votes: IVote[]; members: string[] }) {
-  const isCurrentUser = "gerhsht";//TODO user context provider
+export default function VoteSummary({ votes }: { votes: IVote[] }) {
+  const currentUser = useUser();
+  const userId = currentUser?.userInfo.id;
+  const bandMembers = currentUser?.currentBand?.members;
+
   const membersVoted = votes.reduce((acc, cv) => {
     if (!acc.includes(cv.userId)) acc.push(cv.userId);
     return acc;
   }, [] as string[]);
 
-  votesMapper.unshiftCurrentUser(isCurrentUser, membersVoted);
-  const membersPending = members?.filter(member => {
-    return !membersVoted.includes(member);
+  votesMapper.unshiftCurrentUser(userId, membersVoted);
+  const membersPending = bandMembers?.filter(member => {
+    return !membersVoted.includes(member.id);
   });
 
-  votesMapper.unshiftCurrentUser(isCurrentUser, membersPending);
-  
+  votesMapper.unshiftCurrentUser(userId, membersPending);
+
   return (
     <>
       <Stack spacing={1} alignItems="end">
@@ -38,7 +42,7 @@ export default function VoteSummary({ votes, members }: { votes: IVote[]; member
           emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
         />
         {membersVoted?.length > 0 && <BandMembers members={membersVoted}></BandMembers>}
-        {membersVoted?.length > 0 && membersPending?.length > 0 && <>/</>}
+        {membersVoted?.length > 0 || (membersPending?.length > 0 && <>/</>)}
         {membersPending?.length > 0 && <BandMembers members={membersPending}></BandMembers>}
         {}
       </Stack>
