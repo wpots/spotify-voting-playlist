@@ -1,4 +1,11 @@
-declare module "@domain/playlist" {
+declare module '@domain/content' {
+  interface IUser {
+    id: string; // spotifyAccountId
+    name: string;
+    email: string;
+    roles?: string[];
+    image: string;
+  }
   interface IVote {
     trackId: string; // spotifyId
     userId: string;
@@ -51,5 +58,12 @@ declare module "@domain/playlist" {
       refs?: string[];
       [key]: any;
     };
+  }
+  interface IBand {
+    id: string;
+    name: string;
+    playlists?: string[] | IPlaylist[];
+    members: string[] | IUser[];
+    veterans?: string[] | IUser[];
   }
 }

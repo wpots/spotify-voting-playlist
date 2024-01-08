@@ -8,7 +8,8 @@ export default function BandMembers({ members, action }: { members: string[]; ac
     <AvatarGroup>
       {members.map((member, idx) => (
         <Avatar
-          src={`https://loremflickr.com/100/100/cat/?${idx}`}
+          alt={member.id ?? member}
+          src={`https://loremflickr.com/100/100/cat/?${member.id ?? member}`}
           key={`avatar-${idx}`}
           sx={{ width: 24, height: 24 }}
         />

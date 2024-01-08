@@ -1,4 +1,4 @@
-import { IPlaylist, IVote } from "@domain/playlist";
+import { IPlaylist, IVote } from '@domain/content';
 const votesMapper = {
   resolveVotesForPlaylistTracks(playlist: IPlaylist, votes?: IVote[]) {
     return {
@@ -16,7 +16,8 @@ const votesMapper = {
   unshiftCurrentUser(currentUser: string, array?: string[]) {
     if (array?.some(i => i === currentUser)) {
       const currentUserIdx = array.indexOf(currentUser);
-      array.unshift(array.slice(currentUserIdx, 1)[0]);
+      const userInArray = array.splice(currentUserIdx, 1);
+      array.unshift(userInArray[0]);
     }
   },
 };

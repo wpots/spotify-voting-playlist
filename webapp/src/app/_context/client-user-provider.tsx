@@ -1,7 +1,7 @@
-"use client";
-import { IBand } from "@domain/band";
-import { IVote } from "@domain/playlist";
-import React, { createContext } from "react";
+'use client';
+import { IBand, IVote } from '@domain/content';
+
+import React, { createContext } from 'react';
 
 interface IUserContext {
   userInfo: any;

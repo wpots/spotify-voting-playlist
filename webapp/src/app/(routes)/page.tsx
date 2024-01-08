@@ -1,11 +1,11 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/utils/authentication/authOptions";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/utils/authentication/authOptions';
 
-import * as FireStoreService from "@/utils/firebase/firebase.service";
-import { IBand } from "@domain/band";
-import { redirect } from "next/navigation";
-import BandTeaser from "../_components/Band/BandTeaser";
-import { Typography } from "@mui/material";
+import * as FireStoreService from '@/utils/firebase/firebase.service';
+import { IBand } from '@domain/content';
+import { redirect } from 'next/navigation';
+import BandTeaser from '../_components/Band/BandTeaser';
+import { Typography } from '@mui/material';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -13,9 +13,9 @@ export default async function Home() {
   const bands = userId ? ((await FireStoreService.getBandsByUserId(userId)) as IBand[]) : undefined;
 
   const errorMessage = !session?.user
-    ? "You are not logged in."
+    ? 'You are not logged in.'
     : !bands || bands?.length === 0
-    ? "You are not set up to collaborate yet."
+    ? 'You are not set up to collaborate yet.'
     : false;
   if (bands?.length === 1) redirect(`/bands/${bands?.[0]?.id}`);
   return (
@@ -27,4 +27,3 @@ export default async function Home() {
     </main>
   );
 }
-w;

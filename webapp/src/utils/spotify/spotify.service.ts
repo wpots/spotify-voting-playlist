@@ -1,9 +1,9 @@
-import "server-only";
-import { authOptions } from "@/utils/authentication/authOptions";
-import { getServerSession } from "next-auth";
-import spotifyMapper from "./spotify.mapper";
-import { IPlaylist } from "@domain/playlist";
-import { PlaylistResponse } from "@spotify/webapi";
+import 'server-only';
+import { authOptions } from '@/utils/authentication/authOptions';
+import { getServerSession } from 'next-auth';
+import spotifyMapper from './spotify.mapper';
+import type { IPlaylist } from '@domain/content';
+import type { PlaylistResponse } from '@spotify/webapi';
 
 const playlistParams = {
   fields: `id,name,external_urls.spotify,tracks.items(added_by.id, track(id,name,href,artists(name),external_urls.spotify))`,
@@ -17,11 +17,11 @@ const SpotifyService = {
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${session?.token}` },
       });
-      if (!response?.ok) throw new Error("SPOTIFY SERVICE FETCH", { cause: response });
+      if (!response?.ok) throw new Error('SPOTIFY SERVICE FETCH', { cause: response });
       return await response.json();
     } catch (error) {
       console.error(error, error.state.body);
-      throw new Error("SPOTIFY SERVICE", { cause: error });
+      throw new Error('SPOTIFY SERVICE', { cause: error });
     }
   },
   async getPlaylistById(id: string): Promise<IPlaylist | undefined> {
