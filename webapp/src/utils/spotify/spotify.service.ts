@@ -20,7 +20,7 @@ const SpotifyService = {
       if (!response?.ok) throw new Error('SPOTIFY SERVICE FETCH', { cause: response });
       return await response.json();
     } catch (error) {
-      console.error(error, error.state.body);
+      console.error(error);
       throw new Error('SPOTIFY SERVICE', { cause: error });
     }
   },
@@ -29,13 +29,10 @@ const SpotifyService = {
     if (response) return spotifyMapper.toDomain.parsePlaylist(response);
   },
   async getPlaylistsByBulk(ids: string[]): Promise<IPlaylist[] | undefined> {
-    try {
-      const bulkFetchRequest = ids.map(id => this.getPlaylistById(id));
-      const playlists = await Promise.all(bulkFetchRequest);
-      return playlists ?? undefined;
-    } catch (error) {
-      console.error(error);
-    }
+    const bulkFetchRequest = ids.map(id => this.getPlaylistById(id));
+    const playlists = await Promise.all(bulkFetchRequest);
+
+    return playlists ?? undefined;
   },
 };
 

@@ -2,7 +2,7 @@ import 'server-only';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, query, where } from 'firebase/firestore';
 import { fireStore, firebaseApp } from '@/utils/firebase/firebaseClient';
 import type { Band, User, Vote } from '@firebase/api';
-import type { IUser , IBand } from '@domain/content';
+import type { IUser, IBand } from '@domain/content';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/authentication/authOptions';
 

@@ -6,11 +6,13 @@ import Track from '../Tracks/Track';
 import VoteSummary from '../Votes/VoteSummary';
 import type { IPlaylist, ITrack } from '@domain/content';
 import useUser from '@/app/_hooks/useUser';
+import VotingDialog from '../Votes/VotingDialog';
 // import TrackControls from "../Tracks/TrackControls";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   // const [playId, setPlayId] = useState<string | null>(null);
-
+  const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+  const handleSelectedTrack = (value: string) => setSelectedTrack(value);
   // const handlePlayback = (id: string, reset?: boolean) => {
   //   if (id === playId) {
   //     if (reset) {
@@ -38,6 +40,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 track={track}
                 key={`track-${idx}`}
                 divider={idx}
+                onTrackSelected={() => handleSelectedTrack(track.id)}
                 // controls={
                 //   <TrackControls
                 //     onPlayBack={(reset?: boolean) => handlePlayback(track.id, reset)}
@@ -45,12 +48,13 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 //   />
                 // }
               >
-                {track?.votes && track.votes.length > 0 && <VoteSummary votes={track.votes} />}
+                <VoteSummary trackId={track.id} votes={track.votes} />
               </Track>
             );
           })}
         </List>
       )}
+      <VotingDialog trackId={selectedTrack} />
     </>
   );
 }

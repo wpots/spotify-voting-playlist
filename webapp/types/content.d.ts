@@ -7,10 +7,14 @@ declare module '@domain/content' {
     image: string;
   }
   interface IVote {
-    trackId: string; // spotifyId
-    userId: string;
-    vote: number;
-    comment?: string;
+    total: number;
+    average: number;
+    items: {
+      trackId: string; // spotifyId
+      userId: string;
+      vote: string;
+      comment?: string;
+    }[];
   }
 
   interface ITrack {
@@ -26,7 +30,7 @@ declare module '@domain/content' {
         name: string;
       }
     ];
-    votes?: IVote[];
+    votes?: IVote;
     [key]: any;
   }
 

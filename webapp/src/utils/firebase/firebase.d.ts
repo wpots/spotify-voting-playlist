@@ -1,4 +1,4 @@
-declare module "@firebase/api" {
+declare module '@firebase/api' {
   interface User {
     id: string; // spotifyAccountId
     name: string;
@@ -16,7 +16,7 @@ declare module "@firebase/api" {
   interface Vote {
     trackId: string; // spotifyId
     userId: string;
-    vote: number;
+    vote: string;
     comment?: string;
   }
 }

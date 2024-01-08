@@ -7,7 +7,7 @@ import { Typography, Box } from '@mui/material';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 
 import UserContextProvider from '@/app/_context/client-user-provider';
-import { IBand } from '@domain/content';
+import { IBand, IPlaylist } from '@domain/content';
 interface BandPageProps {
   params: { uid: string };
 }
@@ -16,6 +16,7 @@ export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   const currentBand: IBand | undefined = userId ? await ContentService.getCurrentBand(params.uid, userId) : undefined;
+
   if (!currentBand) return notFound();
 
   const userProfile = {
@@ -30,7 +31,7 @@ export default async function BandPage({ params }: BandPageProps) {
       <Typography component="h1" variant="h1">
         {currentBand.name}
       </Typography>
-      {currentBand.playlists && <PlaylistTabs playlists={currentBand.playlists} />}
+      {currentBand.playlists && <PlaylistTabs playlists={currentBand.playlists as IPlaylist[]} />}
     </UserContextProvider>
   );
 }

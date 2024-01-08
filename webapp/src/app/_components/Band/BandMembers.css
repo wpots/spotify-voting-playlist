@@ -1,0 +1,3 @@
+.pending {
+  filter: grayscale(1) opacity(0.4);
+}

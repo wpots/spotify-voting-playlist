@@ -7,29 +7,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, Typography } from '@mui/material';
 import BandMembers from '../Band/BandMembers';
 import MoreIcon from '@mui/icons-material/More';
-import { IVote } from '@domain/content';
+import type { ITrack, IUser, IVote } from '@domain/content';
 import votesMapper from '@/utils/votes/votes.mapper';
 import useUser from '@/app/_hooks/useUser';
+import { useSession } from 'next-auth/react';
+import useVoting from '@/app/_hooks/useVoting';
 
-export default function VoteSummary({ votes }: { votes: IVote[] }) {
-  const currentUser = useUser();
-  const userId = currentUser?.userInfo.id;
-  const bandMembers = currentUser?.currentBand?.members;
-
-  const membersVoted = votes.reduce((acc, cv) => {
-    if (!acc.includes(cv.userId)) acc.push(cv.userId);
-    return acc;
-  }, [] as string[]);
-  votesMapper.unshiftCurrentUser(userId, membersVoted);
-
-  const membersPending = bandMembers
-    ? bandMembers?.filter(member => {
-        return !membersVoted.includes(member.id ?? member);
-      })
-    : [];
-
-  votesMapper.unshiftCurrentUser(userId, membersPending);
-
+export default function VoteSummary({ votes, trackId }: { votes?: IVote; trackId: string }) {
+  const { userVote, memberStats } = useVoting({ votes, trackId });
   return (
     <>
       <Stack spacing={1} alignItems="end">
@@ -37,20 +22,17 @@ export default function VoteSummary({ votes }: { votes: IVote[] }) {
           sx={{ color: '#ff3d47' }}
           name="read-only"
           readOnly
-          defaultValue={0}
+          value={votes?.average ?? 0}
           precision={1}
           max={5}
           icon={<FavoriteIcon fontSize="inherit" />}
           emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
         />
         <Stack direction="row">
-          {membersVoted?.length > 0 && <BandMembers members={membersVoted}></BandMembers>}
-
-          <Typography variant="body1" component="h2">
-            /
-          </Typography>
-
-          {membersPending?.length > 0 && <BandMembers members={membersPending}></BandMembers>}
+          {memberStats.voted?.length > 0 && <BandMembers members={memberStats.voted}></BandMembers>}
+          {memberStats.pending?.length > 0 && (
+            <BandMembers members={memberStats.pending} className="pending"></BandMembers>
+          )}
         </Stack>
         {}
       </Stack>
