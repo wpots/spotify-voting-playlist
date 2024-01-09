@@ -6,12 +6,12 @@ import type { Vote, Band } from '@firebase/api';
 
 const getCurrentBand = async (bandId: string, userId: string) => {
   const allUserBands = (await FireStoreService.getBandsByUserId(userId)) as IBand[];
-  const currentBand: Band | undefined = allUserBands?.find((band: IBand) => band.id === bandId);
+  const currentBand: IBand | undefined = allUserBands?.find((band: IBand) => band.id === bandId);
   if (!currentBand) return undefined;
   const hasMembers = currentBand.members?.length > 0; // always 1 -> me
   const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
 
-  let playlistRefs = hasPlaylists ? await SpotifyService.getPlaylistsByBulk(currentBand.playlists) : undefined;
+  let playlistRefs = hasPlaylists ? await SpotifyService.getPlaylistsByBulk(currentBand.playlists as string []) : undefined;
   let extendedPlaylists = [];
   if (playlistRefs && playlistRefs?.length > 0) {
     for (const list of playlistRefs) {
@@ -19,7 +19,7 @@ const getCurrentBand = async (bandId: string, userId: string) => {
 
       if (trackIds && trackIds.length > 0) {
         const votes = (await FireStoreService.getVotesByBandMembers(
-          currentBand.members,
+          currentBand.members as string[],
           trackIds
         )) as unknown as Vote[];
         if (votes && votes.length > 0) {

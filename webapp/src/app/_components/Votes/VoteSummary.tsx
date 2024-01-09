@@ -13,8 +13,8 @@ import useUser from '@/app/_hooks/useUser';
 import { useSession } from 'next-auth/react';
 import useVoting from '@/app/_hooks/useVoting';
 
-export default function VoteSummary({ votes, trackId }: { votes?: IVote; trackId: string }) {
-  const { userVote, memberStats } = useVoting({ votes, trackId });
+export default function VoteSummary({ votes }: { votes?: IVote }) {
+  const { userVote, memberStats } = useVoting({ votes });
   return (
     <>
       <Stack spacing={1} alignItems="end">

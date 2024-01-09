@@ -14,6 +14,7 @@ const spotifyMapper = {
           items: playlist?.tracks?.items.map(item => ({
             ...item.track,
             added_by: item.added_by,
+            artists: item.track.artists.map(artist => artist.name).toString(),
             url: item.track.external_urls.spotify,
           })),
         },

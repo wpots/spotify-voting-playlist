@@ -1,22 +1,52 @@
 'use client';
-import * as React from 'react';
+import { useState } from 'react';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { ITrack } from '@domain/content';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from '@mui/material';
+import useVoting from '@/app/_hooks/useVoting';
+import VotingStack from './VotingStack';
+interface VotingDialogProps {
+  track: ITrack;
+  open: boolean;
+  onClose: () => void;
+}
 
-export default function VotingDialog({ track }: { track: string }) {
+export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
+  const { memberStats } = useVoting({ track });
+
+  const handleSaveAndClose = () => {};
   return (
-    <Stack spacing={1}>
-      <Rating
-        sx={{ color: '#ff3d47' }}
-        name="half-rating"
-        defaultValue={0}
-        precision={1}
-        max={5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-      />
-    </Stack>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>
+        {track && track.name} - {track && track.artists}
+      </DialogTitle>
+      <DialogContent dividers>
+        <DialogContentText>
+          {[...memberStats.voted, ...memberStats.pending].map(member => {
+            return (
+              <Stack direction="row" justifyContent="space-between" key={member.id}>
+                <Typography variant="caption">{member.id}</Typography>
+                <VotingStack name={`vote-${member.id}`} value={member.vote?.vote} readonly></VotingStack>
+              </Stack>
+            );
+          })}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>terug</Button>
+        <Button onClick={handleSaveAndClose}>opslaan</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

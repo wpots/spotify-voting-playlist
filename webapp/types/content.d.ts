@@ -6,15 +6,18 @@ declare module '@domain/content' {
     roles?: string[];
     image: string;
   }
+
+  type IVoteItem = {
+    trackId: string; // spotifyId
+    userId: string;
+    vote: string;
+    comment?: string;
+  };
+
   interface IVote {
     total: number;
     average: number;
-    items: {
-      trackId: string; // spotifyId
-      userId: string;
-      vote: string;
-      comment?: string;
-    }[];
+    items: IVoteItem[];
   }
 
   interface ITrack {
@@ -25,11 +28,7 @@ declare module '@domain/content' {
       href: string;
       id: string;
     };
-    artists: [
-      {
-        name: string;
-      }
-    ];
+    artists: string;
     votes?: IVote;
     [key]: any;
   }
@@ -66,8 +65,8 @@ declare module '@domain/content' {
   interface IBand {
     id: string;
     name: string;
-    playlists?: string[] | IPlaylist[];
-    members: string[] | IUser[];
-    veterans?: string[] | IUser[];
+    playlists?: string[] | IPlaylist[]; // first time in Content service before extending
+    members: string[] | IUser[]; // first time in Content service before extending
+    veterans?: IUser[];
   }
 }

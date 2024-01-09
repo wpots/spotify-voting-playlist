@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import PlaylistHeader from './PlaylistHeader';
 import Track from '../Tracks/Track';
@@ -11,8 +11,15 @@ import VotingDialog from '../Votes/VotingDialog';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   // const [playId, setPlayId] = useState<string | null>(null);
-  const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-  const handleSelectedTrack = (value: string) => setSelectedTrack(value);
+  const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
+  useEffect(() => {
+    if (selectedTrack) {
+      setOpenDialog(true);
+    }
+  }, [selectedTrack]);
+  const handleDialogClose = () => setOpenDialog(false);
   // const handlePlayback = (id: string, reset?: boolean) => {
   //   if (id === playId) {
   //     if (reset) {
@@ -25,7 +32,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   //     setPlayId(id);
   //     // api call spotify to play
   //   }
-  // };
+  // }; <fgvc>    </fgvc>
   const tracks = playlist.tracks.items;
 
   return (
@@ -40,7 +47,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 track={track}
                 key={`track-${idx}`}
                 divider={idx}
-                onTrackSelected={() => handleSelectedTrack(track.id)}
+                onTrackSelected={() => handleSelectedTrack(track)}
                 // controls={
                 //   <TrackControls
                 //     onPlayBack={(reset?: boolean) => handlePlayback(track.id, reset)}
@@ -48,13 +55,13 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 //   />
                 // }
               >
-                <VoteSummary trackId={track.id} votes={track.votes} />
+                <VoteSummary votes={track.votes} />
               </Track>
             );
           })}
         </List>
       )}
-      <VotingDialog trackId={selectedTrack} />
+      {selectedTrack && <VotingDialog track={selectedTrack} open={openDialog} onClose={handleDialogClose} />}
     </>
   );
 }
