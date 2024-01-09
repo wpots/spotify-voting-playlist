@@ -1,4 +1,4 @@
-declare module "@spotify/webapi" {
+declare module '@spotify/webapi' {
   interface PlaylistResponse {
     description: string;
     external_urls: {

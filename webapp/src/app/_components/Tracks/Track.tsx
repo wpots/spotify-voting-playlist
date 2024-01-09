@@ -1,49 +1,49 @@
-"use client";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
-import type { ITrack } from "@domain/playlist";
-import Voting from "../Voting/Voting";
-import FireStoreService from "@/utils/firebase/firebase.service";
-import { AvatarGroup, IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { SyntheticEvent } from "react";
-export default function Track({ track }: { track: ITrack }) {
-  const handleSetVote = async (vote: number) => {
-    return await FireStoreService.setVote({ trackId: track.id, vote });
-  };
-  const members = [0, 1, 2, 3, 4];
+'use client';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
+import { Divider, ListItemButton, Box, useMediaQuery, useTheme, Dialog } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import type { ITrack } from '@domain/content';
+import React, { useState } from 'react';
+
+interface TrackProps {
+  track: ITrack;
+  divider: number;
+  controls?: React.ReactNode;
+  onTrackSelected?: () => void;
+  children?: React.ReactNode;
+}
+
+export default function Track({ track, divider, onTrackSelected, controls, children }: TrackProps) {
+  const theme = useTheme();
+  const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm'));
+  const handleTrackSelected = () => {
+    if (onTrackSelected) onTrackSelected();
+  };
   return (
-    <ListItem
-      alignItems="flex-start"
-      secondaryAction={
-        <IconButton edge="end" aria-label="edit">
-          <EditIcon />
-        </IconButton>
-      }
-    >
-      <ListItemAvatar>
-        <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-      </ListItemAvatar>
-      <ListItemText
-        primary={track.name}
-        secondary={
-          <>
-            <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
-              {track.artists.map(artist => artist.name).toString()}
-            </Typography>
-            <Voting onSetVote={handleSetVote} />
-            <AvatarGroup>
-              {members.map((member, idx) => (
-                <Avatar src={`https://loremflickr.com/100/100/cat/?${idx}`} key={idx} />
-              ))}
-            </AvatarGroup>
-          </>
-        }
-      />
-    </ListItem>
+    <>
+      {divider > 0 && <Divider component="li" />}
+      <ListItem disablePadding>
+        <ListItemButton sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }} onClick={handleTrackSelected}>
+          <ListItemText sx={{ flex: ['1 1 50%', '1 1 auto'] }} primary={track.name} secondary={<>{track.artists}</>} />
+
+          <Box sx={{ flex: ['0 0 50%', '0 0 25%'], order: { xs: 10 } }}>{controls}</Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flex: ['0 0 50%', '0 0 25%'],
+              order: { sm: 10 },
+              marginLeft: { sm: '2rem' },
+
+              justifyContent: 'flex-end',
+            }}
+          >
+            {children}
+          </Box>
+        </ListItemButton>
+      </ListItem>
+    </>
   );
 }

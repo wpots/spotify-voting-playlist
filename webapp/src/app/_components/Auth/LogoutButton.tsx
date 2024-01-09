@@ -7,7 +7,7 @@ export default function LogoutButton({ children }: { children: React.ReactNode }
   const handleLogin = () => signOut({ callbackUrl: "/" });
 
   return (
-    <Button onClick={handleLogin} variant="contained">
+    <Button onClick={handleLogin} variant="contained" size="small">
       {children}
     </Button>
   );

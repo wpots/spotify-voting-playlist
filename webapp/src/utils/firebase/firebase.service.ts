@@ -1,37 +1,102 @@
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { fireStore, firebaseApp } from "@/utils/firebase/firebaseClient";
-import type { Band, User, Vote } from "@firebase/api";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import 'server-only';
+import { collection, doc, getDoc, getDocs, setDoc, addDoc, query, where } from 'firebase/firestore';
+import { fireStore, firebaseApp } from '@/utils/firebase/firebaseClient';
+import type { Band, User, Vote } from '@firebase/api';
+import type { IUser, IBand, IVoteItem } from '@domain/content';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/utils/authentication/authOptions';
 
-const FireStoreService = {
-  async getUserToken() {
-    const session = await getServerSession(authOptions);
-    return session?.token;
-  },
-  async getDocumentsByCollectionName(name: string) {
-    const documentsSnapshot = await getDocs(collection(fireStore, name));
-    if (documentsSnapshot) return documentsSnapshot.docs.map(doc => doc.data());
-  },
-  async getAllUsers() {
-    return this.getDocumentsByCollectionName("users");
-  },
-  async getUsersById(ids: string[]) {},
-  async getUserById(id: string) {
-    return doc(fireStore, "users", id);
-  },
-  async isVerifiedUser(id: string) {
-    return await this.getUserById(id);
-  },
-  async getBandById(id: string) {
-    return doc(fireStore, "bands", id) as unknown as Band;
-  },
-  async setVote(payload: Partial<Vote>) {
-    const token = await this.getUserToken();
-    console.log(token);
-    // const voteRef = doc(fireStore, "votes", userId);
-    // setDoc(voteRef, payload);
-  },
+import { cache } from 'react';
+import { notFound } from 'next/navigation';
+type IVote = {
+  userId: string;
+  trackId: string;
+  vote: number;
 };
 
-export default FireStoreService;
+const getDocumentsByCollectionName = cache(async (name: string) => {
+  const documentsSnapshot = await getDocs(collection(fireStore, name));
+  if (documentsSnapshot) return documentsSnapshot.docs.map(doc => doc.data());
+});
+
+const getDocumentsByQuery = cache(async (c: string, q: any) => {
+  const getColl = collection(fireStore, c);
+  const collQuery = query(getColl, q);
+  const result = await getDocs(collQuery);
+  const docs = result.docs.map(doc => doc.data());
+  return docs as unknown;
+});
+
+const getAllUsers = async () => await getDocumentsByCollectionName('users');
+
+const getUserById = cache(async (id: string) => {
+  const userRef = doc(fireStore, 'users', id);
+  return (await getDoc(userRef)).data();
+});
+
+const getVerifiedUser = async (id: string) => await getUserById(id);
+
+const setUserProfile = async (profile: IUser) => {
+  const userRef = doc(fireStore, 'users', profile.id);
+  await setDoc(userRef, profile);
+  return profile;
+};
+
+const getBandsByUserId = cache(async (id: string) => {
+  const bands = await getDocumentsByQuery('bands', where('members', 'array-contains', id));
+  return bands as IBand[];
+});
+
+const getBandMembersById = cache(async (ids: string[]) => {
+  const members = await getDocumentsByQuery('users', where('id', 'in', ids));
+  return members as IUser[];
+});
+
+const getAllVotes = async () => await getDocumentsByCollectionName('votes');
+
+const getUserVotes = async (id: string) => {
+  const allVotes = await getDocumentsByCollectionName('votes');
+  return { userVotes: allVotes?.filter(vote => vote.userId === id), allVotes };
+};
+
+const getVotesByTrackId = async (id: string) => {
+  const allVotes = await getDocumentsByCollectionName('votes');
+  return allVotes?.filter(vote => vote.trackId === id);
+};
+
+const getVotesByBandMembers = async (bandMembers: string[], ids: string[]) => {
+  const allVotes = await getDocumentsByCollectionName('votes');
+  return allVotes?.filter(vote => bandMembers.includes(vote.userId) && ids.includes(vote.trackId));
+};
+
+const addVote = async (payload: IVoteItem) => {
+  return await addDoc(collection(fireStore, 'votes'), payload);
+};
+
+const updateVote = async (payload: IVoteItem) => {
+  const allVotes = collection(fireStore, 'votes');
+  const voteQuery = query(allVotes, where('userId', '==', payload.userId), where('trackId', '==', payload.trackId));
+  const voteQuerySnapshot = await getDocs(voteQuery);
+  const userVoteRef = doc(fireStore, 'votes', voteQuerySnapshot.docs[0].id);
+  return await setDoc(userVoteRef, payload);
+};
+
+const setVote = async (payload: IVoteItem) => {
+  const { userVotes, allVotes } = await getUserVotes(payload.userId);
+  const existingVote = userVotes?.find(vote => vote.trackId === payload.trackId);
+  if (existingVote) {
+    await updateVote(payload);
+  } else {
+    await addVote(payload);
+  }
+};
+
+export {
+  getVerifiedUser,
+  setUserProfile,
+  getBandsByUserId,
+  getBandMembersById,
+  getAllVotes,
+  getVotesByBandMembers,
+  setVote,
+};

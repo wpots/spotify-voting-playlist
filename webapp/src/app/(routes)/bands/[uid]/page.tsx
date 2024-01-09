@@ -1,40 +1,39 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
-import FireStoreService from "@/utils/firebase/firebase.service";
-import SpotifyService from "@/utils/spotify/spotify.service";
-import Playlist from "@/app/_components/Playlist/Playlist";
-import { Typography } from "@mui/material";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/utils/authentication/authOptions';
+import { notFound } from 'next/navigation';
+import * as ContentService from '@/utils/content/content.service';
 
-/**
- * Band Page where member can
- * add playlist
- * edit playlist
- * vote for songs in playlist
- *  - 5 star vote
- *  - veto vote
- *  - add comment
- * invite new members
- * revoke membership (with archive)
- *
- */
-export default async function BandsPage() {
+import { Typography, Box } from '@mui/material';
+import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
+
+import UserContextProvider from '@/app/_context/client-user-provider';
+import { IBand, IPlaylist } from '@domain/content';
+interface BandPageProps {
+  params: { uid: string };
+}
+
+export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
-  const bandId = session?.user?.memberships?.[0]; // hardcoded for now, TODO create list of bands
-  if (session && bandId) {
-    const band = await FireStoreService.getBandById(bandId);
-    const playlistId = band?.playlists?.[0];
-    const getPlaylist = playlistId ? await SpotifyService.getPlaylistById(playlistId) : false;
-    {
-      getPlaylist && <Playlist playlist={getPlaylist} />;
-    }
-    {
-      !getPlaylist && (
-        <Typography variant="h3" component="h3">
-          {band.name} has no collaboration playlists yet!
-        </Typography>
-      );
-    }
-  } else {
-    //redirect to login page
-  }
+  const userId = session?.user?.id;
+  const currentBand: IBand | undefined = userId
+    ? ((await ContentService.getCurrentBand(params.uid, userId)) as IBand)
+    : undefined;
+
+  if (!currentBand) return notFound();
+
+  const userProfile = {
+    userInfo: session?.user,
+    currentBand,
+  };
+  if (currentBand.playlists?.length === 0)
+    return <Typography align="center">No Playlist for this band yet...</Typography>;
+
+  return (
+    <UserContextProvider userProfile={userProfile}>
+      <Typography component="h1" variant="h1">
+        {currentBand.name}
+      </Typography>
+      {currentBand.playlists && <PlaylistTabs playlists={currentBand.playlists as IPlaylist[]} />}
+    </UserContextProvider>
+  );
 }
