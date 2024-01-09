@@ -24,9 +24,9 @@ const getRefreshToken = async (token: any) => {
       accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     };
-  } catch (error: Error) {
+  } catch (error: any) {
     console.error('AUTHENTICATION SERVICE', error);
-    if (error?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
+    // if (error?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
 
     return {
       ...token,

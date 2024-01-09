@@ -1,4 +1,4 @@
-import { withAuth } from "next-auth/middleware";
+import { withAuth } from 'next-auth/middleware';
 
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
 export default withAuth(
@@ -7,11 +7,10 @@ export default withAuth(
   },
   {
     pages: {
-      signIn: "/auth/signin",
+      signIn: '/auth/signin',
     },
     callbacks: {
       authorized: ({ req, token }) => {
-        console.log("middleware authorized", token);
         return true;
       },
     },
@@ -19,5 +18,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/bands/:path*", "/members/:path*"],
+  matcher: ['/bands/:path*', '/members/:path*'],
 };

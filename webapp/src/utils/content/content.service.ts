@@ -11,7 +11,7 @@ const getCurrentBand = async (bandId: string, userId: string) => {
   const hasMembers = currentBand.members?.length > 0; // always 1 -> me
   const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
 
-  let playlistRefs = hasPlaylists
+  const playlistRefs = hasPlaylists
     ? ((await SpotifyService.getPlaylistsByBulk(currentBand.playlists as string[])) as IPlaylist[])
     : undefined;
   let extendedPlaylists = [];

@@ -14,7 +14,7 @@ export default function BandMembers({ members, action, className }: BandMembersP
       {members.map((member, idx) => (
         <Avatar
           alt={member.id}
-          src={`https://loremflickr.com/100/100/cat/?${member.id}`}
+          src={member.image || `https://loremflickr.com/100/100/cat/?${member.id}`}
           key={`avatar-${idx}`}
           sx={{ width: 24, height: 24 }}
         />

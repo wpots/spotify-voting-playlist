@@ -21,9 +21,9 @@ const SpotifyService = {
       if (!response?.ok) throw new Error('SPOTIFY SERVICE FETCH', { cause: response });
       // if (response?.statusText === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
       return await response.json();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error?.cause?.code);
-      return notFound();
+      // return notFound();
       // throw new Error('SPOTIFY SERVICE', { cause: error });
     }
   },

@@ -47,7 +47,7 @@ export default function useVoting({ track, playlistId, votes }: UseVotingOptions
     voted: extendedVoteMembers.filter(m => m.vote),
   };
 
-  const setUserVote = async (trackId: string, vote: IVoteItem) => {
+  const setUserVote = async (trackId: string, vote: number) => {
     try {
       const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
       console.log(response);

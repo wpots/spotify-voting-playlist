@@ -1,4 +1,4 @@
-declare module "@domain/playlist" {
+declare module '@domain/playlist' {
   interface ITrack {
     id: string;
     name: string;
@@ -6,11 +6,11 @@ declare module "@domain/playlist" {
     artists: Record<string, any>[];
   }
   interface IPlaylist {
-        description: string;
+    description: string;
     external_urls: {
       spotify: string;
     };
-    url:string,
+    url: string;
     href: string;
     id: string;
     images: [
@@ -30,7 +30,7 @@ declare module "@domain/playlist" {
       total: number;
       items: [
         {
-          url:string;
+          url: string;
           added_by: {
             href: string;
             id: string;
@@ -48,6 +48,5 @@ declare module "@domain/playlist" {
         }
       ];
     };
-  }
   }
 }
