@@ -20,17 +20,17 @@ export default function useVoting({ track, playlistId, votes }: UseVotingOptions
 
   const userContext = useContext(UserContext);
 
+  if (!votes && track) {
+    votes = track.votes;
+  }
+
   const userId = userContext?.userInfo.id;
-  const userVote = votes?.items.find((i: IVoteItem) => userId === i.userId);
+  const userVote = votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote;
 
   const bandMembers = userContext?.currentBand?.members as IUser[];
   const currentPlaylist: IPlaylist | undefined = playlistId
     ? (userContext?.currentBand?.playlists?.find(p => (p as IPlaylist).id === playlistId) as IPlaylist)
     : undefined;
-
-  if (!votes && track) {
-    votes = track.votes;
-  }
 
   // const extendedVotes = votes?.items?.map(vote => {
   //   const voteByMember = bandMembers.find(m => m.id === vote.userId);

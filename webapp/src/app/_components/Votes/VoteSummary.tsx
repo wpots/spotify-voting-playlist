@@ -15,6 +15,7 @@ import useVoting from '@/app/_hooks/useVoting';
 
 export default function VoteSummary({ votes }: { votes?: IVote }) {
   const { userVote, memberStats } = useVoting({ votes });
+  const averageRating = votes?.average ? +votes?.average : undefined;
   return (
     <>
       <Stack spacing={1} alignItems="end">
@@ -22,7 +23,7 @@ export default function VoteSummary({ votes }: { votes?: IVote }) {
           sx={{ color: '#ff3d47' }}
           name="read-only"
           readOnly
-          value={votes?.average ?? 0}
+          value={averageRating ?? 0}
           precision={1}
           max={5}
           icon={<FavoriteIcon fontSize="inherit" />}

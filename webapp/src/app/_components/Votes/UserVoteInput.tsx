@@ -1,26 +1,34 @@
-"use client";
-import * as React from "react";
-import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+'use client';
+import * as React from 'react';
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Box, Button, Typography } from '@mui/material';
+import VotingStack from './VotingStack';
+import { useState, useEffect } from 'react';
+interface UserVoteInputProps {
+  onVoted: (val: number) => void;
+  userVote: number;
+}
+export default function UserVoteInput({ onVoted, userVote }: UserVoteInputProps) {
+  const [vote, setVote] = useState(userVote || 0);
+  useEffect(() => {
+    onVoted(vote);
+  }, [vote]);
 
-export default function UserVoteInput({ onSetVote }: { onSetVote: Function }) {
-  const handleVote = (e: React.SyntheticEvent, value: number | null) => {
-    onSetVote(value);
+  const handleVote = (e: React.SyntheticEvent, value: number) => {
+    setVote(value);
   };
   return (
-    <Stack spacing={1}>
-      <Rating
-        sx={{ color: "#ff3d47" }}
-        name="half-rating"
-        defaultValue={0}
-        precision={1}
-        max={5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-        onChange={handleVote}
-      />
-    </Stack>
+    <Box sx={{ paddingTop: '1rem' }}>
+      <Typography>Jouw stem</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+        <VotingStack onChange={handleVote} value={vote} name="user-vote" />
+        <Button variant={vote === -1 ? 'outlined' : 'contained'} onClick={e => handleVote(e, vote === -1 ? 0 : -1)}>
+          {vote === -1 ? 'unveto' : 'veto'}
+        </Button>
+      </Stack>
+    </Box>
   );
 }
