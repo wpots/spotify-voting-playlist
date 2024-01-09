@@ -1,11 +1,10 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/utils/authentication/authOptions';
-
-import * as FireStoreService from '@/utils/firebase/firebase.service';
-import { IBand } from '@domain/content';
 import { redirect } from 'next/navigation';
-import BandTeaser from '../_components/Band/BandTeaser';
 import { Typography } from '@mui/material';
+import { authOptions } from '@/utils/authentication/authOptions';
+import * as FireStoreService from '@/utils/firebase/firebase.service';
+import BandTeaser from '../_components/Band/BandTeaser';
+import type { IBand } from '@domain/content';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

@@ -22,7 +22,7 @@ const SpotifyService = {
       // if (response?.statusText === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error(error?.cause?.code);
       return notFound();
       // throw new Error('SPOTIFY SERVICE', { cause: error });
     }
@@ -33,7 +33,7 @@ const SpotifyService = {
   },
   async getPlaylistsByBulk(ids: string[]): Promise<IPlaylist[] | undefined> {
     const bulkFetchRequest = ids.map(id => this.getPlaylistById(id));
-    const playlists = await Promise.all<IPlaylist | undefined>(bulkFetchRequest) as IPlaylist[];
+    const playlists = (await Promise.all<IPlaylist | undefined>(bulkFetchRequest)) as IPlaylist[];
     return playlists;
   },
 };
