@@ -25,17 +25,12 @@ interface VotingDialogProps {
 }
 
 export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
-  const { memberStats, userVote } = useVoting({ track });
+  const { memberStats, userVote, setUserVote } = useVoting({ track });
   const [voted, setVoted] = useState<number | null>(null);
 
   const handleSaveAndClose = async () => {
     if (voted) {
-      try {
-        const response = await fetch(`/api/votes/${track.id}?vote=${voted}`, { method: 'POST' });
-        console.log(response);
-      } catch (error) {
-        console.error(error);
-      }
+      await setUserVote(track.id, voted);
       onClose();
     }
   };
@@ -67,7 +62,8 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
                 key={member.id}
               >
                 <Typography variant="caption">{member.name || member.id}</Typography>
-                <VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>
+                {member.vote && <VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>}
+                {!member.vote} <Typography variant="caption">...nog geen feedback</Typography>
               </Stack>
             );
           })}

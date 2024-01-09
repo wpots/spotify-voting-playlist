@@ -47,9 +47,14 @@ export default function useVoting({ track, playlistId, votes }: UseVotingOptions
     voted: extendedVoteMembers.filter(m => m.vote),
   };
 
-  const setVote = (vote: IVoteItem) => {
-    console.log(vote);
+  const setUserVote = async (trackId: string, vote: IVoteItem) => {
+    try {
+      const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  return { userVote, memberStats, setVote };
+  return { userVote, memberStats, setUserVote };
 }

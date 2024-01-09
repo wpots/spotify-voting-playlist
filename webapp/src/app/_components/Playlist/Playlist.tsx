@@ -5,7 +5,7 @@ import PlaylistHeader from './PlaylistHeader';
 import Track from '../Tracks/Track';
 import VoteSummary from '../Votes/VoteSummary';
 import type { IPlaylist, ITrack } from '@domain/content';
-import useUser from '@/app/_hooks/useUser';
+
 import VotingDialog from '../Votes/VotingDialog';
 // import TrackControls from "../Tracks/TrackControls";
 
