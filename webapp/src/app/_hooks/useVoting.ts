@@ -38,8 +38,8 @@ export default function useVoting({ track, playlistId, votes }: UseVotingOptions
   // });
 
   const extendedVoteMembers = bandMembers.map(member => {
-    const voteByMember = votes?.items?.find(v => v.userId === member.id);
-    return { ...member, vote: voteByMember };
+    const voteByMember = votes?.items?.find((v: IVoteItem) => v.userId === member.id);
+    return { ...member, vote: voteByMember.vote };
   });
 
   const memberStats = {

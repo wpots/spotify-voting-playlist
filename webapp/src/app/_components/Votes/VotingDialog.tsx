@@ -40,13 +40,20 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
     }
   };
   const handleVoted = (val: number) => {
-    console.log('d', val);
     setVoted(val);
   };
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
         {track && track.name} - {track && track.artists}
+        <Typography
+          variant="caption"
+          component="a"
+          href={track.url}
+          sx={{ display: 'block', textDecoration: 'underline' }}
+        >
+          luister op spotify
+        </Typography>
       </DialogTitle>
       <DialogContent dividers>
         <DialogContentText>
@@ -60,11 +67,11 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
                 key={member.id}
               >
                 <Typography variant="caption">{member.name || member.id}</Typography>
-                <VotingStack name={`vote-${member.id}`} value={member.vote?.vote} readonly></VotingStack>
+                <VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>
               </Stack>
             );
           })}
-          <Divider></Divider>
+
           <UserVoteInput onVoted={handleVoted} userVote={userVote}></UserVoteInput>
         </DialogContentText>
       </DialogContent>

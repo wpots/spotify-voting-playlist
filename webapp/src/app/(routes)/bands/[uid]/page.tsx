@@ -15,7 +15,9 @@ interface BandPageProps {
 export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  const currentBand: IBand | undefined = userId ? await ContentService.getCurrentBand(params.uid, userId) : undefined;
+  const currentBand: IBand | undefined = userId
+    ? ((await ContentService.getCurrentBand(params.uid, userId)) as IBand)
+    : undefined;
 
   if (!currentBand) return notFound();
 

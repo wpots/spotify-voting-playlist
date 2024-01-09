@@ -1,12 +1,11 @@
 import * as FireStoreService from '@/utils/firebase/firebase.service';
-import { NextApiRequest } from 'next';
 import { getToken } from 'next-auth/jwt';
 /**
  * example url: vote/4gzbery6ikdnxr
  *
  *
  */
-const votingHandler = async (req: NextApiRequest, { params }: { params: { trackId: string } }) => {
+const votingHandler = async (req:any, { params }: { params: { trackId: string } }) => {
   const accessToken = await getToken({ req });
   if (!accessToken) return new Response('Unauthorized', { status: 401 });
   const trackId = params.trackId;

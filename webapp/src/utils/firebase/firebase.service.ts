@@ -2,7 +2,7 @@ import 'server-only';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, query, where } from 'firebase/firestore';
 import { fireStore, firebaseApp } from '@/utils/firebase/firebaseClient';
 import type { Band, User, Vote } from '@firebase/api';
-import type { IUser, IBand } from '@domain/content';
+import type { IUser, IBand, IVoteItem } from '@domain/content';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/authentication/authOptions';
 
@@ -69,25 +69,25 @@ const getVotesByBandMembers = async (bandMembers: string[], ids: string[]) => {
   return allVotes?.filter(vote => bandMembers.includes(vote.userId) && ids.includes(vote.trackId));
 };
 
-const addVote = async (payload: IVote) => {
+const addVote = async (payload: IVoteItem) => {
   return await addDoc(collection(fireStore, 'votes'), payload);
 };
 
-const updateVote = async (payload: IVote) => {
+const updateVote = async (payload: IVoteItem) => {
   const allVotes = collection(fireStore, 'votes');
   const voteQuery = query(allVotes, where('userId', '==', payload.userId), where('trackId', '==', payload.trackId));
   const voteQuerySnapshot = await getDocs(voteQuery);
   const userVoteRef = doc(fireStore, 'votes', voteQuerySnapshot.docs[0].id);
-  await setDoc(userVoteRef, payload);
+  return await setDoc(userVoteRef, payload);
 };
 
-const setVote = async (payload: IVote) => {
-  const { userVotes, allVotes } = await this.getUserVotes(payload.userId);
+const setVote = async (payload: IVoteItem) => {
+  const { userVotes, allVotes } = await getUserVotes(payload.userId);
   const existingVote = userVotes?.find(vote => vote.trackId === payload.trackId);
   if (existingVote) {
-    return await this.updateVote(payload);
+    await updateVote(payload);
   } else {
-    return await this.addVote(payload);
+    await addVote(payload);
   }
 };
 

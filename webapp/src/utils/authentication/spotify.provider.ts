@@ -1,15 +1,17 @@
-import * as FireStoreService from "@/utils/firebase/firebase.service";
-const getRefreshToken = async token => {
+import * as FireStoreService from '@/utils/firebase/firebase.service';
+import type { SpotifyProfile } from 'next-auth/providers/spotify';
+
+const getRefreshToken = async (token: any) => {
   try {
-    const body = new URLSearchParams({ grant_type: "refresh_token", refresh_token: token.refreshToken });
+    const body = new URLSearchParams({ grant_type: 'refresh_token', refresh_token: token.refreshToken });
     const clientId = process.env.SPOTIFY_CLIENT_ID as string;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
     const tokenEndpoint = `https://accounts.spotify.com/api/token`;
     const response = await fetch(tokenEndpoint, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + new Buffer.from(clientId + ":" + clientSecret).toString("base64"),
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64'),
       },
       body,
     });
@@ -22,11 +24,11 @@ const getRefreshToken = async token => {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     };
   } catch (error) {
-    console.error("AUTHENTICATION SERVICE", error);
+    console.error('AUTHENTICATION SERVICE', error);
 
     return {
       ...token,
-      error: "RefreshAccessTokenError",
+      error: 'RefreshAccessTokenError',
     };
   }
 };
@@ -40,7 +42,8 @@ const providerOptions = {
       scope: `user-read-email`,
     },
   },
-  async profile(profile) {
+
+  async profile(profile: SpotifyProfile) {
     const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
     const userProfile = {
       id: profile.id,

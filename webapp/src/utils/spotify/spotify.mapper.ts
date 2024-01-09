@@ -3,7 +3,7 @@ import type { PlaylistResponse } from '@spotify/webapi';
 
 const spotifyMapper = {
   toDomain: {
-    parsePlaylist(playlist: PlaylistResponse): IPlaylist {
+    parsePlaylist(playlist: PlaylistResponse): IPlaylist| undefined {
       const mappedList = {
         ...playlist,
         url: playlist?.external_urls.spotify,

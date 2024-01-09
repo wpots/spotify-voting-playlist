@@ -7,7 +7,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import * as FireStoreService from '@/utils/firebase/firebase.service';
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
 import BandMembers from './BandMembers';
-import { IBand } from '@domain/content';
+import { IBand, IUser } from '@domain/content';
 import { useRouter } from 'next/router';
 
 interface BandTeaserProps {
@@ -20,7 +20,7 @@ export default function BandTeaser({ band, children }: BandTeaserProps) {
   const handleClick = (e: React.SyntheticEvent) => {
     router.push(`/bands${band.id}`);
   };
-  const members = ['0', '1', '2', '3', '4'];
+
   return (
     <Card sx={{ display: 'flex' }}>
       <CardActionArea onClick={handleClick}>
@@ -32,13 +32,13 @@ export default function BandTeaser({ band, children }: BandTeaserProps) {
           </CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
             {children}
-            <BandMembers members={members} />
+            <BandMembers members={band.members as IUser[]} />
           </Box>
         </Box>
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={`https://loremflickr.com/100/100/music?${divider}`}
+          image={`https://loremflickr.com/100/100/music?${band.id}`}
           alt={band.name}
         />
       </CardActionArea>

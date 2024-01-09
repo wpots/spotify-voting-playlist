@@ -1,7 +1,8 @@
-import { AuthOptions, SessionStrategy } from "next-auth";
-import SpotifyProvider from "next-auth/providers/spotify";
-
-import { providerOptions, getRefreshToken } from "@/utils/authentication/spotify.provider";
+import { AuthOptions, SessionStrategy } from 'next-auth';
+import SpotifyProvider from 'next-auth/providers/spotify';
+import type { Session } from 'next-auth';
+import { providerOptions, getRefreshToken } from '@/utils/authentication/spotify.provider';
+import { JWT } from 'next-auth/jwt';
 
 /** Route Handler for Authentication
  * https://nextjs.org/docs/app/api-reference/file-conventions/route
@@ -12,10 +13,10 @@ import { providerOptions, getRefreshToken } from "@/utils/authentication/spotify
 const authOptions: AuthOptions = {
   providers: [SpotifyProvider(providerOptions)],
   session: {
-    strategy: "jwt" as SessionStrategy,
+    strategy: 'jwt' as SessionStrategy,
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: '/auth/signin',
   },
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
@@ -28,11 +29,11 @@ const authOptions: AuthOptions = {
       if (account && user) {
         token.id = user.id;
         token.accessToken = account.access_token;
-        token.accessTokenExpires = Date.now() + account.expires_in * 1000;
+        token.accessTokenExpires = Date.now() + (account.expires_in as number) * 1000;
         token.refreshToken = account.refresh_token;
       }
 
-      if (Date.now() > token.accessTokenExpires) {
+      if (Date.now() > (token.accessTokenExpires as number)) {
         token = await getRefreshToken(token);
       }
 
@@ -40,9 +41,9 @@ const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.token = token.accessToken;
-        session.error = token.error;
+        session.user.id = token.id as string;
+        session.token = token.accessToken as string;
+        session.error = token.error as string;
       }
 
       return session;

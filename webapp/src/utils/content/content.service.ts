@@ -1,7 +1,7 @@
 import * as FireStoreService from '@/utils/firebase/firebase.service';
 import SpotifyService from '../spotify/spotify.service';
 import votesMapper from '@/utils/votes/votes.mapper';
-import type { IBand } from '@domain/content';
+import type { IBand, IPlaylist } from '@domain/content';
 import type { Vote, Band } from '@firebase/api';
 
 const getCurrentBand = async (bandId: string, userId: string) => {
@@ -11,7 +11,9 @@ const getCurrentBand = async (bandId: string, userId: string) => {
   const hasMembers = currentBand.members?.length > 0; // always 1 -> me
   const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
 
-  let playlistRefs = hasPlaylists ? await SpotifyService.getPlaylistsByBulk(currentBand.playlists as string []) : undefined;
+  let playlistRefs = hasPlaylists
+    ? ((await SpotifyService.getPlaylistsByBulk(currentBand.playlists as string[])) as IPlaylist[])
+    : undefined;
   let extendedPlaylists = [];
   if (playlistRefs && playlistRefs?.length > 0) {
     for (const list of playlistRefs) {

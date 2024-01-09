@@ -5,6 +5,7 @@ declare module '@domain/content' {
     email: string;
     roles?: string[];
     image: string;
+    vote?:number
   }
 
   type IVoteItem = {

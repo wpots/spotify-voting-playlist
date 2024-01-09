@@ -10,7 +10,7 @@ interface VotingStackProps {
   name: string;
   value: number | string;
   readonly?: boolean;
-  onChange?: (e: React.SyntheticEvent, value: number) => void;
+  onChange?: (e: React.SyntheticEvent, value: number | null) => void;
 }
 
 export default function VotingStack({ name, value, readonly, onChange }: VotingStackProps) {

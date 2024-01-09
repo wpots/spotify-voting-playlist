@@ -15,10 +15,11 @@ export default function UserVoteInput({ onVoted, userVote }: UserVoteInputProps)
   const [vote, setVote] = useState(userVote || 0);
   useEffect(() => {
     onVoted(vote);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vote]);
 
-  const handleVote = (e: React.SyntheticEvent, value: number) => {
-    setVote(value);
+  const handleVote = (e: React.SyntheticEvent, value: number | null) => {
+    if (value) setVote(value);
   };
   return (
     <Box sx={{ paddingTop: '1rem' }}>
