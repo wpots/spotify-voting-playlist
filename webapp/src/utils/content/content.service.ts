@@ -17,7 +17,7 @@ const getCurrentBand = async (bandId: string, userId: string) => {
   let extendedPlaylists = [];
   if (playlistRefs && playlistRefs?.length > 0) {
     for (const list of playlistRefs) {
-      const trackIds = list.tracks.refs;
+      const trackIds = list?.tracks.refs;
 
       if (trackIds && trackIds.length > 0) {
         const votes = (await FireStoreService.getVotesByBandMembers(

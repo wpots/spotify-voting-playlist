@@ -26,7 +26,7 @@ interface VotingDialogProps {
 
 export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
   const { memberStats, userVote, setUserVote } = useVoting({ track });
-  const [voted, setVoted] = useState<number | null>(null);
+  const [voted, setVoted] = useState<number>();
 
   const handleSaveAndClose = async () => {
     if (voted) {
@@ -52,18 +52,31 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
       </DialogTitle>
       <DialogContent dividers>
         <DialogContentText>
-          {[...memberStats.voted, ...memberStats.pending].map(member => {
+          {memberStats.voted.map(member => {
             return (
               <Stack
+                key={`name-${member.id}`}
                 spacing={1}
                 sx={{ marginBottom: '1rem' }}
                 direction="row"
                 justifyContent="space-between"
-                key={member.id}
               >
                 <Typography variant="caption">{member.name || member.id}</Typography>
-                {member.vote && <VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>}
-                {!member.vote} <Typography variant="caption">...nog geen feedback</Typography>
+                <VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>
+              </Stack>
+            );
+          })}
+          {memberStats.pending.map(member => {
+            return (
+              <Stack
+                key={`name-${member.id}`}
+                spacing={1}
+                sx={{ marginBottom: '1rem' }}
+                direction="row"
+                justifyContent="space-between"
+              >
+                <Typography variant="caption">{member.name || member.id}</Typography>
+                <Typography variant="caption">...nog geen feedback</Typography>
               </Stack>
             );
           })}

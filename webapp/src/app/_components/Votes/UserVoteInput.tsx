@@ -1,25 +1,23 @@
 'use client';
 import * as React from 'react';
-import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Box, Button, Typography } from '@mui/material';
 import VotingStack from './VotingStack';
 import { useState, useEffect } from 'react';
 interface UserVoteInputProps {
   onVoted: (val: number) => void;
-  userVote: number;
+  userVote: string;
 }
 export default function UserVoteInput({ onVoted, userVote }: UserVoteInputProps) {
-  const [vote, setVote] = useState(userVote || 0);
+  const [vote, setVote] = useState<number>(parseFloat(userVote) || 0);
+
   useEffect(() => {
     onVoted(vote);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vote]);
 
-  const handleVote = (e: React.SyntheticEvent, value: number | null) => {
-    if (value) setVote(value);
+  const handleVote = (e: React.SyntheticEvent, value: number) => {
+    setVote(value);
   };
   return (
     <Box sx={{ paddingTop: '1rem' }}>

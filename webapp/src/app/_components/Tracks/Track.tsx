@@ -18,13 +18,14 @@ interface TrackProps {
 export default function Track({ track, divider, onTrackSelected, controls, children }: TrackProps) {
   const theme = useTheme();
   const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm'));
+  const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();
   };
   return (
     <>
       {divider > 0 && <Divider component="li" />}
-      <ListItem disablePadding>
+      <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? 'red' : 'transparent' }}>
         <ListItemButton sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }} onClick={handleTrackSelected}>
           <ListItemText sx={{ flex: ['1 1 50%', '1 1 auto'] }} primary={track.name} secondary={<>{track.artists}</>} />
 

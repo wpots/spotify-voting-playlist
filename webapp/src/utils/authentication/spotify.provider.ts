@@ -17,7 +17,9 @@ const getRefreshToken = async (token: any) => {
       body,
     });
     const refreshedTokens = await response.json();
-    if (!response.ok) throw refreshedTokens;
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
@@ -25,8 +27,7 @@ const getRefreshToken = async (token: any) => {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     };
   } catch (error: any) {
-    console.error('AUTHENTICATION SERVICE', error);
-    // if (error?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
+    console.error('AUTHENTICATION REFRESH TOKEN', error);
 
     return {
       ...token,

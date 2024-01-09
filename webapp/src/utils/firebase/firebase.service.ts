@@ -8,7 +8,8 @@ import { authOptions } from '@/utils/authentication/authOptions';
 
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
-type IVote = {
+
+type IUserVote = {
   userId: string;
   trackId: string;
   vote: number;
@@ -69,11 +70,11 @@ const getVotesByBandMembers = async (bandMembers: string[], ids: string[]) => {
   return allVotes?.filter(vote => bandMembers.includes(vote.userId) && ids.includes(vote.trackId));
 };
 
-const addVote = async (payload: IVoteItem) => {
+const addVote = async (payload: IUserVote) => {
   return await addDoc(collection(fireStore, 'votes'), payload);
 };
 
-const updateVote = async (payload: IVoteItem) => {
+const updateVote = async (payload: IUserVote) => {
   const allVotes = collection(fireStore, 'votes');
   const voteQuery = query(allVotes, where('userId', '==', payload.userId), where('trackId', '==', payload.trackId));
   const voteQuerySnapshot = await getDocs(voteQuery);
@@ -81,7 +82,7 @@ const updateVote = async (payload: IVoteItem) => {
   return await setDoc(userVoteRef, payload);
 };
 
-const setVote = async (payload: IVoteItem) => {
+const setVote = async (payload: IUserVote) => {
   const { userVotes, allVotes } = await getUserVotes(payload.userId);
   const existingVote = userVotes?.find(vote => vote.trackId === payload.trackId);
   if (existingVote) {

@@ -10,22 +10,24 @@ interface VotingStackProps {
   name: string;
   value: number | string;
   readonly?: boolean;
-  onChange?: (e: React.SyntheticEvent, value: number | null) => void;
+  onChange?: (e: React.SyntheticEvent, value: number) => void;
 }
 
 export default function VotingStack({ name, value, readonly, onChange }: VotingStackProps) {
-  const rating = parseFloat(value as string);
+  const rating = parseFloat(value as string) || 0;
+
   return (
     <Stack spacing={1} sx={{ display: 'inline-flex' }}>
       <Rating
         sx={{ color: '#ff3d47' }}
-        readOnly={readonly}
+        readOnly={readonly || rating === -1}
         name={name}
-        value={rating || 0}
+        value={rating}
         precision={1}
         max={5}
         icon={<FavoriteIcon fontSize="inherit" />}
-        emptyIcon={value === -1 ? <VetoIcon /> : <FavoriteBorderIcon fontSize="inherit" />}
+        emptyIcon={rating === -1 ? <VetoIcon /> : <FavoriteBorderIcon fontSize="inherit" />}
+        // @ts-ignore
         onChange={onChange}
       />
     </Stack>

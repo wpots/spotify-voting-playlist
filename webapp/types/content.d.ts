@@ -5,7 +5,7 @@ declare module '@domain/content' {
     email: string;
     roles?: string[];
     image: string;
-    vote?:number
+    vote?: number;
   }
 
   type IVoteItem = {
@@ -18,6 +18,7 @@ declare module '@domain/content' {
   interface IVote {
     total: number;
     average: number;
+    veto?: IVoteItem[];
     items: IVoteItem[];
   }
 

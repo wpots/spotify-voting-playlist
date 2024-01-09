@@ -50,9 +50,8 @@ export default function useVoting({ track, playlistId, votes }: UseVotingOptions
   const setUserVote = async (trackId: string, vote: number) => {
     try {
       const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
-      console.log(response);
     } catch (error) {
-      console.error(error);
+      console.error('USEVOTING', error);
     }
   };
 

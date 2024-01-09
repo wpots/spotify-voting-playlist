@@ -19,6 +19,7 @@ const votesMapper = {
                 ? undefined
                 : {
                     total: trackVotes?.length,
+                    veto: trackVotes?.filter(v => v.vote === '-1'),
                     average: this.resolveVotedAverage(trackVotes.map(v => parseInt(v.vote))),
                     items: trackVotes,
                   },

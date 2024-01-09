@@ -1,8 +1,6 @@
 import { AuthOptions, SessionStrategy } from 'next-auth';
 import SpotifyProvider from 'next-auth/providers/spotify';
-import type { Session } from 'next-auth';
 import { providerOptions, getRefreshToken } from '@/utils/authentication/spotify.provider';
-import { JWT } from 'next-auth/jwt';
 
 /** Route Handler for Authentication
  * https://nextjs.org/docs/app/api-reference/file-conventions/route
@@ -15,9 +13,9 @@ const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt' as SessionStrategy,
   },
-  pages: {
-    signIn: '/auth/signin',
-  },
+  // pages: {
+  //   signIn: '/auth/signin',
+  // },
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     // @ts-ignore
@@ -25,7 +23,6 @@ const authOptions: AuthOptions = {
       return true;
     },
     async jwt({ account, user, token, profile }) {
-      token.error = null;
       if (account && user) {
         token.id = user.id;
         token.accessToken = account.access_token;
@@ -33,7 +30,9 @@ const authOptions: AuthOptions = {
         token.refreshToken = account.refresh_token;
       }
 
-      if (Date.now() > (token.accessTokenExpires as number)) {
+      const isExpired = Date.now() > (token.accessTokenExpires as number);
+
+      if (isExpired) {
         token = await getRefreshToken(token);
       }
 

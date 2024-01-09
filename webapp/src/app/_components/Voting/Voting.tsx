@@ -1,9 +1,9 @@
-"use client";
-import * as React from "react";
-import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+'use client';
+import * as React from 'react';
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 export default function Voting({ onSetVote }: { onSetVote: Function }) {
   const handleVote = (e: React.SyntheticEvent, value: number | null) => {
@@ -11,7 +11,7 @@ export default function Voting({ onSetVote }: { onSetVote: Function }) {
   };
   return (
     <Rating
-      sx={{ color: "#ff3d47" }}
+      sx={{ color: '#ff3d47' }}
       name="rating"
       defaultValue={0}
       precision={1}

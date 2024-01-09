@@ -1,17 +1,15 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import Provider from "@/app/_context/client-session-provider";
-import { Inter } from "next/font/google";
-import { authOptions } from "@/utils/authentication/authOptions";
-import AppFooter from "./_components/UI/AppFooter";
-import AppHeader from "./_components/UI/AppHeader";
+import './globals.css';
+import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import Provider from '@/app/_context/client-session-provider';
 
-const inter = Inter({ subsets: ["latin"] });
+import { authOptions } from '@/utils/authentication/authOptions';
+import AppFooter from './_components/UI/AppFooter';
+import AppHeader from './_components/UI/AppHeader';
 
 export const metadata: Metadata = {
-  title: "BandVoting",
-  description: "Contextual Repertoire Voting List",
+  title: 'BandVoting',
+  description: 'Contextual Repertoire Voting List',
 };
 
 /**
@@ -26,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession(authOptions);
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Provider session={session}>
           <header>
             <AppHeader />
