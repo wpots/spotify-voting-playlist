@@ -7,12 +7,14 @@ import VoteSummary from '../Votes/VoteSummary';
 import type { IPlaylist, ITrack } from '@domain/content';
 
 import VotingDialog from '../Votes/VotingDialog';
+import useVoting from '@/app/_hooks/useVoting';
 // import TrackControls from "../Tracks/TrackControls";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   // const [playId, setPlayId] = useState<string | null>(null);
   const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  // const { sortPlayListByPopularity } = useVoting({ playlist });
   const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
   useEffect(() => {
     if (selectedTrack) {
@@ -40,7 +42,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
       <PlaylistHeader description={playlist.description} url={playlist.url} />
 
       {playlist.tracks.items?.length > 0 && (
-        <List sx={{ width: '100%', bgcolor: 'background.paper', border: '1px solid lightgrey' }}>
+        <List sx={{ width: '100%', bgcolor: 'background.paper', border: '1px solid lightgrey', p: '0' }}>
           {tracks.map((track: ITrack, idx: number) => {
             return (
               <Track

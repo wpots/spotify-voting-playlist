@@ -25,7 +25,7 @@ export default function useVoting({ track, playlistId, votes }: UseVotingOptions
   }
 
   const userId = userContext?.userInfo.id;
-  const userVote = votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote;
+  const userVote = parseInt(votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote);
 
   const bandMembers = userContext?.currentBand?.members as IUser[];
   const currentPlaylist: IPlaylist | undefined = playlistId

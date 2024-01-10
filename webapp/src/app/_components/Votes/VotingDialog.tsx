@@ -45,6 +45,7 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
           variant="caption"
           component="a"
           href={track.url}
+          target="_blank"
           sx={{ display: 'block', textDecoration: 'underline' }}
         >
           luister op spotify
@@ -86,7 +87,7 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
       </DialogContent>
       <DialogActions sx={{ px: '1rem' }}>
         <Button onClick={onClose}>terug</Button>
-        <Button onClick={handleSaveAndClose} disabled={!voted}>
+        <Button onClick={handleSaveAndClose} disabled={!voted || userVote === voted}>
           opslaan
         </Button>
       </DialogActions>

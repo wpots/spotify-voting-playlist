@@ -6,10 +6,10 @@ import VotingStack from './VotingStack';
 import { useState, useEffect } from 'react';
 interface UserVoteInputProps {
   onVoted: (val: number) => void;
-  userVote: string;
+  userVote: number;
 }
 export default function UserVoteInput({ onVoted, userVote }: UserVoteInputProps) {
-  const [vote, setVote] = useState<number>(parseFloat(userVote) || 0);
+  const [vote, setVote] = useState<number>(userVote || 0);
 
   useEffect(() => {
     onVoted(vote);
