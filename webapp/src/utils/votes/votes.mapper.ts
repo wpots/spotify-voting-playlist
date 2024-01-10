@@ -3,7 +3,7 @@ import type { Vote } from '@firebase/api';
 const votesMapper = {
   resolveVotedAverage(votes: number[]) {
     const avg = votes.reduce((acc, cum) => acc + cum, 0) / votes.length;
-    return avg.toFixed(1);
+    return parseFloat(avg.toFixed(1));
   },
   resolveMembersVoted(votes: Vote[]) {},
   resolveVotesForPlaylistTracks(playlist: IPlaylist, votes?: Vote[]) {

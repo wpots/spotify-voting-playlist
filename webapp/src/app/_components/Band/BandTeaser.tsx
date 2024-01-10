@@ -14,6 +14,10 @@ interface BandTeaserProps {
   band: IBand;
   children?: React.ReactNode;
 }
+/**
+ *  TODO:
+ * Add band Logo Firebase Storage / ofzo
+ */
 
 export default function BandTeaser({ band, children }: BandTeaserProps) {
   const router = useRouter();
