@@ -31,7 +31,7 @@ const getCurrentBand = async (bandId: string, userId: string) => {
   if (!currentBand) return undefined;
   const hasMembers = currentBand.members?.length > 0; // always 1 -> me
   const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
-
+  console.log('GETCURRENTBAND');
   const extendedPlaylists =
     hasPlaylists && hasMembers
       ? await getUpdatedPlaylists(currentBand.members as string[], currentBand.playlists as string[])

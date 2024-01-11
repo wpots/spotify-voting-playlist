@@ -24,18 +24,24 @@ export default function useVoting({ track, playlist, votes }: UseVotingOptions) 
   if (!votes && track) {
     votes = track.votes;
   }
-  // console.log('no effect in voting');
+
   // useEffect(() => {
-  //   console.log('empty array in voting');
+  //   console.log('component did mount ....');
   // }, []);
+
   // useEffect(() => {
-  //   console.log('empty in voting');
+  //   console.log('component (re)rendered');
   // });
-  useEffect(() => {
-    if (currentPlaylist) {
-      console.log('playlist dependency in voting');
-    }
-  }, [currentPlaylist]);
+
+  // useEffect(() => {
+  //   return () => console.log('...unmounted');
+  // });
+
+  // useEffect(() => {
+  //   if (currentPlaylist || track || votes) {
+  //     console.log('state or props changed');
+  //   }
+  // }, [currentPlaylist, track, votes]);
 
   const userId = userContext?.userInfo.id;
   const userVote = parseInt(votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote);
@@ -65,7 +71,9 @@ export default function useVoting({ track, playlist, votes }: UseVotingOptions) 
     try {
       const response = await fetch(`/api/votes?${queryString}`);
       const updatedPlaylists = await response.json();
-      console.log(updatedPlaylists);
+      const updatedCurrentPlaylist = updatedPlaylists.find((p: IPlaylist) => p.id === (playlist as IPlaylist).id);
+      setCurrentPlaylist(updatedCurrentPlaylist);
+      return updatedPlaylists;
     } catch (error) {
       console.error('USEVOTING getVotes', error);
     }
@@ -74,11 +82,13 @@ export default function useVoting({ track, playlist, votes }: UseVotingOptions) 
   const setUserVote = async (trackId: string, vote: number) => {
     try {
       const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
-      console.log(response);
+      const updatedVote = await response.json();
+
+      return updatedVote;
     } catch (error) {
       console.error('USEVOTING setVote', error);
     }
   };
 
-  return { userVote, memberStats, setUserVote, refetchVotes, sortPlaylistByPopularity };
+  return { userVote, memberStats, setUserVote, refetchVotes, currentPlaylist, sortPlaylistByPopularity };
 }

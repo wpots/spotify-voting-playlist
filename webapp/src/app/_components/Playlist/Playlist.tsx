@@ -14,7 +14,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   // const [playId, setPlayId] = useState<string | null>(null);
   const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const { sortPlaylistByPopularity, refetchVotes } = useVoting({ playlist });
+  const { sortPlaylistByPopularity, refetchVotes, currentPlaylist } = useVoting({ playlist });
   const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
   useEffect(() => {
     if (selectedTrack) {
@@ -23,10 +23,13 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   }, [selectedTrack]);
 
   useEffect(() => {
-    if (!openDialog) refetchVotes();
+    if (!!selectedTrack && !openDialog) refetchVotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDialog]);
-  const handleDialogClose = () => setOpenDialog(false);
+  const handleDialogClose = (reset: boolean) => {
+    if (reset) setSelectedTrack(null);
+    setOpenDialog(false);
+  };
   // const handlePlayback = (id: string, reset?: boolean) => {
   //   if (id === playId) {
   //     if (reset) {
@@ -40,13 +43,13 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   //     // api call spotify to play
   //   }
   // }; <fgvc>    </fgvc>
-  const tracks = playlist.tracks.items;
+  const tracks = currentPlaylist?.tracks.items;
 
   return (
     <>
-      <PlaylistHeader description={playlist.description} url={playlist.url} />
+      <PlaylistHeader description={currentPlaylist?.description} url={currentPlaylist?.url} />
 
-      {playlist.tracks.items?.length > 0 && (
+      {tracks && tracks?.length > 0 && (
         <List sx={{ width: '100%', bgcolor: 'background.paper', border: '1px solid lightgrey', p: '0' }}>
           {tracks.map((track: ITrack, idx: number) => {
             return (

@@ -10,7 +10,7 @@ import LoginButton from '../_components/Auth/LoginButton';
 export default async function Home() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  console.log('e', session?.error);
+
   const bands = userId ? ((await FireStoreService.getBandsByUserId(userId)) as IBand[]) : undefined;
   const errorMessage = !session?.user
     ? 'Je bent niet ingelogd.'

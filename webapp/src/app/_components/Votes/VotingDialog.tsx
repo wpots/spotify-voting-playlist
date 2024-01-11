@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -21,24 +21,23 @@ import UserVoteInput from './UserVoteInput';
 interface VotingDialogProps {
   track: ITrack;
   open: boolean;
-  onClose: () => void;
+  onClose: (val: boolean) => void;
 }
 
 export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
   const { memberStats, userVote, setUserVote } = useVoting({ track });
   const [voted, setVoted] = useState<number>();
-
   const handleSaveAndClose = async () => {
     if (voted) {
       await setUserVote(track.id, voted);
-      onClose();
+      onClose(true);
     }
   };
   const handleVoted = (val: number) => {
     setVoted(val);
   };
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={() => onClose(true)}>
       <DialogTitle>
         {track && track.name} - {track && track.artists}
         <Typography
@@ -86,7 +85,7 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ px: '1rem' }}>
-        <Button onClick={onClose}>terug</Button>
+        <Button onClick={() => onClose(true)}>terug</Button>
         <Button onClick={handleSaveAndClose} disabled={!voted || userVote === voted}>
           opslaan
         </Button>
