@@ -15,7 +15,7 @@ export default async function Home() {
   const errorMessage = !session?.user
     ? 'Je bent niet ingelogd.'
     : !bands || bands?.length === 0
-    ? 'You are not set up to collaborate yet.'
+    ? 'You are not set up to collaborate.'
     : false;
   if (bands?.length === 1) redirect(`/bands/${bands?.[0]?.id}`);
   return (
