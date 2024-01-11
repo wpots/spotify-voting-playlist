@@ -27,7 +27,11 @@ export default function Track({ track, divider, onTrackSelected, controls, child
       {divider > 0 && <Divider component="li" />}
       <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? 'red' : 'transparent' }}>
         <ListItemButton sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }} onClick={handleTrackSelected}>
-          <ListItemText sx={{ flex: ['1 1 50%', '1 1 auto'] }} primary={track.name} secondary={<>{track.artists}</>} />
+          <ListItemText
+            sx={{ flex: ['1 1 50%', '1 1 auto'], maxWidth: '220px' }}
+            primary={track.name}
+            secondary={<>{track.artists}</>}
+          />
 
           <Box sx={{ flex: ['0 0 50%', '0 0 25%'], order: { xs: 10 } }}>{controls}</Box>
           <Box

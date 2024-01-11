@@ -6,44 +6,45 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Box, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Playlist from './Playlist';
-import useUser from '@/app/_hooks/useUser';
-import { useSearchParams } from 'react-router-dom';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) {
-  const [activePlaylist, setActivePlaylist] = useState(playlists?.[0]?.id);
+  const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+  const [activePlaylist, setActivePlaylist] = useState(searchParams.get('playlist'));
 
-  // const [searchParams, setSearchParams] = useSearchParams();
-
-  // useEffect(() => {
-  //   if (searchParams.get('playlist') !== activePlaylist) {
-  //     const params = new URLSearchParams({ playlist: activePlaylist });
-  //     setSearchParams(params);
-  //   }
-  // }, [activePlaylist, searchParams]);
+  useEffect(() => {
+    if (activePlaylist) {
+      router.push(`${pathName}?playlist=${activePlaylist}`);
+    }
+  }, [activePlaylist, pathName, router]);
 
   const handleOnChange = (e: React.SyntheticEvent, val: string) => {
     setActivePlaylist(val);
   };
   return (
     <Box sx={{ width: '100%', maxWidth: '900px', margin: 'auto' }}>
-      <TabContext value={activePlaylist}>
-        {
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleOnChange}>
-              {playlists.map((list: IPlaylist) => {
-                return <Tab label={list.name} value={list.id} key={list.id}></Tab>;
-              })}
-            </TabList>
-          </Box>
-        }
-        {playlists.map((list: IPlaylist) => {
-          return (
-            <TabPanel value={list.id} key={list.id}>
-              <Playlist playlist={list} />
-            </TabPanel>
-          );
-        })}
-      </TabContext>
+      {activePlaylist && (
+        <TabContext value={activePlaylist}>
+          {
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={handleOnChange}>
+                {playlists.map((list: IPlaylist) => {
+                  return <Tab label={list.name} value={list.id} key={list.id}></Tab>;
+                })}
+              </TabList>
+            </Box>
+          }
+          {playlists.map((list: IPlaylist) => {
+            return (
+              <TabPanel value={list.id} key={list.id}>
+                <Playlist playlist={list} />
+              </TabPanel>
+            );
+          })}
+        </TabContext>
+      )}
     </Box>
   );
 }

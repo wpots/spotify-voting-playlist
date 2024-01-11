@@ -8,6 +8,7 @@ import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 
 import UserContextProvider from '@/app/_context/client-user-provider';
 import { IBand, IPlaylist } from '@domain/content';
+
 interface BandPageProps {
   params: { uid: string };
 }
@@ -15,6 +16,7 @@ interface BandPageProps {
 export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+
   const currentBand: IBand | undefined = userId
     ? ((await ContentService.getCurrentBand(params.uid, userId)) as IBand)
     : undefined;

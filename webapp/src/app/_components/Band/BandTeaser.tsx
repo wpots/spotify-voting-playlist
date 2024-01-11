@@ -20,14 +20,9 @@ interface BandTeaserProps {
  */
 
 export default function BandTeaser({ band, children }: BandTeaserProps) {
-  const router = useRouter();
-  const handleClick = (e: React.SyntheticEvent) => {
-    router.push(`/bands${band.id}`);
-  };
-
   return (
     <Card sx={{ display: 'flex' }}>
-      <CardActionArea onClick={handleClick}>
+      <CardActionArea href={`/bands/${band.id}`}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <CardContent sx={{ flex: '1 0 auto' }}>
             <Typography component="div" variant="h5">
