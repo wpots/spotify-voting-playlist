@@ -25,9 +25,9 @@ const getUpdatedPlaylists = async (memberIds: string[], playlistIds: string[]) =
 
   if (extendedPlaylists?.length > 0) return extendedPlaylists;
 };
-const getCurrentBand = async (bandId: string, userId: string) => {
-  const allUserBands = (await FireStoreService.getBandsByUserId(userId)) as IBand[];
-  const currentBand: IBand | undefined = allUserBands?.find((band: IBand) => band.id === bandId);
+const getCurrentBand = async (bandId: string, band?: IBand) => {
+  const currentBand: IBand | undefined = band ?? ((await FireStoreService.getBandById(bandId)) as unknown as IBand);
+
   if (!currentBand) return undefined;
   const hasMembers = currentBand.members?.length > 0; // always 1 -> me
   const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
@@ -42,4 +42,14 @@ const getCurrentBand = async (bandId: string, userId: string) => {
   return { ...currentBand, playlists: extendedPlaylists, members: extendedMembers ?? currentBand.members };
 };
 
-export { getCurrentBand, getUpdatedPlaylists };
+const getBandsByUserId = async (userId: string) => {
+  const allBands = (await FireStoreService.getBandsByUserId(userId)) as IBand[];
+  const extendedBands = [];
+  for (const band of allBands) {
+    const extendedBand = await getCurrentBand(band.id, band);
+    if (extendedBand) extendedBands.push(extendedBand);
+  }
+  return extendedBands;
+};
+
+export { getBandsByUserId, getCurrentBand, getUpdatedPlaylists };

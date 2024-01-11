@@ -15,11 +15,7 @@ export default function UserContextProvider({
   userProfile,
 }: {
   children: React.ReactNode;
-  userProfile: {
-    userInfo: any;
-    userBands?: IBand[];
-    currentBand: IBand;
-  };
+  userProfile: IUserContext;
 }): React.ReactNode {
   return <UserContext.Provider value={userProfile}>{children}</UserContext.Provider>;
 }

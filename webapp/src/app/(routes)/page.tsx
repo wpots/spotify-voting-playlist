@@ -12,11 +12,13 @@ export default async function Home() {
   const userId = session?.user?.id;
 
   const bands = userId ? ((await FireStoreService.getBandsByUserId(userId)) as IBand[]) : undefined;
+
   const errorMessage = !session?.user
     ? 'Je bent niet ingelogd.'
     : !bands || bands?.length === 0
     ? 'You are not set up to collaborate yet.'
     : false;
+
   if (bands?.length === 1) redirect(`/bands/${bands?.[0]?.id}`);
   return (
     <main>

@@ -2,6 +2,7 @@ import { Vote } from '@firebase/api';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../_context/client-user-provider';
 import { IBand, IPlaylist, ITrack, IUser, IVote, IVoteItem } from '@domain/content';
+import { usePathname } from 'next/navigation';
 
 type UseVotingOptions = {
   votes?: any;
@@ -19,7 +20,9 @@ export default function useVoting({ track, playlist, votes }: UseVotingOptions) 
   // }
 
   const userContext = useContext(UserContext);
-
+  const pathName = usePathname();
+  console.log('pathnme', pathName);
+  // const currentBand =
   const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
   if (!votes && track) {
     votes = track.votes;

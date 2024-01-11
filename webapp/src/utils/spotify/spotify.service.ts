@@ -22,7 +22,7 @@ const SpotifyService = {
       // if (response?.statusText === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
       return await response.json();
     } catch (error: any) {
-      console.error(error?.cause?.code);
+      console.error('ERROR', error?.cause?.code);
       // return notFound();
       // throw new Error('SPOTIFY SERVICE', { cause: error });
     }
