@@ -12,7 +12,8 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  const [activePlaylist, setActivePlaylist] = useState(searchParams.get('playlist'));
+  const defaultPlaylist = playlists[0].id;
+  const [activePlaylist, setActivePlaylist] = useState(searchParams.get('playlist') || defaultPlaylist);
 
   useEffect(() => {
     if (activePlaylist) {
