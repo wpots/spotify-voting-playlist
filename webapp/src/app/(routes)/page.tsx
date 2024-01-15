@@ -2,21 +2,27 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { Box, Typography } from '@mui/material';
 import { authOptions } from '@/utils/authentication/authOptions';
-import * as FireStoreService from '@/utils/firebase/firebase.service';
+import * as ContentService from '@/utils/content/content.service';
 import BandTeaser from '../_components/Band/BandTeaser';
 import type { IBand } from '@domain/content';
 import LoginButton from '../_components/Auth/LoginButton';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
 
-  const bands = userId ? ((await FireStoreService.getBandsByUserId(userId)) as IBand[]) : undefined;
+  const userId = session?.user?.id;
+  let bands: IBand[] | undefined;
+
+  if (userId) {
+    bands = await ContentService.getBandsByUserId(userId);
+  }
+
   const errorMessage = !session?.user
     ? 'Je bent niet ingelogd.'
     : !bands || bands?.length === 0
     ? 'You are not set up to collaborate.'
     : false;
+
   if (bands?.length === 1) redirect(`/bands/${bands?.[0]?.id}`);
   return (
     <main>

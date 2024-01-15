@@ -2,10 +2,12 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import Provider from '@/app/_context/client-session-provider';
-
+import * as ContentService from '@/utils/content/content.service';
 import { authOptions } from '@/utils/authentication/authOptions';
 import AppFooter from './_components/UI/AppFooter';
 import AppHeader from './_components/UI/AppHeader';
+import UserContextProvider from './_context/client-user-provider';
+import { IBand } from '@domain/content';
 
 export const metadata: Metadata = {
   title: 'BandVoting',
@@ -22,17 +24,31 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  if (session?.error) console.log('laoyu', session.error);
+  const userId = session?.user?.id;
+  let userBands: IBand[] | undefined;
+
+  if (userId) {
+    userBands = await ContentService.getBandsByUserId(userId);
+  }
+
+  const userProfile = {
+    userInfo: session?.user,
+    userBands,
+  };
   return (
     <html lang="en">
       <body>
         <Provider session={session}>
-          <header>
-            <AppHeader />
-          </header>
-          {children}
-          <footer>
-            <AppFooter />
-          </footer>
+          <UserContextProvider userProfile={userProfile}>
+            <header>
+              <AppHeader />
+            </header>
+            {children}
+            <footer>
+              <AppFooter />
+            </footer>
+          </UserContextProvider>
         </Provider>
       </body>
     </html>

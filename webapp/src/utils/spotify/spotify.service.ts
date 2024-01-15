@@ -18,13 +18,12 @@ const SpotifyService = {
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${session?.token}` },
       });
+
       if (!response?.ok) throw new Error('SPOTIFY SERVICE FETCH', { cause: response });
-      // if (response?.statusText === 'UND_ERR_CONNECT_TIMEOUT') return notFound();
+
       return await response.json();
     } catch (error: any) {
-      console.error(error?.cause?.code);
-      // return notFound();
-      // throw new Error('SPOTIFY SERVICE', { cause: error });
+      throw new Error('SPOTIFY SERVICE', { cause: error });
     }
   },
   async getPlaylistById(id: string): Promise<IPlaylist | undefined> {

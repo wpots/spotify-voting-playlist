@@ -15,27 +15,41 @@ interface BandPageProps {
 
 export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
+  if (session?.error) console.log('page', session.error);
 
-  const currentBand: IBand | undefined = userId
-    ? ((await ContentService.getCurrentBand(params.uid, userId)) as IBand)
-    : undefined;
+  // useEffect(() => {
+  //   if (session?.error === 'RefreshAccessTokenError') {
+  //     signIn(); // Force sign in to hopefully resolve error
+  //   }
+  // }, [session]);
+
+  const userId = session?.user?.id;
+  let userBands: IBand[] | undefined;
+  let currentBand: IBand | undefined;
+
+  if (userId) {
+    userBands = await ContentService.getBandsByUserId(userId);
+    currentBand = userBands?.find(b => b.id === params.uid);
+  }
 
   if (!currentBand) return notFound();
 
-  const userProfile = {
-    userInfo: session?.user,
-    currentBand,
-  };
   if (currentBand.playlists?.length === 0)
-    return <Typography align="center">No Playlist for this band yet...</Typography>;
-
+    return <Typography align="center">Er zijn geen playlists gevonden....</Typography>;
+  // server side rendered playlists without votes
+  /**
+   * TODO:
+   * create skeleton based on ids?
+   */
   return (
-    <UserContextProvider userProfile={userProfile}>
+    <>
       <Typography component="h1" variant="h1">
         {currentBand.name}
       </Typography>
-      {currentBand.playlists && <PlaylistTabs playlists={currentBand.playlists as IPlaylist[]} />}
-    </UserContextProvider>
+      {currentBand.error && (
+        <Typography>De playlists konden niet worden opgehaald, probeer het later opnieuw....</Typography>
+      )}
+      {currentBand.playlists && <PlaylistTabs playlists={currentBand?.playlists as IPlaylist[]} />}
+    </>
   );
 }

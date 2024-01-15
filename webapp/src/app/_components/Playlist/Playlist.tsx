@@ -14,18 +14,20 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   // const [playId, setPlayId] = useState<string | null>(null);
   const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const { sortPlaylistByPopularity, refetchVotes, currentPlaylist } = useVoting({ playlist });
+  const { sortPlaylistByPopularity, fetchVotes, currentPlaylist } = useVoting({ playlist });
   const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
+
+  useEffect(() => {
+    if (!selectedTrack && !openDialog) fetchVotes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDialog, selectedTrack]);
+
   useEffect(() => {
     if (selectedTrack) {
       setOpenDialog(true);
     }
   }, [selectedTrack]);
 
-  useEffect(() => {
-    if (!!selectedTrack && !openDialog) refetchVotes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openDialog]);
   const handleDialogClose = (reset: boolean) => {
     if (reset) setSelectedTrack(null);
     setOpenDialog(false);

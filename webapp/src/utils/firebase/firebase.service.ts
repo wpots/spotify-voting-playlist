@@ -47,6 +47,10 @@ const getBandsByUserId = cache(async (id: string) => {
   const bands = await getDocumentsByQuery('bands', where('members', 'array-contains', id));
   return bands as IBand[];
 });
+const getBandById = cache(async (id: string) => {
+  const bands = (await getDocumentsByQuery('bands', where('id', '==', id))) as Band[];
+  return bands?.[0] as unknown as Band;
+});
 
 const getBandMembersById = cache(async (ids: string[]) => {
   const members = await getDocumentsByQuery('users', where('id', 'in', ids));
@@ -95,6 +99,7 @@ const setVote = async (payload: IUserVote) => {
 export {
   getVerifiedUser,
   setUserProfile,
+  getBandById,
   getBandsByUserId,
   getBandMembersById,
   getAllVotes,

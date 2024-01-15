@@ -70,5 +70,6 @@ declare module '@domain/content' {
     playlists?: string[] | IPlaylist[]; // first time in Content service before extending
     members: string[] | IUser[]; // first time in Content service before extending
     veterans?: IUser[];
+    error?: any;
   }
 }

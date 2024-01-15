@@ -1,79 +1,106 @@
 import { Vote } from '@firebase/api';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { UserContext } from '../_context/client-user-provider';
-import { IBand, IPlaylist, ITrack, IUser, IVote, IVoteItem } from '@domain/content';
+import { IBand, IPlaylist, ITrack, IUser, IVoteItem } from '@domain/content';
+import { useParams, useSearchParams } from 'next/navigation';
+import votesMapper from '@/utils/votes/votes.mapper';
 
 type UseVotingOptions = {
-  votes?: any;
-  add?: any;
-  track?: ITrack;
   playlist?: IPlaylist;
+  votes?: any;
+  track?: any;
 };
-export default function useVoting({ track, playlist, votes }: UseVotingOptions) {
+
+export default function useVoting({ playlist, votes, track }: UseVotingOptions) {
   if (!UserContext) {
     throw new Error('React Context is unavailable in Server Components');
   }
 
-  // if (!playlistId || !track || !votes) {
-  //   throw new Error('You need to specify at least one of the following: playlistId, track, votes');
-  // }
-
   const userContext = useContext(UserContext);
+  const userId = userContext?.userInfo.id;
+  const params = useParams();
+  const query = useSearchParams();
+  const bandId = params.uid;
 
-  const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
-  if (!votes && track) {
-    votes = track.votes;
+  if (!userId || !bandId) {
+    throw Error('UseVoting is missing context');
   }
 
-  // useEffect(() => {
-  //   console.log('component did mount ....');
-  // }, []);
+  const currentBand = userContext?.userBands?.find(b => b.id === bandId);
 
-  // useEffect(() => {
-  //   console.log('component (re)rendered');
-  // });
+  if (!playlist) {
+    playlist = currentBand?.playlists?.find(p => (p as IPlaylist).id === query.get('playlist')) as IPlaylist;
+  }
 
-  // useEffect(() => {
-  //   return () => console.log('...unmounted');
-  // });
+  const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
 
-  // useEffect(() => {
-  //   if (currentPlaylist || track || votes) {
-  //     console.log('state or props changed');
-  //   }
-  // }, [currentPlaylist, track, votes]);
+  if (!votes) {
+    votes = track?.votes;
+  }
 
-  const userId = userContext?.userInfo.id;
-  const userVote = parseInt(votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote);
+  const userVote = useMemo(
+    () => parseInt(votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote),
+    [votes, userId]
+  );
 
-  const bandMembers = userContext?.currentBand?.members as IUser[];
+  const bandMembers = currentBand?.members as IUser[];
 
-  const extendedVoteMembers = bandMembers.map(member => {
-    const voteByMember = votes?.items?.find((v: IVoteItem) => v.userId === member.id);
-    return { ...member, vote: voteByMember?.vote };
-  });
+  const extendedVoteMembers = useMemo(
+    () =>
+      bandMembers?.map(member => {
+        const voteByMember = votes?.items?.find((v: IVoteItem) => v.userId === member.id);
+        return { ...member, vote: voteByMember?.vote };
+      }),
+    [votes, bandMembers]
+  );
 
-  const memberStats = {
-    pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers.filter(m => !m.vote),
-    voted: extendedVoteMembers.filter(m => m.vote),
-  };
+  const memberStats = useMemo(
+    () => ({
+      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote),
+      voted: extendedVoteMembers?.filter(m => m.vote),
+    }),
+    [extendedVoteMembers, bandMembers, votes]
+  );
 
-  const sortPlaylistByPopularity = () => {};
+  const sortPlaylistByPopularity = useMemo(() => {
+    currentPlaylist?.tracks.items
+      .sort((a, b) => {
+        // no votes. move to bottom
+        if (!a.votes?.total || !b.votes?.total) return 1;
+        if (a.votes.total > b.votes.total) {
+          return -1;
+        } else if (a.votes.total < b.votes.total) {
+          return 1;
+        }
+        return 0;
+      })
+      .sort((a, b) => {
+        if (!a.votes || !b.votes) return 1;
+        if (a.votes.average > b.votes.average) {
+          return -1;
+        } else if (a.votes.average < b.votes.average) {
+          return 1;
+        }
+        return 0;
+      });
+  }, [currentPlaylist]);
 
-  const refetchVotes = async () => {
+  const fetchVotes = async () => {
     if (!currentPlaylist) throw Error('No playlist id specified!');
     const memberIds = bandMembers.map(m => m.id);
-    const playlistIds = userContext?.currentBand?.playlists?.map(p => (p as IPlaylist).id);
+    const list = playlist ?? (currentBand?.playlists?.find(p => (p as IPlaylist).id) as IPlaylist);
+
     const queryString = new URLSearchParams({
       members: JSON.stringify(memberIds),
-      playlists: JSON.stringify(playlistIds),
+      trackIds: JSON.stringify(list?.tracks?.refs),
     });
     try {
       const response = await fetch(`/api/votes?${queryString}`);
-      const updatedPlaylists = await response.json();
-      const updatedCurrentPlaylist = updatedPlaylists.find((p: IPlaylist) => p.id === (playlist as IPlaylist).id);
-      setCurrentPlaylist(updatedCurrentPlaylist);
-      return updatedPlaylists;
+      const votes = await response.json();
+      const updatedPlaylist = votesMapper.resolveVotesForPlaylistTracks(list as IPlaylist, votes);
+      setCurrentPlaylist(updatedPlaylist);
+
+      return updatedPlaylist;
     } catch (error) {
       console.error('USEVOTING getVotes', error);
     }
@@ -83,12 +110,19 @@ export default function useVoting({ track, playlist, votes }: UseVotingOptions) 
     try {
       const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
       const updatedVote = await response.json();
-
       return updatedVote;
     } catch (error) {
       console.error('USEVOTING setVote', error);
     }
   };
 
-  return { userVote, memberStats, setUserVote, refetchVotes, currentPlaylist, sortPlaylistByPopularity };
+  return {
+    userVote,
+    memberStats,
+    setUserVote,
+    fetchVotes,
+    currentBand,
+    currentPlaylist,
+    sortPlaylistByPopularity,
+  };
 }

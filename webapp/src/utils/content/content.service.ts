@@ -4,42 +4,59 @@ import votesMapper from '@/utils/votes/votes.mapper';
 import type { IBand, IPlaylist } from '@domain/content';
 import type { Vote } from '@firebase/api';
 
-const getUpdatedPlaylists = async (memberIds: string[], playlistIds: string[]) => {
-  const playlists = (await SpotifyService.getPlaylistsByBulk(playlistIds)) as IPlaylist[];
-  if (!playlists || playlists?.length === 0) return undefined;
-
-  let extendedPlaylists: IPlaylist[] = [];
-  for (const list of playlists) {
-    const trackIds = list?.tracks.refs;
-
-    if (trackIds && trackIds.length > 0) {
-      const votes = (await FireStoreService.getVotesByBandMembers(memberIds, trackIds)) as unknown as Vote[];
-      if (votes && votes.length > 0) {
-        const extendedList = votesMapper.resolveVotesForPlaylistTracks(list, votes);
-        extendedPlaylists.push(extendedList);
-      } else {
-        extendedPlaylists.push(list);
-      }
-    }
+const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
+  if (trackIds && trackIds.length > 0) {
+    return (await FireStoreService.getVotesByBandMembers(memberIds, trackIds)) as unknown as Vote[];
   }
-
-  if (extendedPlaylists?.length > 0) return extendedPlaylists;
 };
-const getCurrentBand = async (bandId: string, userId: string) => {
-  const allUserBands = (await FireStoreService.getBandsByUserId(userId)) as IBand[];
-  const currentBand: IBand | undefined = allUserBands?.find((band: IBand) => band.id === bandId);
+
+const fetchPlaylists = async (playlists: string[]) => {
+  try {
+    return (await SpotifyService.getPlaylistsByBulk(playlists)) as IPlaylist[];
+  } catch (error) {
+    return { error: JSON.stringify(error) };
+  }
+};
+
+const getCurrentPlaylist = async (id: string) => {
+  try {
+    return await SpotifyService.getPlaylistById(id);
+  } catch (error) {
+    throw Error('CONTENT PLAYLIST BY ID', { cause: error });
+  }
+};
+
+const _getBand = async (bandId: string, band?: IBand) => {
+  const currentBand: IBand | undefined = band ?? ((await FireStoreService.getBandById(bandId)) as unknown as IBand);
+
   if (!currentBand) return undefined;
   const hasMembers = currentBand.members?.length > 0; // always 1 -> me
   const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
-  const extendedPlaylists =
-    hasPlaylists && hasMembers
-      ? await getUpdatedPlaylists(currentBand.members as string[], currentBand.playlists as string[])
-      : undefined;
+  let extendedPlaylists: any; // unreliable spotify api, returns error object on fail
+  if (hasPlaylists && hasMembers) {
+    extendedPlaylists = await fetchPlaylists(currentBand.playlists as string[]); // could return error object
+  }
 
   let extendedMembers;
   if (hasMembers) extendedMembers = await FireStoreService.getBandMembersById(currentBand.members as string[]);
 
-  return { ...currentBand, playlists: extendedPlaylists, members: extendedMembers ?? currentBand.members };
+  return {
+    ...currentBand,
+    members: extendedMembers ?? currentBand.members,
+    ...(!extendedPlaylists?.error && { playlists: extendedPlaylists }),
+    error: extendedPlaylists?.error ?? false,
+  };
 };
 
-export { getCurrentBand, getUpdatedPlaylists };
+const getBandsByUserId = async (userId: string) => {
+  const allBands = (await FireStoreService.getBandsByUserId(userId)) as IBand[];
+  const extendedBands = [];
+  for (const band of allBands) {
+    const extendedBand = await _getBand(band.id, band);
+    if (extendedBand) extendedBands.push(extendedBand);
+  }
+
+  return extendedBands;
+};
+
+export { getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes };
