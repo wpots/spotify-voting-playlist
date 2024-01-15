@@ -1,11 +1,17 @@
-// import LoginButton from './_components/Auth/LoginButton';
-
+'use client';
+import { Box, Button, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 export default function NotFound() {
+  const router = useRouter();
   return (
     <>
-      <h1>Well Whoops!</h1>
-      <p>This is not te page you are looking for...</p>
-      {/* <LoginButton>Try to log in!</LoginButton> */}
+      <Box>
+        <Typography variant="h2" component="h1">
+          Connectie Problemen
+        </Typography>
+        <p>Spotify heeft opgehangen. Je kunt proberen de pagina te verversen...</p>
+        <Button onClick={() => router.reload()}>ververs</Button>
+      </Box>
     </>
   );
 }

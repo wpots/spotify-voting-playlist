@@ -48,8 +48,8 @@ const getBandsByUserId = cache(async (id: string) => {
   return bands as IBand[];
 });
 const getBandById = cache(async (id: string) => {
-  const bands = await getDocumentsByQuery('bands', where('id', '==', id));
-  return bands as IBand[];
+  const bands = (await getDocumentsByQuery('bands', where('id', '==', id))) as Band[];
+  return bands?.[0] as unknown as Band;
 });
 
 const getBandMembersById = cache(async (ids: string[]) => {

@@ -7,7 +7,6 @@ import { authOptions } from '@/utils/authentication/authOptions';
 import AppFooter from './_components/UI/AppFooter';
 import AppHeader from './_components/UI/AppHeader';
 import UserContextProvider from './_context/client-user-provider';
-import { notFound } from 'next/navigation';
 import { IBand } from '@domain/content';
 
 export const metadata: Metadata = {
@@ -25,8 +24,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  if (session?.error) console.log('laoyu', session.error);
   const userId = session?.user?.id;
-  const userBands: IBand[] | undefined = userId ? await ContentService.getBandsByUserId(userId) : undefined;
+  let userBands: IBand[] | undefined;
+
+  if (userId) {
+    userBands = await ContentService.getBandsByUserId(userId);
+  }
 
   const userProfile = {
     userInfo: session?.user,

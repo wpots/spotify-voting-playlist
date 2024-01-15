@@ -31,7 +31,7 @@ export default function BandTeaser({ band, children }: BandTeaserProps) {
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={(band.playlists?.[0] as IPlaylist).image || `https://loremflickr.com/100/100/music?${band.id}`}
+          image={(band?.playlists?.[0] as IPlaylist)?.image || `https://loremflickr.com/100/100/music?${band.id}`}
           alt={band.name}
         />
       </CardActionArea>

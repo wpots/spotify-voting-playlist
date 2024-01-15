@@ -25,7 +25,7 @@ interface VotingDialogProps {
 }
 
 export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
-  const { memberStats, userVote, setUserVote } = useVoting({ track });
+  const { memberStats, userVote, setUserVote } = useVoting(track);
   const [voted, setVoted] = useState<number>();
   const handleSaveAndClose = async () => {
     if (voted) {

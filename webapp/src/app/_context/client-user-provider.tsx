@@ -1,11 +1,14 @@
 'use client';
 import { IBand, IVote } from '@domain/content';
+import { useParams } from 'next/navigation';
 
-import React, { createContext } from 'react';
+import React, { createContext, useMemo } from 'react';
 
-interface IUserContext {
+interface IUserDataInput {
   userInfo: any;
   userBands?: IBand[];
+}
+interface IUserContext extends IUserDataInput {
   currentBand?: IBand;
 }
 export const UserContext = createContext<IUserContext | undefined>(undefined); //TODO better typing
@@ -15,7 +18,13 @@ export default function UserContextProvider({
   userProfile,
 }: {
   children: React.ReactNode;
-  userProfile: IUserContext;
+  userProfile: IUserDataInput;
 }): React.ReactNode {
-  return <UserContext.Provider value={userProfile}>{children}</UserContext.Provider>;
+  const params = useParams();
+
+  const ctx = {
+    ...userProfile,
+  };
+
+  return <UserContext.Provider value={ctx}>{children}</UserContext.Provider>;
 }
