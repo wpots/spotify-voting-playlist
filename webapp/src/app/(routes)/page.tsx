@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { authOptions } from '@/utils/authentication/authOptions';
 import * as ContentService from '@/utils/content/content.service';
 import BandTeaser from '../_components/Band/BandTeaser';
@@ -28,9 +28,19 @@ export default async function Home() {
     <main>
       <Box sx={{ padding: '2rem' }}>
         <Typography variant="h2">Welkom</Typography>
-        <Typography>Leuk dat je er bij band!</Typography>
-        {bands && bands.map(band => <BandTeaser band={band} key={band.id}></BandTeaser>)}
-        {errorMessage && <Typography>{errorMessage}</Typography>}
+        <Typography variant="subtitle1">Leuk dat je er bij band!</Typography>
+        {bands && (
+          <Stack spacing={2} direction="row">
+            {bands.map(band => (
+              <BandTeaser band={band} key={band.id}></BandTeaser>
+            ))}
+          </Stack>
+        )}
+        {errorMessage && (
+          <Typography variant="body1" sx={{ mb: '1rem' }}>
+            {errorMessage}
+          </Typography>
+        )}
         {!userId && <LoginButton>Log in met Spotify</LoginButton>}
       </Box>
     </main>

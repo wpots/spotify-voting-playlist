@@ -3,7 +3,7 @@ import { authOptions } from '@/utils/authentication/authOptions';
 import { notFound } from 'next/navigation';
 import * as ContentService from '@/utils/content/content.service';
 
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Alert } from '@mui/material';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 
 import UserContextProvider from '@/app/_context/client-user-provider';
@@ -43,11 +43,11 @@ export default async function BandPage({ params }: BandPageProps) {
    */
   return (
     <>
-      <Typography component="h1" variant="h1">
+      <Typography component="h1" variant="h2" sx={{ px: '1rem' }}>
         {currentBand.name}
       </Typography>
       {currentBand.error && (
-        <Typography>De playlists konden niet worden opgehaald, probeer het later opnieuw....</Typography>
+        <Alert severity="error">De playlists konden niet worden opgehaald, probeer het later opnieuw....</Alert>
       )}
       {currentBand.playlists && <PlaylistTabs playlists={currentBand?.playlists as IPlaylist[]} />}
     </>

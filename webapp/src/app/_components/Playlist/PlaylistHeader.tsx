@@ -6,7 +6,7 @@ import { Box, Link, Paper, Typography } from '@mui/material';
  */
 export default function PlaylistHeader({ description, url }: { description?: string; url?: string }) {
   return (
-    <Box sx={{ padding: '2rem' }}>
+    <Box sx={{ py: '2rem' }}>
       {description && <Typography>{description}</Typography>}
       {url && (
         <Typography align="right">
