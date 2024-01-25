@@ -40,7 +40,13 @@ export default async function BandPage({ params }: BandPageProps) {
   /**
    * TODO:
    * create skeleton based on ids?
+   *
+   *
+   * Do not overuse memo()
+   * use high up component tree
+   * DO NOT use where props change frequently (performance cost)
    */
+
   return (
     <>
       <Typography component="h1" variant="h2" sx={{ px: '1rem' }}>

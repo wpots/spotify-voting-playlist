@@ -1,17 +1,9 @@
 'use client';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
+import React from 'react';
 import PlayIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import StopIcon from '@mui/icons-material/Stop';
-import { AvatarGroup, Avatar, Divider, IconButton, ListItemButton, Stack, ButtonGroup, Button } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import type { ITrack } from '@domain/content';
-import Voting from '../Votes/VotingDialog';
-import BandMembers from '../Band/BandMembers';
-import React, { useState } from 'react';
-import { green, pink } from '@mui/material/colors';
+import { ButtonGroup, Button } from '@mui/material';
 
 interface TrackControlProps {
   onPlayBack?: (reset?: boolean) => void;
@@ -19,10 +11,10 @@ interface TrackControlProps {
 }
 
 export default function TrackControls({ onPlayBack, isPlaying }: TrackControlProps) {
-  const handlePlayback = (e: React.SyntheticEvent) => {
+  const handlePlayback = () => {
     if (onPlayBack) return onPlayBack();
   };
-  const handleStop = (e: React.SyntheticEvent) => {
+  const handleStop = () => {
     if (onPlayBack) return onPlayBack(true);
   };
   return (

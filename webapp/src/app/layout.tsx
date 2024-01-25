@@ -24,11 +24,11 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  if (session?.error) console.log('laoyu', session.error);
   const userId = session?.user?.id;
   let userBands: IBand[] | undefined;
 
   if (userId) {
+    // Additional computations are done in hook
     userBands = await ContentService.getBandsByUserId(userId);
   }
 

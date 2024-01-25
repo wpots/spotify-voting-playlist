@@ -13,9 +13,9 @@ const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt' as SessionStrategy,
   },
-  // pages: {
-  //   signIn: '/auth/signin',
-  // },
+  pages: {
+    signIn: '/auth/signin',
+  },
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     // @ts-ignore

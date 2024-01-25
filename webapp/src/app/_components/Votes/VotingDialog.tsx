@@ -1,10 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import Rating from '@mui/material/Rating';
-import Stack from '@mui/material/Stack';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { ITrack } from '@domain/content';
+import { useCallback, useState } from 'react';
+import type { ITrack } from '@domain/content';
 import {
   Button,
   Dialog,
@@ -16,8 +12,8 @@ import {
   Typography,
 } from '@mui/material';
 import useVoting from '@/app/_hooks/useVoting';
-import VotingStack from './VotingStack';
 import UserVoteInput from './UserVoteInput';
+import VotingDetails from './VotingDetails';
 interface VotingDialogProps {
   track: ITrack;
   open: boolean;
@@ -27,60 +23,35 @@ interface VotingDialogProps {
 export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
   const { memberStats, userVote, setUserVote } = useVoting(track);
   const [voted, setVoted] = useState<number>();
+
   const handleSaveAndClose = async () => {
     if (voted) {
       await setUserVote(track.id, voted);
       onClose(true);
     }
   };
-  const handleVoted = (val: number) => {
+  const handleVoted = useCallback((val: number) => {
     setVoted(val);
-  };
+  }, []);
+  console.log('dialog');
   return (
     <Dialog open={open} onClose={() => onClose(true)}>
       <DialogTitle>
         {track && track.name} - {track && track.artists}
-        <Typography
-          variant="caption"
-          component="a"
-          href={track.url}
-          target="_blank"
-          sx={{ display: 'block', textDecoration: 'underline' }}
-        >
-          luister op spotify
-        </Typography>
       </DialogTitle>
+      <Typography
+        variant="caption"
+        component="a"
+        href={track.url}
+        target="_blank"
+        sx={{ textDecoration: 'underline', px: ' 1.5rem', pb: '1rem', display: 'block' }}
+      >
+        luister op spotify
+      </Typography>
+      <Divider />
       <DialogContent dividers>
         <DialogContentText>
-          {memberStats.voted.map(member => {
-            return (
-              <Stack
-                key={`name-${member.id}`}
-                spacing={1}
-                sx={{ marginBottom: '1rem' }}
-                direction="row"
-                justifyContent="space-between"
-              >
-                <Typography variant="caption">{member.name || member.id}</Typography>
-                <VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>
-              </Stack>
-            );
-          })}
-          {memberStats.pending.map(member => {
-            return (
-              <Stack
-                key={`name-${member.id}`}
-                spacing={1}
-                sx={{ marginBottom: '1rem' }}
-                direction="row"
-                justifyContent="space-between"
-              >
-                <Typography variant="caption">{member.name || member.id}</Typography>
-                <Typography variant="caption">...nog geen feedback</Typography>
-              </Stack>
-            );
-          })}
-
+          <VotingDetails memberLists={memberStats} />
           <UserVoteInput onVoted={handleVoted} userVote={userVote}></UserVoteInput>
         </DialogContentText>
       </DialogContent>

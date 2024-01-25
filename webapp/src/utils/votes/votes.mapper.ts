@@ -10,6 +10,7 @@ const votesMapper = {
     return {
       ...playlist,
       tracks: {
+        ...playlist.tracks,
         items: playlist.tracks.items.map(item => {
           const trackVotes = votes?.filter(vote => vote.trackId === item?.id);
           return {

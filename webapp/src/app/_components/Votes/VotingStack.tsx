@@ -1,5 +1,5 @@
 'use client';
-import * as React from 'react';
+import React, { memo } from 'react';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -13,7 +13,7 @@ interface VotingStackProps {
   onChange?: (e: React.SyntheticEvent, value: number) => void;
 }
 
-export default function VotingStack({ name, value, readonly, onChange }: VotingStackProps) {
+const VotingStack = memo(function VotingStack({ name, value, readonly, onChange }: VotingStackProps) {
   const rating = parseFloat(value as string) || 0;
 
   return (
@@ -32,4 +32,6 @@ export default function VotingStack({ name, value, readonly, onChange }: VotingS
       />
     </Stack>
   );
-}
+});
+
+export default VotingStack;

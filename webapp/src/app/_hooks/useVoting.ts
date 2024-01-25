@@ -1,5 +1,5 @@
 import { Vote } from '@firebase/api';
-import { useContext, useEffect, useState, useMemo } from 'react';
+import { useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { UserContext } from '../_context/client-user-provider';
 import { IBand, IPlaylist, ITrack, IUser, IVoteItem } from '@domain/content';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -16,6 +16,21 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     throw new Error('React Context is unavailable in Server Components');
   }
 
+  // side effects are tasks that do not impact render cycle:
+  // example : sorting a list , not directly related to rendered JSX
+  // infinite loop can occur when setting state.
+
+  // you might not need useEffect()
+  // synchronous calls
+  // user input dependant code
+
+  useEffect(() => {
+    // componentDidMount dep: []
+    // componentDidUpdate dep: <empty>
+    // componentUnMounted return () =>{}
+  });
+
+  // CONTEXT DATA
   const userContext = useContext(UserContext);
   const userId = userContext?.userInfo.id;
   const params = useParams();
@@ -28,15 +43,42 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
 
   const currentBand = userContext?.userBands?.find(b => b.id === bandId);
 
+  // PLAYLIST DATA
   if (!playlist) {
+    // if no manual playlist is added, default to querystring in url
     playlist = currentBand?.playlists?.find(p => (p as IPlaylist).id === query.get('playlist')) as IPlaylist;
   }
-
-  const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
 
   if (!votes) {
     votes = track?.votes;
   }
+  // technically playlist is not needed if hook is used per track decoupled from any list
+  const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
+
+  const currentTracks = currentPlaylist?.tracks.items;
+
+  const sortPlaylistByPopularity = useMemo(() => {
+    currentTracks
+      ?.sort((a, b) => {
+        // no votes. move to bottom
+        if (!a.votes?.total || !b.votes?.total) return 1;
+        if (a.votes.total > b.votes.total) {
+          return -1;
+        } else if (a.votes.total < b.votes.total) {
+          return 1;
+        }
+        return 0;
+      })
+      .sort((a, b) => {
+        if (!a.votes || !b.votes) return 1;
+        if (a.votes.average > b.votes.average) {
+          return -1;
+        } else if (a.votes.average < b.votes.average) {
+          return 1;
+        }
+        return 0;
+      });
+  }, [currentTracks]);
 
   const userVote = useMemo(
     () => parseInt(votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote),
@@ -62,33 +104,10 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     [extendedVoteMembers, bandMembers, votes]
   );
 
-  const sortPlaylistByPopularity = useMemo(() => {
-    currentPlaylist?.tracks.items
-      .sort((a, b) => {
-        // no votes. move to bottom
-        if (!a.votes?.total || !b.votes?.total) return 1;
-        if (a.votes.total > b.votes.total) {
-          return -1;
-        } else if (a.votes.total < b.votes.total) {
-          return 1;
-        }
-        return 0;
-      })
-      .sort((a, b) => {
-        if (!a.votes || !b.votes) return 1;
-        if (a.votes.average > b.votes.average) {
-          return -1;
-        } else if (a.votes.average < b.votes.average) {
-          return 1;
-        }
-        return 0;
-      });
-  }, [currentPlaylist]);
-
-  const fetchVotes = async () => {
+  const fetchVotes = useCallback(async () => {
     if (!currentPlaylist) throw Error('No playlist id specified!');
     const memberIds = bandMembers.map(m => m.id);
-    const list = playlist ?? (currentBand?.playlists?.find(p => (p as IPlaylist).id) as IPlaylist);
+    const list = structuredClone(currentPlaylist);
 
     const queryString = new URLSearchParams({
       members: JSON.stringify(memberIds),
@@ -104,9 +123,9 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     } catch (error) {
       console.error('USEVOTING getVotes', error);
     }
-  };
+  }, [bandMembers, currentPlaylist]);
 
-  const setUserVote = async (trackId: string, vote: number) => {
+  const setUserVote = useCallback(async (trackId: string, vote: number) => {
     try {
       const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
       const updatedVote = await response.json();
@@ -114,7 +133,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     } catch (error) {
       console.error('USEVOTING setVote', error);
     }
-  };
+  }, []);
 
   return {
     userVote,
@@ -123,6 +142,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     fetchVotes,
     currentBand,
     currentPlaylist,
+    currentTracks,
     sortPlaylistByPopularity,
   };
 }

@@ -1,11 +1,9 @@
 'use client';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import type React from 'react';
 
-import { Divider, ListItemButton, Box, useMediaQuery, useTheme, Dialog } from '@mui/material';
-import Typography from '@mui/material/Typography';
+import { Divider, ListItemButton, Box, useMediaQuery, useTheme, ListItem, ListItemText } from '@mui/material';
+
 import type { ITrack } from '@domain/content';
-import React, { useState } from 'react';
 
 interface TrackProps {
   track: ITrack;
@@ -17,11 +15,12 @@ interface TrackProps {
 
 export default function Track({ track, divider, onTrackSelected, controls, children }: TrackProps) {
   const theme = useTheme();
-  const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm'));
+  const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm')); // reinstall what was lost
   const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();
   };
+  // console.log('track');
   return (
     <>
       {divider > 0 && <Divider component="li" />}

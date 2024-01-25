@@ -15,6 +15,7 @@ import useVoting from '@/app/_hooks/useVoting';
 
 export default function VoteSummary({ votes }: { votes?: IVote }) {
   const { userVote, memberStats } = useVoting({ votes });
+  // console.log('summary');
   const averageRating = votes?.average ? +votes?.average : undefined;
   return (
     <>

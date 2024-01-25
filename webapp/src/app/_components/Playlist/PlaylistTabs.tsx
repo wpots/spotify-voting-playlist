@@ -13,21 +13,21 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const defaultPlaylist = playlists[0].id;
-  const [activePlaylist, setActivePlaylist] = useState(searchParams.get('playlist') || defaultPlaylist);
+  const [activePlaylistId, setActivePlaylistId] = useState(searchParams.get('playlist') || defaultPlaylist);
 
   useEffect(() => {
-    if (activePlaylist) {
-      router.push(`${pathName}?playlist=${activePlaylist}`);
+    if (activePlaylistId) {
+      router.push(`${pathName}?playlist=${activePlaylistId}`);
     }
-  }, [activePlaylist, pathName, router]);
+  }, [activePlaylistId, pathName, router]);
 
   const handleOnChange = (e: React.SyntheticEvent, val: string) => {
-    setActivePlaylist(val);
+    setActivePlaylistId(val);
   };
   return (
     <Box sx={{ width: '100%', maxWidth: '900px', margin: 'auto' }}>
-      {activePlaylist && (
-        <TabContext value={activePlaylist}>
+      {activePlaylistId && (
+        <TabContext value={activePlaylistId}>
           {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <TabList onChange={handleOnChange} variant="scrollable" scrollButtons="auto">

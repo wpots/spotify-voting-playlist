@@ -6,9 +6,9 @@ export default withAuth(
     // console.log('req', req.nextauth);
   },
   {
-    // pages: {
-    //   signIn: '/auth/signin',
-    // },
+    pages: {
+      signIn: '/auth/signin',
+    },
     callbacks: {
       authorized: ({ req, token }) => {
         return true;
