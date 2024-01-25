@@ -7,29 +7,24 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, Typography } from '@mui/material';
 import BandMembers from '../Band/BandMembers';
 import MoreIcon from '@mui/icons-material/More';
-import type { ITrack, IUser, IVote } from '@domain/content';
+import type { ITrack, IUser, IVote, IVoteItem } from '@domain/content';
 import votesMapper from '@/utils/votes/votes.mapper';
 import useUser from '@/app/_hooks/useUser';
 import { useSession } from 'next-auth/react';
 import useVoting from '@/app/_hooks/useVoting';
+import VotingStack from './VotingStack';
 
 export default function VoteSummary({ votes }: { votes?: IVote }) {
   const { userVote, memberStats } = useVoting({ votes });
-  // console.log('summary');
+
   const averageRating = votes?.average ? +votes?.average : undefined;
+  const isVetod = votes?.veto && votes.veto.length > 0;
+
   return (
     <>
       <Stack spacing={1} alignItems="end">
-        <Rating
-          sx={{ color: '#ff3d47' }}
-          name="read-only"
-          readOnly
-          value={averageRating ?? 0}
-          precision={1}
-          max={5}
-          icon={<FavoriteIcon fontSize="inherit" />}
-          emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-        />
+        <VotingStack name="vote-summary" readonly={true} value={isVetod ? -1 : averageRating ?? 0} />
+
         <Stack direction="row">
           {memberStats.voted?.length > 0 && <BandMembers members={memberStats.voted}></BandMembers>}
           {memberStats.pending?.length > 0 && (

@@ -2,11 +2,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/authentication/authOptions';
 import { notFound } from 'next/navigation';
 import * as ContentService from '@/utils/content/content.service';
-
-import { Typography, Box, Alert } from '@mui/material';
+import { Typography, Alert } from '@mui/material';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
-
-import UserContextProvider from '@/app/_context/client-user-provider';
 import { IBand, IPlaylist } from '@domain/content';
 
 interface BandPageProps {

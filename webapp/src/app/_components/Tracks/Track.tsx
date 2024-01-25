@@ -1,6 +1,6 @@
 'use client';
 import type React from 'react';
-
+import { deepOrange } from '@mui/material/colors';
 import { Divider, ListItemButton, Box, useMediaQuery, useTheme, ListItem, ListItemText } from '@mui/material';
 
 import type { ITrack } from '@domain/content';
@@ -20,11 +20,11 @@ export default function Track({ track, divider, onTrackSelected, controls, child
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();
   };
-  // console.log('track');
+
   return (
     <>
       {divider > 0 && <Divider component="li" />}
-      <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? 'red' : 'transparent' }}>
+      <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? deepOrange[200] : 'transparent' }}>
         <ListItemButton sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }} onClick={handleTrackSelected}>
           <ListItemText
             sx={{ flex: ['1 1 50%', '1 1 auto'], maxWidth: '220px' }}

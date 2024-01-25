@@ -33,7 +33,6 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
   const handleVoted = useCallback((val: number) => {
     setVoted(val);
   }, []);
-  console.log('dialog');
   return (
     <Dialog open={open} onClose={() => onClose(true)}>
       <DialogTitle>

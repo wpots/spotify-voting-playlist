@@ -6,6 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import VetoIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { ITrack } from '@domain/content';
+import { red, grey } from '@mui/material/colors';
 interface VotingStackProps {
   name: string;
   value: number | string;
@@ -23,7 +24,7 @@ const VotingStack = memo(function VotingStack({ name, value, readonly, onChange 
         readOnly={readonly || rating === -1}
         name={name}
         value={rating}
-        precision={1}
+        precision={0.2}
         max={5}
         icon={<FavoriteIcon fontSize="inherit" />}
         emptyIcon={rating === -1 ? <VetoIcon /> : <FavoriteBorderIcon fontSize="inherit" />}
