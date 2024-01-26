@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import useVoting from '@/app/_hooks/useVoting';
-import UserVoteInput from './UserVoteInput';
+import VoteByRatingInput from './VoteRatingInput';
 import VotingDetails from './VotingDetails';
 interface VotingDialogProps {
   track: ITrack;
@@ -51,7 +51,7 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
       <DialogContent dividers>
         <DialogContentText>
           <VotingDetails memberLists={memberStats} />
-          <UserVoteInput onVoted={handleVoted} userVote={userVote}></UserVoteInput>
+          <VoteByRatingInput onVoted={handleVoted} userVote={userVote}></VoteByRatingInput>
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ px: '1rem' }}>

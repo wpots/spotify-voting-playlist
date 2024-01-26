@@ -8,6 +8,7 @@ import type { IPlaylist, ITrack } from '@domain/content';
 
 import VotingDialog from '../Votes/VotingDialog';
 import useVoting from '@/app/_hooks/useVoting';
+import PlaylistFooter from './PlaylistFooter';
 // import TrackControls from "../Tracks/TrackControls";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
@@ -52,6 +53,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
           })}
         </List>
       )}
+      <PlaylistFooter url={currentPlaylist?.url} />
       {selectedTrack && <VotingDialog track={selectedTrack} open={openDialog} onClose={handleDialogClose} />}
     </>
   );

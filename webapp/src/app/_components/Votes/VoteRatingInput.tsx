@@ -4,11 +4,11 @@ import Stack from '@mui/material/Stack';
 import { Box, Button, Typography } from '@mui/material';
 import VotingStack from './VotingStack';
 import { useState, useEffect } from 'react';
-interface UserVoteInputProps {
+interface VoteRatingInputProps {
   onVoted: (val: number) => void;
   userVote: number;
 }
-export default function UserVoteInput({ onVoted, userVote }: UserVoteInputProps) {
+export default function VoteRatingInput({ onVoted, userVote }: VoteRatingInputProps) {
   const [vote, setVote] = useState<number>(userVote || 0);
 
   useEffect(() => {
