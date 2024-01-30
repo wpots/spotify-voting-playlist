@@ -24,13 +24,14 @@ const authOptions: AuthOptions = {
     },
     async jwt({ account, user, token, profile }) {
       if (account && user) {
+        console.log('expires_in', account.expires_in);
         token.id = user.id;
         token.accessToken = account.access_token;
         token.accessTokenExpires = Date.now() + (account.expires_in as number) * 1000;
         token.refreshToken = account.refresh_token;
       }
 
-      const isExpired = Date.now() > (token.accessTokenExpires as number);
+      const isExpired = token.accessTokenExpires && Date.now() > (token.accessTokenExpires as number);
 
       if (isExpired) {
         token = await getRefreshToken(token);

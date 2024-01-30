@@ -1,17 +1,8 @@
 declare module '@domain/content' {
-  interface IUser {
-    id: string; // spotifyAccountId
-    name: string;
-    email: string;
-    roles?: string[];
-    image: string;
-    vote?: number;
-  }
-
   type IVoteItem = {
     trackId: string; // spotifyId
     userId: string;
-    vote: string;
+    rating?: string;
     comment?: string;
   };
 
@@ -64,6 +55,16 @@ declare module '@domain/content' {
       [key]: any;
     };
   }
+
+  interface IUser {
+    id: string; // spotifyAccountId
+    name: string;
+    email: string;
+    roles?: string[];
+    image: string;
+    vote?: IVoteItem;
+  }
+
   interface IBand {
     id: string;
     name: string;

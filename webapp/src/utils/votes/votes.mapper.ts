@@ -20,8 +20,8 @@ const votesMapper = {
                 ? undefined
                 : {
                     total: trackVotes?.length,
-                    veto: trackVotes?.filter(v => v.vote === '-1'),
-                    average: this.resolveVotedAverage(trackVotes.map(v => parseInt(v.vote))),
+                    veto: trackVotes?.filter(v => v.rating === -1),
+                    average: this.resolveVotedAverage(trackVotes.map(v => v.rating)),
                     items: trackVotes,
                   },
           };
@@ -29,6 +29,7 @@ const votesMapper = {
       },
     };
   },
+
   unshiftCurrentUser(currentUserId: string, array?: IUser[]) {
     if (array?.some(i => i.id === currentUserId)) {
       const currentUserIdx = array.map(u => u.id).indexOf(currentUserId);

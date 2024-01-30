@@ -1,8 +1,8 @@
 import * as FireStoreService from '@/utils/firebase/firebase.service';
 import type { SpotifyProfile } from 'next-auth/providers/spotify';
-import { notFound } from 'next/navigation';
 
 const getRefreshToken = async (token: any) => {
+  console.log(token);
   try {
     const body = new URLSearchParams({ grant_type: 'refresh_token', refresh_token: token.refreshToken });
     const clientId = process.env.SPOTIFY_CLIENT_ID as string;
@@ -17,13 +17,14 @@ const getRefreshToken = async (token: any) => {
       body,
     });
     const refreshedTokens = await response.json();
+    console.log('REFRESH TOKENS', refreshedTokens);
     if (!response.ok) {
       throw refreshedTokens;
     }
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      accessTokenExpires: Date.now() + refreshedTokens.exp * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     };
   } catch (error: any) {

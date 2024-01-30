@@ -8,19 +8,15 @@ import { authOptions } from '@/utils/authentication/authOptions';
 
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
+import votesMapper from '../votes/votes.mapper';
+import firebaseMapper from './firebase.mapper';
 
-type IUserVote = {
-  userId: string;
-  trackId: string;
-  vote: number;
-};
-
-const getDocumentsByCollectionName = cache(async (name: string) => {
+const _getDocumentsByCollectionName = cache(async (name: string) => {
   const documentsSnapshot = await getDocs(collection(fireStore, name));
   if (documentsSnapshot) return documentsSnapshot.docs.map(doc => doc.data());
 });
 
-const getDocumentsByQuery = cache(async (c: string, q: any) => {
+const _getDocumentsByQuery = cache(async (c: string, q: any) => {
   const getColl = collection(fireStore, c);
   const collQuery = query(getColl, q);
   const result = await getDocs(collQuery);
@@ -28,7 +24,7 @@ const getDocumentsByQuery = cache(async (c: string, q: any) => {
   return docs as unknown;
 });
 
-const getAllUsers = async () => await getDocumentsByCollectionName('users');
+const getAllUsers = async () => await _getDocumentsByCollectionName('users');
 
 const getUserById = cache(async (id: string) => {
   const userRef = doc(fireStore, 'users', id);
@@ -44,50 +40,52 @@ const setUserProfile = async (profile: IUser) => {
 };
 
 const getBandsByUserId = cache(async (id: string) => {
-  const bands = await getDocumentsByQuery('bands', where('members', 'array-contains', id));
+  const bands = await _getDocumentsByQuery('bands', where('members', 'array-contains', id));
   return bands as IBand[];
 });
 const getBandById = cache(async (id: string) => {
-  const bands = (await getDocumentsByQuery('bands', where('id', '==', id))) as Band[];
+  const bands = (await _getDocumentsByQuery('bands', where('id', '==', id))) as Band[];
   return bands?.[0] as unknown as Band;
 });
 
 const getBandMembersById = cache(async (ids: string[]) => {
-  const members = await getDocumentsByQuery('users', where('id', 'in', ids));
+  const members = await _getDocumentsByQuery('users', where('id', 'in', ids));
   return members as IUser[];
 });
 
-const getAllVotes = async () => await getDocumentsByCollectionName('votes');
+const getAllVotes = async () => {
+  return await _getDocumentsByCollectionName('votes');
+};
 
 const getUserVotes = async (id: string) => {
-  const allVotes = await getDocumentsByCollectionName('votes');
-  return { userVotes: allVotes?.filter(vote => vote.userId === id), allVotes };
+  const allVotes = await getAllVotes();
+  return allVotes?.filter(vote => vote.userId === id);
 };
 
 const getVotesByTrackId = async (id: string) => {
-  const allVotes = await getDocumentsByCollectionName('votes');
+  const allVotes = await getAllVotes();
   return allVotes?.filter(vote => vote.trackId === id);
 };
 
 const getVotesByBandMembers = async (bandMembers: string[], ids: string[]) => {
-  const allVotes = await getDocumentsByCollectionName('votes');
+  const allVotes = await getAllVotes();
   return allVotes?.filter(vote => bandMembers.includes(vote.userId) && ids.includes(vote.trackId));
 };
 
-const addVote = async (payload: IUserVote) => {
-  return await addDoc(collection(fireStore, 'votes'), payload);
+const addVote = async (payload: Vote) => {
+  await addDoc(collection(fireStore, 'votes'), payload);
 };
 
-const updateVote = async (payload: IUserVote) => {
+const updateVote = async (payload: Vote) => {
   const allVotes = collection(fireStore, 'votes');
   const voteQuery = query(allVotes, where('userId', '==', payload.userId), where('trackId', '==', payload.trackId));
   const voteQuerySnapshot = await getDocs(voteQuery);
   const userVoteRef = doc(fireStore, 'votes', voteQuerySnapshot.docs[0].id);
-  return await setDoc(userVoteRef, payload);
+  await setDoc(userVoteRef, payload);
 };
 
-const setVote = async (payload: IUserVote) => {
-  const { userVotes, allVotes } = await getUserVotes(payload.userId);
+const setVote = async (payload: Vote) => {
+  const userVotes = await getUserVotes(payload.userId);
   const existingVote = userVotes?.find(vote => vote.trackId === payload.trackId);
   if (existingVote) {
     await updateVote(payload);

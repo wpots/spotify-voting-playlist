@@ -6,19 +6,17 @@ import { Typography, Alert } from '@mui/material';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 import { IBand, IPlaylist } from '@domain/content';
 
+import { signIn } from 'next-auth/react';
+
 interface BandPageProps {
   params: { uid: string };
 }
 
 export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
-  if (session?.error) console.log('page', session.error);
-
-  // useEffect(() => {
-  //   if (session?.error === 'RefreshAccessTokenError') {
-  //     signIn(); // Force sign in to hopefully resolve error
-  //   }
-  // }, [session]);
+  if (session?.error === 'RefreshAccessTokenError') {
+    signIn(); // Force sign in to hopefully resolve error
+  }
 
   const userId = session?.user?.id;
   let userBands: IBand[] | undefined;

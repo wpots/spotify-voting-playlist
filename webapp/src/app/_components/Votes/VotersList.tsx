@@ -1,25 +1,41 @@
 'use client';
 import React, { memo } from 'react';
-import Stack from '@mui/material/Stack';
+import { Stack, Box, Avatar, Badge, Typography, Tooltip } from '@mui/material';
 import { IUser } from '@domain/content';
-import { Typography } from '@mui/material';
 
 interface VotersListProps {
   member: IUser;
   feedback: React.ReactNode;
+  tooltip?: string;
 }
 
-const VotersList = memo(function VotersList({ member, feedback }: VotersListProps) {
+const VotersList = memo(function VotersList({ member, feedback, tooltip }: VotersListProps) {
   return (
     <Stack
       key={`name-${member.id}`}
       spacing={1}
-      sx={{ marginBottom: '1rem' }}
+      sx={{ marginBottom: '1rem', gap: '.5rem' }}
       direction="row"
-      justifyContent="space-between"
+      justifyContent="start"
+      alignItems="center"
     >
+      <Badge color="info" overlap="circular" badgeContent={'i'} invisible={!member.vote?.comment}>
+        <Tooltip
+          arrow
+          placement="right"
+          title={
+            tooltip && (
+              <Typography variant="caption" component="small">
+                {tooltip}
+              </Typography>
+            )
+          }
+        >
+          <Avatar alt={member.id} src={member.image} />
+        </Tooltip>
+      </Badge>
       <Typography variant="caption">{member.name || member.id}</Typography>
-      {feedback}
+      <Box sx={{ ml: 'auto!important' }}>{feedback}</Box>
     </Stack>
   );
 });

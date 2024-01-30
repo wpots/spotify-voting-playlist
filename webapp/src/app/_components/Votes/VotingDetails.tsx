@@ -1,7 +1,7 @@
 'use client';
 
-import { Typography } from '@mui/material';
-
+import { Box, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import VotingStack from './VotingStack';
 
 import VotersList from './VotersList';
@@ -11,12 +11,13 @@ interface VotingDialogProps {
 
 export default function VotingDetails({ memberLists }: VotingDialogProps) {
   return (
-    <>
+    <Box sx={{ p: '1rem', backgroundColor: grey[200] }}>
       {memberLists.voted &&
         memberLists.voted.map(member => (
           <VotersList
             member={member}
-            feedback={<VotingStack name={`vote-${member.id}`} value={member.vote} readonly></VotingStack>}
+            tooltip={member.vote?.comment}
+            feedback={<VotingStack name={`vote-${member.id}`} value={member.vote?.rating} readonly></VotingStack>}
             key={`list-${member.id}`}
           />
         ))}
@@ -28,6 +29,6 @@ export default function VotingDetails({ memberLists }: VotingDialogProps) {
             key={`list-${member.id}`}
           />
         ))}
-    </>
+    </Box>
   );
 }

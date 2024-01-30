@@ -1,9 +1,10 @@
-import { Vote } from '@firebase/api';
+import type { Vote } from '@firebase/api';
 import { useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { UserContext } from '../_context/client-user-provider';
 import { IBand, IPlaylist, ITrack, IUser, IVoteItem } from '@domain/content';
 import { useParams, useSearchParams } from 'next/navigation';
 import votesMapper from '@/utils/votes/votes.mapper';
+import * as Actions from '../_actions';
 
 type UseVotingOptions = {
   playlist?: IPlaylist;
@@ -78,10 +79,9 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     });
   }, [currentTracks]);
 
-  const userVote = useMemo(
-    () => parseInt(votes?.items.find((i: IVoteItem) => userId === i.userId)?.vote),
-    [votes, userId]
-  );
+  const userVote = useMemo(() => {
+    return votes?.items.find((i: IVoteItem) => userId === i.userId);
+  }, [votes, userId]);
 
   const bandMembers = currentBand?.members as IUser[];
 
@@ -89,15 +89,15 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     () =>
       bandMembers?.map(member => {
         const voteByMember = votes?.items?.find((v: IVoteItem) => v.userId === member.id);
-        return { ...member, vote: voteByMember?.vote };
+        return { ...member, vote: voteByMember };
       }),
     [votes, bandMembers]
   );
 
   const memberStats = useMemo(
     () => ({
-      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote),
-      voted: extendedVoteMembers?.filter(m => m.vote),
+      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
+      voted: extendedVoteMembers?.filter(m => m.vote?.rating),
     }),
     [extendedVoteMembers, bandMembers, votes]
   );
@@ -115,6 +115,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
       const response = await fetch(`/api/votes?${queryString}`);
       const votes = await response.json();
       const updatedPlaylist = votesMapper.resolveVotesForPlaylistTracks(list as IPlaylist, votes);
+
       setCurrentPlaylist(updatedPlaylist);
 
       return updatedPlaylist;
@@ -123,14 +124,19 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     }
   }, [bandMembers, currentPlaylist]);
 
-  const setUserVote = useCallback(async (trackId: string, vote: number) => {
+  const setUserVote = useCallback(async (trackId: string, vote: Pick<IVoteItem, 'comment' | 'rating'>) => {
     try {
-      const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
-      const updatedVote = await response.json();
-      return updatedVote;
+      await Actions.setUserVote({ trackId, ...vote });
     } catch (error) {
-      console.error('USEVOTING setVote', error);
+      console.error('SET_USER_VOTE ERROR:', error);
     }
+    // try {
+    //   const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
+    //   const updatedVote = await response.json();
+    //   return updatedVote;
+    // } catch (error) {
+    //   console.error('USEVOTING setVote', error);
+    // }
   }, []);
 
   return {
