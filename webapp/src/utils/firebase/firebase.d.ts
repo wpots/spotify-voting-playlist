@@ -1,5 +1,3 @@
-import { Query } from 'firebase/firestore';
-
 declare module '@firebase/api' {
   interface User {
     id: string; // spotifyAccountId
@@ -18,8 +16,7 @@ declare module '@firebase/api' {
   interface Vote {
     trackId: string; // spotifyId
     userId: string;
-    vote?: number; // old legacy
-    rating?: string;
+    rating?: number;
     comment?: string;
   }
 }

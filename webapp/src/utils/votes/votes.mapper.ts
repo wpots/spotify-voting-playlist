@@ -1,5 +1,6 @@
 import type { IPlaylist, IUser } from '@domain/content';
 import type { Vote } from '@firebase/api';
+
 const votesMapper = {
   resolveVotedAverage(votes: number[]) {
     const avg = votes.reduce((acc, cum) => acc + cum, 0) / votes.length;
@@ -13,6 +14,10 @@ const votesMapper = {
         ...playlist.tracks,
         items: playlist.tracks.items.map(item => {
           const trackVotes = votes?.filter(vote => vote.trackId === item?.id);
+          const trackVotesWithRating = trackVotes?.reduce((a, c) => {
+            if (c?.rating) a.push(c.rating);
+            return a;
+          }, [] as number[]);
           return {
             ...item,
             votes:
@@ -21,7 +26,10 @@ const votesMapper = {
                 : {
                     total: trackVotes?.length,
                     veto: trackVotes?.filter(v => v.rating === -1),
-                    average: this.resolveVotedAverage(trackVotes.map(v => v.rating)),
+                    average:
+                      trackVotesWithRating && trackVotesWithRating.length > 0
+                        ? this.resolveVotedAverage(trackVotesWithRating)
+                        : 0,
                     items: trackVotes,
                   },
           };

@@ -8,7 +8,7 @@ import VetoIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 
 interface VotingStackProps {
   name: string;
-  value: number | string;
+  value: number;
   readonly?: boolean;
   precision?: number;
   onChange?: (e: React.SyntheticEvent, value: number) => void;

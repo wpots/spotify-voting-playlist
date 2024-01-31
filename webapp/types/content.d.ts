@@ -2,7 +2,7 @@ declare module '@domain/content' {
   type IVoteItem = {
     trackId: string; // spotifyId
     userId: string;
-    rating?: string;
+    rating?: number;
     comment?: string;
   };
 
