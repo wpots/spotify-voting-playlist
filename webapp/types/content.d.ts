@@ -54,6 +54,7 @@ declare module '@domain/content' {
       refs?: string[];
       [key]: any;
     };
+    error?: any;
   }
 
   interface IUser {

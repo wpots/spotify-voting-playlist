@@ -4,26 +4,24 @@ import { getServerSession } from 'next-auth';
 import spotifyMapper from './spotify.mapper';
 import type { IPlaylist } from '@domain/content';
 import type { PlaylistResponse } from '@spotify/webapi';
-import { notFound } from 'next/navigation';
-
-const playlistParams = {
-  fields: `id,name,external_urls.spotify,tracks.items(added_by.id, track(id,name,href,artists(name),external_urls.spotify))`,
-};
 
 const SpotifyService = {
   async useSpotifyFetch(uri?: string, options?: any) {
+    const session = await getServerSession(authOptions);
+    if (!session) return { error: { name: 'SPOTIFY_SERVICE_AUTH', status: 401, message: 'Unauthorized' } };
     try {
-      const session = await getServerSession(authOptions);
       const baseUrl = `https://api.spotify.com/v1`;
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${session?.token}` },
       });
 
-      if (!response?.ok) throw new Error('SPOTIFY SERVICE FETCH', { cause: response });
+      if (!response?.ok) throw new Error('SPOTIFY_SERVICE_FETCH', { cause: response });
 
       return await response.json();
     } catch (error: any) {
-      throw new Error('SPOTIFY SERVICE', { cause: error });
+      return {
+        error,
+      };
     }
   },
   async getPlaylistById(id: string): Promise<IPlaylist | undefined> {

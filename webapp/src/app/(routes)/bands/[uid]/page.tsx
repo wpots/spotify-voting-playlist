@@ -31,6 +31,7 @@ export default async function BandPage({ params }: BandPageProps) {
 
   if (currentBand.playlists?.length === 0)
     return <Typography align="center">Er zijn geen playlists gevonden....</Typography>;
+  if (currentBand.playlists?.some(el => (el as IPlaylist).error)) signIn();
   // server side rendered playlists without votes
   /**
    * TODO:
