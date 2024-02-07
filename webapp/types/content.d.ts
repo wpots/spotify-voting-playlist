@@ -74,4 +74,8 @@ declare module '@domain/content' {
     veterans?: IUser[];
     error?: any;
   }
+
+  interface IError {
+    [key:string]: any
+  }
 }

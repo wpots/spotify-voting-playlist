@@ -11,7 +11,8 @@ const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
 };
 
 const fetchPlaylists = async (playlists: string[]) => {
-  return (await SpotifyService.getPlaylistsByBulk(playlists)) as IPlaylist[];
+  const lists = (await SpotifyService.getPlaylistsByBulk(playlists)) as IPlaylist[];
+  return lists;
 };
 
 const getCurrentPlaylist = async (id: string) => {

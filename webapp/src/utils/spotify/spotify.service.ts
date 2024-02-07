@@ -2,7 +2,7 @@ import 'server-only';
 import { authOptions } from '@/utils/authentication/authOptions';
 import { getServerSession } from 'next-auth';
 import spotifyMapper from './spotify.mapper';
-import type { IPlaylist } from '@domain/content';
+import type { IError, IPlaylist } from '@domain/content';
 import type { PlaylistResponse } from '@spotify/webapi';
 
 const SpotifyService = {
@@ -14,9 +14,6 @@ const SpotifyService = {
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${session?.token}` },
       });
-
-      if (!response?.ok) throw new Error('SPOTIFY_SERVICE_FETCH', { cause: response });
-
       return await response.json();
     } catch (error: any) {
       return {
@@ -24,14 +21,15 @@ const SpotifyService = {
       };
     }
   },
-  async getPlaylistById(id: string): Promise<IPlaylist | undefined> {
+  async getPlaylistById(id: string): Promise<IPlaylist | IError | undefined> {
     const response: PlaylistResponse = await this.useSpotifyFetch(`playlists/${id}`);
-    if (response) return spotifyMapper.toDomain.parsePlaylist(response);
+    if (response.error) Promise.reject(response);
+    return spotifyMapper.toDomain.parsePlaylist(response);
   },
-  async getPlaylistsByBulk(ids: string[]): Promise<IPlaylist[] | undefined> {
+
+  async getPlaylistsByBulk(ids: string[]): Promise<IPlaylist[] | IError[] | undefined> {
     const bulkFetchRequest = ids.map(id => this.getPlaylistById(id));
-    const playlists = (await Promise.all<IPlaylist | undefined>(bulkFetchRequest)) as IPlaylist[];
-    return playlists;
+    return (await Promise.all<IPlaylist | IError | undefined>(bulkFetchRequest)) as IPlaylist[];
   },
 };
 
