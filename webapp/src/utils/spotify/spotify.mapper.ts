@@ -1,5 +1,5 @@
-import type { IPlaylist, ITrack } from '@domain/content';
-import type { PlaylistResponse } from '@spotify/webapi';
+import type { IPlaylist, ITrack } from "@domain/content";
+import type { PlaylistResponse } from "@spotify/webapi";
 
 const spotifyMapper = {
   toDomain: {
