@@ -1,8 +1,8 @@
-import * as FireStoreService from '@/utils/firebase/firebase.service';
-import SpotifyService from '../spotify/spotify.service';
-import votesMapper from '@/utils/votes/votes.mapper';
-import type { IBand, IPlaylist } from '@domain/content';
-import type { Vote } from '@firebase/api';
+import * as FireStoreService from "@/utils/firebase/firebase.service";
+import SpotifyService from "../spotify/spotify.service";
+import votesMapper from "@/utils/votes/votes.mapper";
+import type { IBand, IPlaylist } from "@domain/content";
+import type { Vote } from "@firebase/api";
 
 const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
   if (trackIds && trackIds.length > 0) {
@@ -18,7 +18,7 @@ const getCurrentPlaylist = async (id: string) => {
   try {
     return await SpotifyService.getPlaylistById(id);
   } catch (error) {
-    throw Error('CONTENT PLAYLIST BY ID', { cause: error });
+    return { error };
   }
 };
 
