@@ -24,14 +24,15 @@ const SpotifyService = {
       };
     }
   },
-  async getPlaylistById(id: string): Promise<IPlaylist | undefined> {
+  async getPlaylistById(id: string): Promise<IPlaylist | IError | undefined> {
     const response: PlaylistResponse = await this.useSpotifyFetch(`playlists/${id}`);
-    if (response) return spotifyMapper.toDomain.parsePlaylist(response);
+    if (response.error) Promise.reject(response);
+    return spotifyMapper.toDomain.parsePlaylist(response);
   },
-  async getPlaylistsByBulk(ids: string[]): Promise<IPlaylist[] | undefined> {
+
+  async getPlaylistsByBulk(ids: string[]): Promise<IPlaylist[] | IError[] | undefined> {
     const bulkFetchRequest = ids.map(id => this.getPlaylistById(id));
-    const playlists = (await Promise.all<IPlaylist | undefined>(bulkFetchRequest)) as IPlaylist[];
-    return playlists;
+    return (await Promise.all<IPlaylist | IError | undefined>(bulkFetchRequest)) as IPlaylist[];
   },
 };
 

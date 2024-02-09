@@ -9,7 +9,6 @@ import LoginButton from '../_components/Auth/LoginButton';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-
   const userId = session?.user?.id;
   let bands: IBand[] | undefined;
 

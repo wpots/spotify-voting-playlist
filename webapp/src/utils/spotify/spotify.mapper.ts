@@ -7,15 +7,15 @@ const spotifyMapper = {
       const mappedList = {
         ...playlist,
         url: playlist?.external_urls?.spotify,
-        image: playlist.images?.[0]?.url,
+        image: playlist.images?.[0].url,
         tracks: {
           ...playlist.tracks,
-          refs: playlist.tracks?.items?.map(i => i.track.id),
-          items: playlist?.tracks?.items?.map(item => ({
+          refs: playlist.tracks?.items.map(i => i.track.id),
+          items: playlist?.tracks?.items.map(item => ({
             ...item.track,
             added_by: item.added_by,
-            artists: item.track?.artists?.map(artist => artist.name).toString(),
-            url: item.track?.external_urls?.spotify,
+            artists: item.track.artists.map(artist => artist.name).toString(),
+            url: item.track.external_urls?.spotify,
           })),
         },
       };
