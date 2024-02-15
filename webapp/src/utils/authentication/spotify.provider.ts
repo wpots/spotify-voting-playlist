@@ -51,7 +51,7 @@ const providerOptions = {
       id: profile.id,
       name: profile.display_name,
       email: profile.email,
-      image: profile.images?.[0]?.url,
+      ...(profile.images?.[0]?.url && { image: profile.images?.[0]?.url }),
     };
     if (verifiedUser) {
       // update users profile info to match spotify
