@@ -2,7 +2,7 @@ import "server-only";
 import { authOptions } from "@/utils/authentication/authOptions";
 import { getServerSession } from "next-auth";
 import spotifyMapper from "./spotify.mapper";
-import type { IPlaylist } from "@domain/content";
+import type { IPlaylist, IError } from "@domain/content";
 import type { PlaylistResponse } from "@spotify/webapi";
 
 const SpotifyService = {
