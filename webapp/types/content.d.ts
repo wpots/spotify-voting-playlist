@@ -62,7 +62,7 @@ declare module '@domain/content' {
     name: string;
     email: string;
     roles?: string[];
-    image: string;
+    image?: string;
     vote?: IVoteItem;
   }
 
@@ -76,6 +76,6 @@ declare module '@domain/content' {
   }
 
   interface IError {
-    [key:string]: any
+    [key: string]: any;
   }
 }
