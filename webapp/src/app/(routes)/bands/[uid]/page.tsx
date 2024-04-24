@@ -1,12 +1,12 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/utils/authentication/authOptions';
-import { notFound } from 'next/navigation';
-import * as ContentService from '@/utils/content/content.service';
-import { Typography, Alert } from '@mui/material';
-import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
-import { IBand, IPlaylist } from '@domain/content';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authentication/authOptions";
+import { notFound } from "next/navigation";
+import * as ContentService from "@/utils/content/content.service";
+import { Typography, Alert, Avatar, Box } from "@mui/material";
+import PlaylistTabs from "@/app/_components/Playlist/PlaylistTabs";
+import { IBand, IPlaylist } from "@domain/content";
 
-import { signIn } from 'next-auth/react';
+import { signIn } from "next-auth/react";
 
 interface BandPageProps {
   params: { uid: string };
@@ -14,7 +14,7 @@ interface BandPageProps {
 
 export default async function BandPage({ params }: BandPageProps) {
   const session = await getServerSession(authOptions);
-  if (session?.error === 'RefreshAccessTokenError') {
+  if (session?.error === "RefreshAccessTokenError") {
     signIn(); // Force sign in to hopefully resolve error
   }
 
@@ -52,9 +52,12 @@ export default async function BandPage({ params }: BandPageProps) {
 
   return (
     <>
-      <Typography component="h1" variant="h2" sx={{ px: '1rem' }}>
-        {currentBand.name}
-      </Typography>
+      <Box sx={{ display: "flex", px: "2rem" }}>
+        <Avatar src={(currentBand?.playlists?.[0] as IPlaylist)?.image} sx={{ width: 72, height: 72 }} />
+        <Typography component="h1" variant="h2" sx={{ px: "1rem", textAlign: "right" }}>
+          {currentBand.name}
+        </Typography>
+      </Box>
       {currentBand.error && (
         <Alert severity="error">De playlists konden niet worden opgehaald, probeer het later opnieuw....</Alert>
       )}
