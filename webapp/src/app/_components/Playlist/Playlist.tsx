@@ -18,7 +18,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [openDialog, setOpenDialog] = useState(false);
   const { fetchVotes, currentPlaylist, currentTracks, sortedPlaylistBy } = useVoting({ playlist });
   const [openAlert, setOpenAlert] = useState(
-    sortedPlaylistBy.pendingUserVote && sortedPlaylistBy.pendingUserVote.length > 0
+    (sortedPlaylistBy.pendingUserVote && sortedPlaylistBy.pendingUserVote.length > 0) || false
   );
   const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
 
@@ -43,40 +43,42 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   return (
     <>
       <PlaylistHeader description={currentPlaylist?.description} url={currentPlaylist?.url} />
-      <Dialog open={openAlert} onClose={() => setOpenAlert(false)} sx={{ p: '2rem' }}>
-        <DialogTitle>Je hebt nog niet gestemd!</DialogTitle>
-        <DialogContent>
-          {sortedPlaylistBy.pendingUserVote && sortedPlaylistBy.pendingUserVote?.length > 0 && (
-            <List
-              sx={{
-                width: '100%',
-                bgcolor: 'background.paper',
-                color: 'black',
-                border: '1px solid red',
-                p: '0',
-                mb: '2rem',
-              }}
-            >
-              {sortedPlaylistBy.pendingUserVote.map((track: ITrack, idx: number) => {
-                return (
-                  <Track
-                    track={track}
-                    key={`track-${idx}`}
-                    divider={idx}
-                    onTrackSelected={isVotableList ? () => handleSelectedTrack(track) : undefined}
-                    enhancedView={isVotableList}
-                  >
-                    {isVotableList && <VoteSummary votes={track.votes} />}
-                  </Track>
-                );
-              })}
-            </List>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenAlert(false)}>Nu even niet</Button>
-        </DialogActions>
-      </Dialog>
+      {isVotableList && (
+        <Dialog open={openAlert} onClose={() => setOpenAlert(false)} sx={{ p: '2rem' }}>
+          <DialogTitle>Je hebt nog niet gestemd!</DialogTitle>
+          <DialogContent>
+            {sortedPlaylistBy.pendingUserVote && sortedPlaylistBy.pendingUserVote?.length > 0 && (
+              <List
+                sx={{
+                  width: '100%',
+                  bgcolor: 'background.paper',
+                  color: 'black',
+                  border: '1px solid red',
+                  p: '0',
+                  mb: '2rem',
+                }}
+              >
+                {sortedPlaylistBy.pendingUserVote.map((track: ITrack, idx: number) => {
+                  return (
+                    <Track
+                      track={track}
+                      key={`track-${idx}`}
+                      divider={idx}
+                      onTrackSelected={isVotableList ? () => handleSelectedTrack(track) : undefined}
+                      enhancedView={isVotableList}
+                    >
+                      {isVotableList && <VoteSummary votes={track.votes} />}
+                    </Track>
+                  );
+                })}
+              </List>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenAlert(false)}>Nu even niet</Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
       {currentTracks && currentTracks?.length > 0 && (
         <List
