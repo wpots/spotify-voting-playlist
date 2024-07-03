@@ -4,11 +4,12 @@ import List from '@mui/material/List';
 import PlaylistHeader from './PlaylistHeader';
 import Track from '../Tracks/Track';
 import VoteSummary from '../Votes/VoteSummary';
-import type { IPlaylist, ITrack } from '@domain/content';
+import type { IPlaylist, ITrack, IVoteItem } from '@domain/content';
 
 import VotingDialog from '../Votes/VotingDialog';
 import useVoting from '@/app/_hooks/useVoting';
 import PlaylistFooter from './PlaylistFooter';
+import TrackComments from '../Tracks/TrackComments';
 // import TrackControls from "../Tracks/TrackControls";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {

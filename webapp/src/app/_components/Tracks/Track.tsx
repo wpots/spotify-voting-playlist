@@ -14,7 +14,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import type { ITrack } from '@domain/content';
+import type { ITrack, IVoteItem } from '@domain/content';
+import TrackComments from '../Tracks/TrackComments';
+import { useCallback } from 'react';
 
 interface TrackProps {
   track: ITrack;
@@ -39,6 +41,8 @@ export default function Track({ track, divider, onTrackSelected, showAvatar, con
   };
   const alpha = splitVoteAverage?.decimals?.toFixed(1);
 
+  const comments = track.votes?.items.filter(i => i.comment).map(i => i.comment as string) || [];
+
   const avatarColor = !track.votes?.average
     ? grey[100]
     : track.votes?.average >= 3.5
@@ -55,33 +59,51 @@ export default function Track({ track, divider, onTrackSelected, showAvatar, con
     <>
       {divider > 0 && <Divider component='li' />}
       <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? red[200] : 'transparent' }} id={track.id}>
-        <ListItemButton sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }} onClick={handleTrackSelected}>
+        <ListItemButton
+          sx={{ justifyContent: ['flex-start'], flexWrap: 'wrap', gap: '.5rem', padding: '.5rem' }}
+          onClick={handleTrackSelected}
+        >
           {showAvatar && (
-            <ListItemAvatar>
+            <ListItemAvatar sx={{ minWidth: '40px' }}>
               <Avatar sx={{ bgcolor: avatarColor }}>
                 <Typography variant='caption'>{track.votes?.average}</Typography>
               </Avatar>
             </ListItemAvatar>
           )}
           <ListItemText
-            sx={{ flex: ['1 1 50%', '1 1 auto'], maxWidth: '220px' }}
+            sx={{
+              flex: '1 1 auto',
+              maxWidth: ['128px', '220px'],
+              overflow: 'hidden',
+              whiteSpace: ['nowrap', 'normal'],
+              textOverflow: 'ellipsis',
+            }}
             primary={track.name}
             secondary={<>{track.artists}</>}
           />
 
-          <Box sx={{ flex: ['0 0 50%', '0 0 25%'], order: { xs: 10 } }}>{controls}</Box>
+          <Box sx={{ flex: ['0 0 auto'], order: { xs: 10 } }}>{controls}</Box>
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'row',
-              flex: ['0 0 50%', '0 0 25%'],
-              order: { sm: 10 },
-              marginLeft: { sm: '2rem' },
+              flex: ['0 0 40%'],
+
+              marginLeft: 'auto',
 
               justifyContent: 'flex-end',
             }}
           >
             {children}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flex: ['0 0 100%'],
+            }}
+          >
+            {comments.length > 0 && <TrackComments comments={comments} />}
           </Box>
         </ListItemButton>
       </ListItem>

@@ -15,17 +15,18 @@ const VotersList = memo(function VotersList({ member, feedback, tooltip }: Voter
       key={`name-${member.id}`}
       spacing={1}
       sx={{ marginBottom: '1rem', gap: '.5rem' }}
-      direction="row"
-      justifyContent="start"
-      alignItems="center"
+      direction='row'
+      justifyContent='start'
+      flexWrap='wrap'
+      alignItems='center'
     >
-      <Badge color="info" overlap="circular" badgeContent={'i'} invisible={!member.vote?.comment}>
+      {/* <Badge color='info' overlap='circular' badgeContent={'i'} invisible={!member.vote?.comment}>
         <Tooltip
           arrow
-          placement="right"
+          placement='right'
           title={
             tooltip && (
-              <Typography variant="caption" component="small">
+              <Typography variant='caption' component='small'>
                 {tooltip}
               </Typography>
             )
@@ -33,9 +34,16 @@ const VotersList = memo(function VotersList({ member, feedback, tooltip }: Voter
         >
           <Avatar alt={member.id} src={member.image} />
         </Tooltip>
-      </Badge>
-      <Typography variant="caption">{member.name || member.id}</Typography>
+      </Badge> */}
+      <Typography variant='caption'>{member.name || member.id}</Typography>
       <Box sx={{ ml: 'auto!important' }}>{feedback}</Box>
+      {member.vote?.comment && (
+        <Box sx={{ flex: '1 0 100%' }}>
+          <Typography variant='caption' sx={{ fontStyle: 'italic' }}>
+            {member.vote?.comment}
+          </Typography>
+        </Box>
+      )}
     </Stack>
   );
 });

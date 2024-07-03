@@ -24,11 +24,12 @@ export default function VoteCommentInput({ onCommented, userComment }: VoteComme
 
   return (
     <Box sx={{ paddingTop: '1rem' }}>
-      <Typography variant="caption">Extra opmerking:</Typography>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+      <Typography variant='caption'>Extra opmerking:</Typography>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
         <TextField
-          id="comment"
-          variant="standard"
+          id='comment'
+          value={comment}
+          variant='standard'
           multiline
           maxRows={4}
           sx={{ width: '100%' }}
