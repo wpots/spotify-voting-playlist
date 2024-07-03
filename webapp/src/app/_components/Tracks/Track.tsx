@@ -41,8 +41,7 @@ export default function Track({ track, divider, onTrackSelected, enhancedView, c
   };
   const alpha = splitVoteAverage?.decimals?.toFixed(1);
 
-  const comments =
-    track.votes?.items.filter(i => i.comment).map(i => ({ comment: i.comment as string, user: i.userId })) || [];
+  const comments = track.votes?.items.filter(i => i.comment).map(i => i.comment as string) || [];
 
   const avatarColor = !track.votes?.average
     ? grey[100]

@@ -4,17 +4,17 @@ import { Stack, Box, Avatar, Badge, Typography, Tooltip, List } from '@mui/mater
 import { IUser, IVoteItem } from '@domain/content';
 
 interface TrackCommentsProps {
-  comments: Partial<IVoteItem>;
+  comments: string[];
 }
 
 const TrackComments = memo(function TrackComments({ comments }: TrackCommentsProps) {
   return (
     <>
       <List>
-        {comments.map((data: string, idx: number) => {
+        {comments.map((comment: string, idx: number) => {
           return (
             <Typography sx={{ fontStyle: 'italic' }} key={idx} variant='caption' component='li'>
-              {data.comment}
+              {comment}
             </Typography>
           );
         })}
