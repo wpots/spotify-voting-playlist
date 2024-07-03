@@ -1,6 +1,6 @@
-"use client";
-import type React from "react";
-import { deepOrange, red, grey, lightGreen, lime, amber } from "@mui/material/colors";
+'use client';
+import type React from 'react';
+import { deepOrange, red, grey, lightGreen, lime, amber } from '@mui/material/colors';
 import {
   Divider,
   ListItemButton,
@@ -12,21 +12,22 @@ import {
   ListItemAvatar,
   Avatar,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import type { ITrack } from "@domain/content";
+import type { ITrack } from '@domain/content';
 
 interface TrackProps {
   track: ITrack;
   divider: number;
   controls?: React.ReactNode;
   onTrackSelected?: () => void;
+  showAvatar?: boolean;
   children?: React.ReactNode;
 }
 
-export default function Track({ track, divider, onTrackSelected, controls, children }: TrackProps) {
+export default function Track({ track, divider, onTrackSelected, showAvatar, controls, children }: TrackProps) {
   const theme = useTheme();
-  const onlyDesktops = useMediaQuery(theme?.breakpoints.up("sm")); // reinstall what was lost
+  const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm')); // reinstall what was lost
   const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();
@@ -47,35 +48,37 @@ export default function Track({ track, divider, onTrackSelected, controls, child
     : splitVoteAverage.floor >= 2
     ? amber[500]
     : splitVoteAverage.floor >= 0
-    ? deepOrange["500"]
-    : grey["100"];
+    ? deepOrange['500']
+    : grey['100'];
 
   return (
     <>
-      {divider > 0 && <Divider component="li" />}
-      <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? red[200] : "transparent" }} id={track.id}>
-        <ListItemButton sx={{ justifyContent: "space-between", flexWrap: "wrap" }} onClick={handleTrackSelected}>
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: avatarColor }}>
-              <Typography variant="caption">{track.votes?.average}</Typography>
-            </Avatar>
-          </ListItemAvatar>
+      {divider > 0 && <Divider component='li' />}
+      <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? red[200] : 'transparent' }} id={track.id}>
+        <ListItemButton sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }} onClick={handleTrackSelected}>
+          {showAvatar && (
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: avatarColor }}>
+                <Typography variant='caption'>{track.votes?.average}</Typography>
+              </Avatar>
+            </ListItemAvatar>
+          )}
           <ListItemText
-            sx={{ flex: ["1 1 50%", "1 1 auto"], maxWidth: "220px" }}
+            sx={{ flex: ['1 1 50%', '1 1 auto'], maxWidth: '220px' }}
             primary={track.name}
             secondary={<>{track.artists}</>}
           />
 
-          <Box sx={{ flex: ["0 0 50%", "0 0 25%"], order: { xs: 10 } }}>{controls}</Box>
+          <Box sx={{ flex: ['0 0 50%', '0 0 25%'], order: { xs: 10 } }}>{controls}</Box>
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              flex: ["0 0 50%", "0 0 25%"],
+              display: 'flex',
+              flexDirection: 'row',
+              flex: ['0 0 50%', '0 0 25%'],
               order: { sm: 10 },
-              marginLeft: { sm: "2rem" },
+              marginLeft: { sm: '2rem' },
 
-              justifyContent: "flex-end",
+              justifyContent: 'flex-end',
             }}
           >
             {children}

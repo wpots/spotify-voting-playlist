@@ -1,14 +1,14 @@
-"use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import List from "@mui/material/List";
-import PlaylistHeader from "./PlaylistHeader";
-import Track from "../Tracks/Track";
-import VoteSummary from "../Votes/VoteSummary";
-import type { IPlaylist, ITrack } from "@domain/content";
+'use client';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import List from '@mui/material/List';
+import PlaylistHeader from './PlaylistHeader';
+import Track from '../Tracks/Track';
+import VoteSummary from '../Votes/VoteSummary';
+import type { IPlaylist, ITrack } from '@domain/content';
 
-import VotingDialog from "../Votes/VotingDialog";
-import useVoting from "@/app/_hooks/useVoting";
-import PlaylistFooter from "./PlaylistFooter";
+import VotingDialog from '../Votes/VotingDialog';
+import useVoting from '@/app/_hooks/useVoting';
+import PlaylistFooter from './PlaylistFooter';
 // import TrackControls from "../Tracks/TrackControls";
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
@@ -33,13 +33,15 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
     setOpenDialog(false);
   }, []);
 
+  const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
+
   return (
     <>
       <PlaylistHeader description={currentPlaylist?.description} url={currentPlaylist?.url} />
 
       {currentTracks && currentTracks?.length > 0 && (
         <List
-          sx={{ width: "100%", bgcolor: "background.paper", color: "black", border: "1px solid lightgrey", p: "0" }}
+          sx={{ width: '100%', bgcolor: 'background.paper', color: 'black', border: '1px solid lightgrey', p: '0' }}
         >
           {currentTracks.map((track: ITrack, idx: number) => {
             return (
@@ -47,15 +49,16 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 track={track}
                 key={`track-${idx}`}
                 divider={idx}
-                onTrackSelected={() => handleSelectedTrack(track)}
+                onTrackSelected={isVotableList ? () => handleSelectedTrack(track) : undefined}
+                showAvatar={isVotableList}
               >
-                <VoteSummary votes={track.votes} />
+                {isVotableList && <VoteSummary votes={track.votes} />}
               </Track>
             );
           })}
         </List>
       )}
-      <PlaylistFooter url={currentPlaylist?.url} />
+      {isVotableList && <PlaylistFooter url={currentPlaylist?.url} />}
       {selectedTrack && <VotingDialog track={selectedTrack} open={openDialog} onClose={handleDialogClose} />}
     </>
   );
