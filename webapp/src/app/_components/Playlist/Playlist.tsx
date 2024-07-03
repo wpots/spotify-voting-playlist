@@ -51,7 +51,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
                 key={`track-${idx}`}
                 divider={idx}
                 onTrackSelected={isVotableList ? () => handleSelectedTrack(track) : undefined}
-                showAvatar={isVotableList}
+                enhancedView={isVotableList}
               >
                 {isVotableList && <VoteSummary votes={track.votes} />}
               </Track>

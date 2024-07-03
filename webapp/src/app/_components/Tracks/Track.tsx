@@ -23,11 +23,11 @@ interface TrackProps {
   divider: number;
   controls?: React.ReactNode;
   onTrackSelected?: () => void;
-  showAvatar?: boolean;
+  enhancedView?: boolean;
   children?: React.ReactNode;
 }
 
-export default function Track({ track, divider, onTrackSelected, showAvatar, controls, children }: TrackProps) {
+export default function Track({ track, divider, onTrackSelected, enhancedView, controls, children }: TrackProps) {
   const theme = useTheme();
   const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm')); // reinstall what was lost
   const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
@@ -41,7 +41,8 @@ export default function Track({ track, divider, onTrackSelected, showAvatar, con
   };
   const alpha = splitVoteAverage?.decimals?.toFixed(1);
 
-  const comments = track.votes?.items.filter(i => i.comment).map(i => i.comment as string) || [];
+  const comments =
+    track.votes?.items.filter(i => i.comment).map(i => ({ comment: i.comment as string, user: i.userId })) || [];
 
   const avatarColor = !track.votes?.average
     ? grey[100]
@@ -63,7 +64,7 @@ export default function Track({ track, divider, onTrackSelected, showAvatar, con
           sx={{ justifyContent: ['flex-start'], flexWrap: 'wrap', gap: '.5rem', padding: '.5rem' }}
           onClick={handleTrackSelected}
         >
-          {showAvatar && (
+          {enhancedView && (
             <ListItemAvatar sx={{ minWidth: '40px' }}>
               <Avatar sx={{ bgcolor: avatarColor }}>
                 <Typography variant='caption'>{track.votes?.average}</Typography>
@@ -73,7 +74,7 @@ export default function Track({ track, divider, onTrackSelected, showAvatar, con
           <ListItemText
             sx={{
               flex: '1 1 auto',
-              maxWidth: ['128px', '220px'],
+              maxWidth: ['128px', '268px', '390px'],
               overflow: 'hidden',
               whiteSpace: ['nowrap', 'normal'],
               textOverflow: 'ellipsis',
@@ -103,7 +104,7 @@ export default function Track({ track, divider, onTrackSelected, showAvatar, con
               flex: ['0 0 100%'],
             }}
           >
-            {comments.length > 0 && <TrackComments comments={comments} />}
+            {enhancedView && comments.length > 0 && <TrackComments comments={comments} />}
           </Box>
         </ListItemButton>
       </ListItem>
