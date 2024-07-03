@@ -17,9 +17,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const { fetchVotes, currentPlaylist, currentTracks, sortedPlaylistBy } = useVoting({ playlist });
-  const [openAlert, setOpenAlert] = useState(
-    (sortedPlaylistBy.pendingUserVote && sortedPlaylistBy.pendingUserVote.length > 0) || false
-  );
+  const [openAlert, setOpenAlert] = useState(false);
   const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
 
   useEffect(() => {
@@ -32,6 +30,14 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
       setOpenDialog(true);
     }
   }, [selectedTrack]);
+
+  useEffect(() => {
+    if (sortedPlaylistBy.pendingUserVote && sortedPlaylistBy.pendingUserVote.length > 0) {
+      setOpenAlert(true);
+    } else {
+      setOpenAlert(false);
+    }
+  }, [sortedPlaylistBy.pendingUserVote]);
 
   const handleDialogClose = useCallback((reset: boolean) => {
     if (reset) setSelectedTrack(null);
