@@ -83,6 +83,14 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     return votes?.items.find((i: IVoteItem) => userId === i.userId);
   }, [votes, userId]);
 
+  const sortedPlaylistBy = useMemo(() => {
+    return {
+      pendingUserVote: currentTracks?.filter(track => {
+        return !track.votes || !track.votes?.items.find(i => i.userId === userId);
+      }),
+    };
+  }, [userId, currentTracks]);
+
   const bandMembers = currentBand?.members as IUser[];
 
   const extendedVoteMembers = useMemo(
@@ -147,6 +155,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     currentBand,
     currentPlaylist,
     currentTracks,
+    sortedPlaylistBy,
     sortPlaylistByPopularity,
   };
 }
