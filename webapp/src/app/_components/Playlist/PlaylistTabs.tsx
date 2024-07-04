@@ -40,7 +40,7 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
           {playlists.map((list: IPlaylist) => {
             return (
               <TabPanel value={list.id} key={list.id}>
-                <Playlist />
+                <Playlist playlist={list} />
               </TabPanel>
             );
           })}

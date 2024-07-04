@@ -2,17 +2,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/authentication/authOptions';
 import { notFound } from 'next/navigation';
 import * as ContentService from '@/utils/content/content.service';
-import { Typography, Alert, Avatar, Box } from '@mui/material';
+import { Typography, Alert } from '@mui/material';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 import { IBand, IPlaylist } from '@domain/content';
-import { Comfortaa } from 'next/font/google';
-
-const headerFont = Comfortaa({
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 import { signIn } from 'next-auth/react';
+import AppBanner from '@/app/_components/UI/AppBanner';
 
 interface BandPageProps {
   params: { uid: string };
@@ -58,22 +53,8 @@ export default async function BandPage({ params }: BandPageProps) {
 
   return (
     <>
-      <Box
-        display='flex'
-        flexDirection='column'
-        alignItems='center'
-        sx={{ px: '2rem', backgroundColor: '#cccccc', m: '.5rem', mb: '2rem' }}
-      >
-        <Typography
-          component='h1'
-          variant='h4'
-          sx={{ p: '1rem', textAlign: 'center' }}
-          className={headerFont.className}
-        >
-          {currentBand.name}
-        </Typography>
-        <Avatar src={currentBand?.logo} sx={{ width: 72, height: 72, mb: '-1rem' }} variant='rounded' />
-      </Box>
+      <AppBanner title={currentBand.name} avatar={currentBand?.logo} />
+
       {currentBand.error && (
         <Alert severity='error'>De playlists konden niet worden opgehaald, probeer het later opnieuw....</Alert>
       )}
