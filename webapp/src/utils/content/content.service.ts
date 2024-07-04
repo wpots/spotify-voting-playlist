@@ -1,8 +1,8 @@
-import * as FireStoreService from "@/utils/firebase/firebase.service";
-import SpotifyService from "../spotify/spotify.service";
-import votesMapper from "@/utils/votes/votes.mapper";
-import type { IBand, IPlaylist } from "@domain/content";
-import type { Vote } from "@firebase/api";
+import * as FireStoreService from '@/utils/firebase/firebase.service';
+import SpotifyService from '../spotify/spotify.service';
+import votesMapper from '@/utils/votes/votes.mapper';
+import type { IBand, IPlaylist } from '@domain/content';
+import type { Vote } from '@firebase/api';
 
 const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
   if (trackIds && trackIds.length > 0) {
@@ -39,6 +39,7 @@ const _getBand = async (bandId: string, band?: IBand) => {
 
   return {
     ...currentBand,
+    logo: !extendedPlaylists?.error ? (extendedPlaylists?.[0] as IPlaylist)?.image : undefined,
     members: extendedMembers ?? currentBand.members,
     ...(!extendedPlaylists?.error && { playlists: extendedPlaylists }),
     error: extendedPlaylists?.error ?? false,

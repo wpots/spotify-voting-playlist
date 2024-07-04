@@ -9,7 +9,7 @@ export default function PlaylistHeader({ description, url }: { description?: str
     <Box sx={{ py: '2rem' }}>
       {description && <Typography>{description}</Typography>}
       {url && (
-        <Typography align="right">
+        <Typography align='right' marginTop='1rem'>
           <Link href={url}>Pas de spotify lijst aan</Link>
         </Typography>
       )}

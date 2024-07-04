@@ -30,7 +30,7 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
         <TabContext value={activePlaylistId}>
           {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleOnChange} variant="scrollable" scrollButtons="auto">
+              <TabList onChange={handleOnChange} variant='scrollable' scrollButtons='auto'>
                 {playlists.map((list: IPlaylist) => {
                   return <Tab label={list.name} value={list.id} key={list.id}></Tab>;
                 })}
@@ -40,7 +40,7 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
           {playlists.map((list: IPlaylist) => {
             return (
               <TabPanel value={list.id} key={list.id}>
-                <Playlist playlist={list} />
+                <Playlist />
               </TabPanel>
             );
           })}

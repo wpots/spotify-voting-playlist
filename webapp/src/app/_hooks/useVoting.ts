@@ -11,6 +11,10 @@ type UseVotingOptions = {
   votes?: any;
   track?: any;
 };
+type FilteredPlaylist = {
+  all?: ITrack[];
+  pendingUserVote?: ITrack[];
+};
 
 export default function useVoting({ playlist, votes, track }: UseVotingOptions) {
   if (!UserContext) {
@@ -43,11 +47,14 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   }
 
   const currentBand = userContext?.userBands?.find(b => b.id === bandId);
+  const playlistFromSearchUrl = currentBand?.playlists?.find(
+    p => (p as IPlaylist).id === query.get('playlist')
+  ) as IPlaylist;
 
   // PLAYLIST DATA
   if (!playlist) {
-    // if no manual playlist is added, default to querystring in url
-    playlist = currentBand?.playlists?.find(p => (p as IPlaylist).id === query.get('playlist')) as IPlaylist;
+    // if no manual playlist is added, default to querystring in url or just the 1st you can find if any
+    playlist = playlistFromSearchUrl || (currentBand?.playlists?.[0] as IPlaylist);
   }
 
   if (!votes) {
@@ -56,10 +63,17 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   // technically playlist is not needed if hook is used per track decoupled from any list
   const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
 
-  const currentTracks = currentPlaylist?.tracks.items;
+  const filterPlaylistBy: FilteredPlaylist = useMemo(() => {
+    return {
+      all: currentPlaylist?.tracks.items,
+      pendingUserVote: currentPlaylist?.tracks.items?.filter(track => {
+        return !track.votes || !track.votes?.items.find(i => i.userId === userId);
+      }),
+    };
+  }, [userId, currentPlaylist]);
 
   const sortPlaylistByPopularity = useMemo(() => {
-    currentTracks?.sort((a, b) => {
+    filterPlaylistBy.all?.sort((a, b) => {
       // no votes. move to bottom
       if (!a.votes?.total || !b.votes?.total) return 1;
       // same vote count, which has higher average?
@@ -77,19 +91,13 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
       }
       return 0;
     });
-  }, [currentTracks]);
+  }, [filterPlaylistBy.all]);
 
   const userVote = useMemo(() => {
     return votes?.items.find((i: IVoteItem) => userId === i.userId);
   }, [votes, userId]);
 
-  const sortedPlaylistBy = useMemo(() => {
-    return {
-      pendingUserVote: currentTracks?.filter(track => {
-        return !track.votes || !track.votes?.items.find(i => i.userId === userId);
-      }),
-    };
-  }, [userId, currentTracks]);
+  // MEMBER DATA
 
   const bandMembers = currentBand?.members as IUser[];
 
@@ -154,8 +162,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     fetchVotes,
     currentBand,
     currentPlaylist,
-    currentTracks,
-    sortedPlaylistBy,
+    filterPlaylistBy,
     sortPlaylistByPopularity,
   };
 }

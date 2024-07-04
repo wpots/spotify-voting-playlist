@@ -8,6 +8,8 @@ import AppFooter from './_components/UI/AppFooter';
 import AppHeader from './_components/UI/AppHeader';
 import UserContextProvider from './_context/client-user-provider';
 import { IBand } from '@domain/content';
+import { ThemeProvider } from '@mui/material';
+import theme from '../utils/theme';
 
 export const metadata: Metadata = {
   title: 'BandVoting',
@@ -38,17 +40,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     userBands,
   };
   return (
-    <html lang="en">
+    <html lang='en'>
       <body>
         <Provider session={session}>
           <UserContextProvider userProfile={userProfile}>
-            <header>
-              <AppHeader />
-            </header>
-            {children}
-            <footer>
-              <AppFooter />
-            </footer>
+            <ThemeProvider theme={theme}>
+              <header>
+                <AppHeader />
+              </header>
+              {children}
+              <footer>
+                <AppFooter />
+              </footer>
+            </ThemeProvider>
           </UserContextProvider>
         </Provider>
       </body>
