@@ -15,6 +15,7 @@ import useVoting from '@/app/_hooks/useVoting';
 import VoteByRatingInput from './VoteRatingInput';
 import VotingDetails from './VotingDetails';
 import VoteCommentInput from './VoteCommentInput';
+import TrackLink from '../Tracks/TrackLink';
 interface VotingDialogProps {
   track: ITrack;
   open: boolean;
@@ -46,15 +47,7 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
       <DialogTitle>
         {track && track.name} - {track && track.artists}
       </DialogTitle>
-      <Typography
-        variant="caption"
-        component="a"
-        href={track.url}
-        target="_blank"
-        sx={{ textDecoration: 'underline', px: ' 1.5rem', pb: '1rem', display: 'block' }}
-      >
-        luister op spotify
-      </Typography>
+      <TrackLink title='luister op spotify' url={track.url} />
       <Divider />
       <VotingDetails memberLists={memberStats} />
       <Divider />

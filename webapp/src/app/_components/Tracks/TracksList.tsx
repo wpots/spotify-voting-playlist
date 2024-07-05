@@ -9,6 +9,7 @@ import type { ITrack } from '@domain/content';
 import VotingDialog from '../Votes/VotingDialog';
 
 import { tracksListStyles } from './TracksList.styles';
+import TrackLink from './TrackLink';
 
 export default function TracksList({
   tracks,
@@ -52,7 +53,11 @@ export default function TracksList({
               onTrackSelected={enhancedView ? () => handleSelectedTrack(track) : undefined}
               enhancedView={enhancedView}
             >
-              {enhancedView && <VoteSummary votes={track.votes} />}
+              {enhancedView ? (
+                <VoteSummary votes={track.votes} />
+              ) : (
+                <TrackLink title='luister op spotify' url={track.url} />
+              )}
             </Track>
           );
         })}

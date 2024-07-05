@@ -71,12 +71,13 @@ export default function Track({ track, divider, onTrackSelected, enhancedView, c
             </ListItemAvatar>
           )}
           <ListItemText
+            className='text-ellipses'
             sx={{
-              flex: '1 1 auto',
-              maxWidth: ['128px', '268px', '390px'],
+              flex: '1 1 20%',
+              // maxWidth: ['128px', '268px', '390px'],
               overflow: 'hidden',
               whiteSpace: ['nowrap', 'normal'],
-              textOverflow: 'ellipsis',
+              // textOverflow: 'ellipsis',
             }}
             primary={track.name}
             secondary={<>{track.artists}</>}

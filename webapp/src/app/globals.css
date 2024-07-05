@@ -74,3 +74,12 @@ a {
     color-scheme: dark;
   }
 }
+
+.text-ellipses span,
+.text-ellipses p {
+  display: block;
+  width: inherit;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
