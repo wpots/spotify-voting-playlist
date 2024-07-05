@@ -3,19 +3,19 @@
 import PlaylistHeader from './PlaylistHeader';
 import LoadingIcon from '@mui/icons-material/Sync';
 import type { IPlaylist } from '@domain/content';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import useVoting, { FilteredPlaylist } from '@/app/_hooks/useVoting';
 import PlaylistFooter from './PlaylistFooter';
 
 import PlaylistAlertBox from './PlaylistAlertBox';
 import TracksList from '../Tracks/TracksList';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [isLoading, setIsLoading] = useState(true);
   const { fetchVotes, currentPlaylist, filterPlaylistBy, sortPlaylistByPopularity } = useVoting({ playlist });
-  const [filteredPlaylist, setFilteredPlaylist] = useState<string>('compleet');
+  const [filteredPlaylist, setFilteredPlaylist] = useState<string>('alles');
   const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
 
   useEffect(() => {
@@ -23,9 +23,8 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
       await fetchVotes();
     };
     initVotes();
-    setFilteredPlaylist(isVotableList ? 'compleet' : 'alles');
     setIsLoading(false);
-  }, [isVotableList, fetchVotes]);
+  }, []);
 
   const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
   const handleFilter = (type: string) => {
@@ -60,34 +59,11 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
         <LoadingIcon sx={{ display: 'flex', mx: 'auto', minHeight: '20vh' }} />
       ) : (
         <TracksList
-          tracks={sortPlaylistByPopularity(filterPlaylistBy[filteredPlaylist]?.tracks())}
+          tracks={sortPlaylistByPopularity(filterPlaylistBy[filteredPlaylist as keyof FilteredPlaylist]?.tracks())}
           enhancedView={isVotableList}
           onRefresh={() => fetchVotes()}
         />
       )}
-      {/* {isLoading ? (
-        <Icon sx={{ display: 'flex', mx: 'auto', minHeight: '20vh' }} />
-      ) : (
-        // Object.values(filterPlaylistBy).map((list, idx) => {
-        //   return (
-        //     list.tracks &&
-        //     list.tracks.length > 0 && (
-        //       <Accordion defaultExpanded={idx === 3}>
-        //         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        //           <Typography>{list.title}</Typography>
-        //         </AccordionSummary>
-        //         <AccordionDetails sx={{ p: '0' }}>
-        //           <TracksList
-        //             tracks={sortPlaylistByPopularity(list.tracks)}
-        //             enhancedView={isVotableList}
-        //             onRefresh={() => fetchVotes()}
-        //           />
-        //         </AccordionDetails>
-        //       </Accordion>
-        //     )
-          );
-        })
-      )} */}
 
       {!isLoading &&
         isVotableList &&

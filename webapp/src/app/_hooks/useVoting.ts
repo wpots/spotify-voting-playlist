@@ -12,10 +12,10 @@ type UseVotingOptions = {
   track?: any;
 };
 export type FilteredPlaylist = {
-  all?: { title: string; tracks: ITrack[] | undefined };
-  complete?: { title: string; tracks: () => ITrack[] | undefined };
-  pendingUserVote?: { title: string; tracks: () => ITrack[] | undefined };
-  pendingMemberVotes?: { title: string; tracks: () => ITrack[] | undefined };
+  alles: { title: string; tracks: () => ITrack[] };
+  compleet: { title: string; tracks: () => ITrack[] };
+  pendingUserVote: { title: string; tracks: () => ITrack[] };
+  incompleet: { title: string; tracks: () => ITrack[] };
 };
 
 export default function useVoting({ playlist, votes, track }: UseVotingOptions) {
