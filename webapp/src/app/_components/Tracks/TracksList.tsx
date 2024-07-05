@@ -14,19 +14,14 @@ import TrackLink from './TrackLink';
 export default function TracksList({
   tracks,
   enhancedView,
-  onFetchVotes,
+  onRefresh,
 }: {
   tracks: ITrack[];
   enhancedView: boolean;
-  onFetchVotes: Function;
+  onRefresh: Function;
 }) {
   const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-
-  useEffect(() => {
-    if (!selectedTrack && !openDialog) onFetchVotes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openDialog, selectedTrack]);
 
   useEffect(() => {
     if (selectedTrack) {
@@ -37,7 +32,10 @@ export default function TracksList({
   const handleSelectedTrack = (value: ITrack) => setSelectedTrack(value);
 
   const handleDialogClose = useCallback((reset: boolean) => {
-    if (reset) setSelectedTrack(null);
+    if (reset) {
+      setSelectedTrack(null);
+      onRefresh();
+    }
     setOpenDialog(false);
   }, []);
 

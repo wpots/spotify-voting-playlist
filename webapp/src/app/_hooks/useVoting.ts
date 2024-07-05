@@ -11,9 +11,11 @@ type UseVotingOptions = {
   votes?: any;
   track?: any;
 };
-type FilteredPlaylist = {
-  all?: ITrack[];
-  pendingUserVote?: ITrack[];
+export type FilteredPlaylist = {
+  all?: { title: string; tracks: ITrack[] | undefined };
+  complete?: { title: string; tracks: () => ITrack[] | undefined };
+  pendingUserVote?: { title: string; tracks: () => ITrack[] | undefined };
+  pendingMemberVotes?: { title: string; tracks: () => ITrack[] | undefined };
 };
 
 export default function useVoting({ playlist, votes, track }: UseVotingOptions) {
@@ -47,11 +49,35 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   }
 
   const currentBand = userContext?.userBands?.find(b => b.id === bandId);
+
+  // MEMBER DATA
+  const findBandMemberVote = useCallback(
+    (memberId: string, voteItems?: IVoteItem[]) => voteItems?.find((v: IVoteItem) => v.userId === memberId),
+    []
+  );
+  const bandMembers = currentBand?.members as IUser[];
+
+  const extendedVoteMembers = useMemo(
+    () =>
+      bandMembers?.map(member => {
+        return { ...member, vote: findBandMemberVote(member.id, votes?.items) };
+      }),
+    [votes, bandMembers, findBandMemberVote]
+  );
+
+  const memberStats = useMemo(
+    () => ({
+      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
+      voted: extendedVoteMembers?.filter(m => m.vote?.rating),
+    }),
+    [extendedVoteMembers, bandMembers, votes]
+  );
+
+  // PLAYLIST DATA
   const playlistFromSearchUrl = currentBand?.playlists?.find(
     p => (p as IPlaylist).id === query.get('playlist')
   ) as IPlaylist;
 
-  // PLAYLIST DATA
   if (!playlist) {
     // if no manual playlist is added, default to querystring in url or just the 1st you can find if any
     playlist = playlistFromSearchUrl || (currentBand?.playlists?.[0] as IPlaylist);
@@ -63,17 +89,8 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   // technically playlist is not needed if hook is used per track decoupled from any list
   const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
 
-  const filterPlaylistBy: FilteredPlaylist = useMemo(() => {
-    return {
-      all: currentPlaylist?.tracks.items,
-      pendingUserVote: currentPlaylist?.tracks.items?.filter(track => {
-        return !track.votes || !track.votes?.items.find(i => i.userId === userId);
-      }),
-    };
-  }, [userId, currentPlaylist]);
-
-  const sortPlaylistByPopularity = useMemo(() => {
-    filterPlaylistBy.all?.sort((a, b) => {
+  const sortPlaylistByPopularity = (tracks: ITrack[]) => {
+    return tracks?.sort((a, b) => {
       // no votes. move to bottom
       if (!a.votes?.total || !b.votes?.total) return 1;
       // same vote count, which has higher average?
@@ -91,32 +108,33 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
       }
       return 0;
     });
-  }, [filterPlaylistBy.all]);
+  };
+
+  const filterPlaylistBy: FilteredPlaylist = useMemo(() => {
+    const allTracks = currentPlaylist?.tracks.items;
+
+    return {
+      compleet: {
+        title: 'verkiesbaar/compleet',
+        tracks: () =>
+          allTracks?.filter(track => bandMembers.every(member => findBandMemberVote(member.id, track.votes?.items))),
+      },
+      pendingUserVote: {
+        title: 'stem nu!',
+        tracks: () => allTracks?.filter(track => !findBandMemberVote(userId, track.votes?.items)),
+      },
+      incompleet: {
+        title: 'in afwachting',
+        tracks: () =>
+          allTracks?.filter(track => bandMembers.some(member => !findBandMemberVote(member.id, track.votes?.items))),
+      },
+      alles: { title: 'alle', tracks: () => allTracks },
+    };
+  }, [userId, currentPlaylist, bandMembers, findBandMemberVote]);
 
   const userVote = useMemo(() => {
     return votes?.items.find((i: IVoteItem) => userId === i.userId);
   }, [votes, userId]);
-
-  // MEMBER DATA
-
-  const bandMembers = currentBand?.members as IUser[];
-
-  const extendedVoteMembers = useMemo(
-    () =>
-      bandMembers?.map(member => {
-        const voteByMember = votes?.items?.find((v: IVoteItem) => v.userId === member.id);
-        return { ...member, vote: voteByMember };
-      }),
-    [votes, bandMembers]
-  );
-
-  const memberStats = useMemo(
-    () => ({
-      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
-      voted: extendedVoteMembers?.filter(m => m.vote?.rating),
-    }),
-    [extendedVoteMembers, bandMembers, votes]
-  );
 
   const fetchVotes = useCallback(async () => {
     if (!currentPlaylist) throw Error('No playlist id specified!');

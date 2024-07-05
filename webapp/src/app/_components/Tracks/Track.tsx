@@ -14,9 +14,8 @@ import {
   Typography,
 } from '@mui/material';
 
-import type { ITrack, IVoteItem } from '@domain/content';
+import type { ITrack } from '@domain/content';
 import TrackComments from '../Tracks/TrackComments';
-import { useCallback } from 'react';
 
 interface TrackProps {
   track: ITrack;

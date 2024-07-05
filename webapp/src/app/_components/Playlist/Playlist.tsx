@@ -1,20 +1,36 @@
 'use client';
 
 import PlaylistHeader from './PlaylistHeader';
-
+import LoadingIcon from '@mui/icons-material/Sync';
 import type { IPlaylist } from '@domain/content';
-
-import useVoting from '@/app/_hooks/useVoting';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import useVoting, { FilteredPlaylist } from '@/app/_hooks/useVoting';
 import PlaylistFooter from './PlaylistFooter';
 
 import PlaylistAlertBox from './PlaylistAlertBox';
 import TracksList from '../Tracks/TracksList';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
-  const { fetchVotes, currentPlaylist, filterPlaylistBy } = useVoting({ playlist });
+  const [isLoading, setIsLoading] = useState(true);
+  const { fetchVotes, currentPlaylist, filterPlaylistBy, sortPlaylistByPopularity } = useVoting({ playlist });
+  const [filteredPlaylist, setFilteredPlaylist] = useState<string>('compleet');
+
+  useEffect(() => {
+    const initVotes = async () => {
+      await fetchVotes();
+    };
+    initVotes();
+    setFilteredPlaylist('compleet');
+    setIsLoading(false);
+  }, []);
 
   const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
   const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
+  const handleFilter = (type: string) => {
+    setFilteredPlaylist(type);
+  };
   return (
     <>
       <PlaylistHeader
@@ -22,21 +38,68 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
         url={currentPlaylist?.url}
         linkTitle={playlistLinkTitle}
       />
-
-      {isVotableList && filterPlaylistBy.pendingUserVote && filterPlaylistBy.pendingUserVote?.length > 0 && (
-        <PlaylistAlertBox title='Vergeet niet te stemmen!' isOpen={true}>
-          <TracksList
-            tracks={filterPlaylistBy.pendingUserVote}
-            enhancedView={isVotableList}
-            onFetchVotes={() => fetchVotes()}
-          />
-        </PlaylistAlertBox>
+      <Box sx={{ p: '1rem' }}>
+        <Stack spacing={1} direction='row' justifyContent='center' alignItems='center'>
+          <Typography variant='caption' sx={{ justifySelf: 'start', marginRight: 'auto!important' }}>
+            filter:
+          </Typography>
+          {['compleet', 'incompleet', 'alles'].map(chip => {
+            return (
+              <Chip
+                onClick={() => handleFilter(chip)}
+                label={chip}
+                key={chip}
+                variant={filteredPlaylist === chip ? 'filled' : 'outlined'}
+              />
+            );
+          })}
+        </Stack>
+      </Box>
+      {isLoading ? (
+        <LoadingIcon sx={{ display: 'flex', mx: 'auto', minHeight: '20vh' }} />
+      ) : (
+        <TracksList
+          tracks={sortPlaylistByPopularity(filterPlaylistBy[filteredPlaylist]?.tracks())}
+          enhancedView={isVotableList}
+          onRefresh={() => fetchVotes()}
+        />
       )}
+      {/* {isLoading ? (
+        <Icon sx={{ display: 'flex', mx: 'auto', minHeight: '20vh' }} />
+      ) : (
+        // Object.values(filterPlaylistBy).map((list, idx) => {
+        //   return (
+        //     list.tracks &&
+        //     list.tracks.length > 0 && (
+        //       <Accordion defaultExpanded={idx === 3}>
+        //         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        //           <Typography>{list.title}</Typography>
+        //         </AccordionSummary>
+        //         <AccordionDetails sx={{ p: '0' }}>
+        //           <TracksList
+        //             tracks={sortPlaylistByPopularity(list.tracks)}
+        //             enhancedView={isVotableList}
+        //             onRefresh={() => fetchVotes()}
+        //           />
+        //         </AccordionDetails>
+        //       </Accordion>
+        //     )
+          );
+        })
+      )} */}
 
-      {filterPlaylistBy.all && filterPlaylistBy.all?.length > 0 && (
-        <TracksList tracks={filterPlaylistBy.all} enhancedView={isVotableList} onFetchVotes={() => fetchVotes()} />
-      )}
-
+      {!isLoading &&
+        isVotableList &&
+        filterPlaylistBy.pendingUserVote?.tracks &&
+        filterPlaylistBy.pendingUserVote.tracks().length > 0 && (
+          <PlaylistAlertBox title={filterPlaylistBy.pendingUserVote.title} isOpen={true}>
+            <TracksList
+              tracks={filterPlaylistBy.pendingUserVote.tracks()}
+              enhancedView={isVotableList}
+              onRefresh={() => fetchVotes()}
+            />
+          </PlaylistAlertBox>
+        )}
       {isVotableList && <PlaylistFooter url={currentPlaylist?.url} />}
     </>
   );
