@@ -14,10 +14,14 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const { fetchVotes, currentPlaylist, filterPlaylistBy } = useVoting({ playlist });
 
   const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
-
+  const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
   return (
     <>
-      <PlaylistHeader description={currentPlaylist?.description} url={currentPlaylist?.url} />
+      <PlaylistHeader
+        description={currentPlaylist?.description}
+        url={currentPlaylist?.url}
+        linkTitle={playlistLinkTitle}
+      />
 
       {isVotableList && filterPlaylistBy.pendingUserVote && filterPlaylistBy.pendingUserVote?.length > 0 && (
         <PlaylistAlertBox title='Vergeet niet te stemmen!' isOpen={true}>
