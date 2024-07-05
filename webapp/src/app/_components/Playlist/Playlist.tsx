@@ -16,17 +16,17 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [isLoading, setIsLoading] = useState(true);
   const { fetchVotes, currentPlaylist, filterPlaylistBy, sortPlaylistByPopularity } = useVoting({ playlist });
   const [filteredPlaylist, setFilteredPlaylist] = useState<string>('compleet');
+  const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
 
   useEffect(() => {
     const initVotes = async () => {
       await fetchVotes();
     };
     initVotes();
-    setFilteredPlaylist('compleet');
+    setFilteredPlaylist(isVotableList ? 'compleet' : 'alles');
     setIsLoading(false);
-  }, []);
+  }, [isVotableList, fetchVotes]);
 
-  const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
   const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
   const handleFilter = (type: string) => {
     setFilteredPlaylist(type);
@@ -43,16 +43,17 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
           <Typography variant='caption' sx={{ justifySelf: 'start', marginRight: 'auto!important' }}>
             filter:
           </Typography>
-          {['compleet', 'incompleet', 'alles'].map(chip => {
-            return (
-              <Chip
-                onClick={() => handleFilter(chip)}
-                label={chip}
-                key={chip}
-                variant={filteredPlaylist === chip ? 'filled' : 'outlined'}
-              />
-            );
-          })}
+          {isVotableList &&
+            ['compleet', 'incompleet', 'alles'].map(chip => {
+              return (
+                <Chip
+                  onClick={() => handleFilter(chip)}
+                  label={chip}
+                  key={chip}
+                  variant={filteredPlaylist === chip ? 'filled' : 'outlined'}
+                />
+              );
+            })}
         </Stack>
       </Box>
       {isLoading ? (
