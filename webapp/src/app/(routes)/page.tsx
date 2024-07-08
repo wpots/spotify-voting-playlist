@@ -1,11 +1,13 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { authOptions } from '@/utils/authentication/authOptions';
 import * as ContentService from '@/utils/content/content.service';
 import BandTeaser from '../_components/Band/BandTeaser';
 import type { IBand } from '@domain/content';
 import LoginButton from '../_components/Auth/LoginButton';
+import BandList from '../_components/Band/BandList';
+import AppBanner from '../_components/UI/AppBanner';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -25,18 +27,11 @@ export default async function Home() {
   if (bands?.length === 1) redirect(`/bands/${bands?.[0]?.id}`);
   return (
     <main>
+      <AppBanner title='Welkom' subTitle='fijn dat jij erbij band' />
       <Box sx={{ padding: '2rem' }}>
-        <Typography variant="h2">Welkom</Typography>
-        <Typography variant="subtitle1">Leuk dat je er bij band!</Typography>
-        {bands && (
-          <Stack spacing={2} direction="row">
-            {bands.map(band => (
-              <BandTeaser band={band} key={band.id}></BandTeaser>
-            ))}
-          </Stack>
-        )}
+        {bands && <BandList bands={bands} />}
         {errorMessage && (
-          <Typography variant="body1" sx={{ mb: '1rem' }}>
+          <Typography variant='body1' sx={{ mb: '1rem' }}>
             {errorMessage}
           </Typography>
         )}
