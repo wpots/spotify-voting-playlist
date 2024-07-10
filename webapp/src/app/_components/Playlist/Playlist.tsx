@@ -14,21 +14,25 @@ import { useEffect, useState } from 'react';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [isLoading, setIsLoading] = useState(true);
-  const { fetchVotes, currentPlaylist, filterPlaylistBy, sortPlaylistByPopularity } = useVoting({ playlist });
-  const [filteredPlaylist, setFilteredPlaylist] = useState<string>('alles');
+  const { fetchVotes, currentPlaylist, filterPlaylistBy, playlistFilters, memberStats } = useVoting({ playlist });
+  const [currentFilter, setCurrentFilter] = useState<string>('alles');
   const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
+
+  console.log('RENDER', isLoading);
 
   useEffect(() => {
     const initVotes = async () => {
       await fetchVotes();
     };
     initVotes();
+    console.log('VOTES GOTTEN');
     setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
   const handleFilter = (type: string) => {
-    setFilteredPlaylist(type);
+    setCurrentFilter(type);
   };
   return (
     <>
@@ -38,18 +42,18 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
         linkTitle={playlistLinkTitle}
       />
       <Box sx={{ p: '1rem' }}>
-        <Stack spacing={1} direction='row' justifyContent='center' alignItems='center'>
-          <Typography variant='caption' sx={{ justifySelf: 'start', marginRight: 'auto!important' }}>
-            filter:
-          </Typography>
+        <Stack spacing={1} direction='row' justifyContent='flex-end' alignItems='center'>
+          <Typography variant='caption'>filter:</Typography>
           {isVotableList &&
-            ['compleet', 'incompleet', 'alles'].map(chip => {
+            playlistFilters.length > 1 &&
+            playlistFilters.map(chip => {
               return (
                 <Chip
                   onClick={() => handleFilter(chip)}
                   label={chip}
                   key={chip}
-                  variant={filteredPlaylist === chip ? 'filled' : 'outlined'}
+                  variant={currentFilter === chip ? 'filled' : 'outlined'}
+                  color='primary'
                 />
               );
             })}
@@ -59,24 +63,22 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
         <LoadingIcon sx={{ display: 'flex', mx: 'auto', minHeight: '20vh' }} />
       ) : (
         <TracksList
-          tracks={sortPlaylistByPopularity(filterPlaylistBy[filteredPlaylist as keyof FilteredPlaylist]?.tracks())}
+          tracks={filterPlaylistBy[currentFilter as keyof FilteredPlaylist]?.tracks}
+          stats={memberStats}
           enhancedView={isVotableList}
           onRefresh={() => fetchVotes()}
         />
       )}
 
-      {!isLoading &&
-        isVotableList &&
-        filterPlaylistBy.pendingUserVote?.tracks &&
-        filterPlaylistBy.pendingUserVote.tracks().length > 0 && (
-          <PlaylistAlertBox title={filterPlaylistBy.pendingUserVote.title} isOpen={true}>
-            <TracksList
-              tracks={filterPlaylistBy.pendingUserVote.tracks()}
-              enhancedView={isVotableList}
-              onRefresh={() => fetchVotes()}
-            />
-          </PlaylistAlertBox>
-        )}
+      {!isLoading && isVotableList && filterPlaylistBy['stem!'] && filterPlaylistBy['stem!'].total > 0 && (
+        <PlaylistAlertBox title={filterPlaylistBy['stem!'].title} isOpen={true}>
+          <TracksList
+            tracks={filterPlaylistBy['stem!'].tracks}
+            enhancedView={isVotableList}
+            onRefresh={() => fetchVotes()}
+          />
+        </PlaylistAlertBox>
+      )}
       {isVotableList && <PlaylistFooter url={currentPlaylist?.url} />}
     </>
   );

@@ -1,6 +1,6 @@
 'use client';
 import React, { memo } from 'react';
-import { Stack, Box, Avatar, Badge, Typography, Tooltip } from '@mui/material';
+import { Stack, Box, Typography } from '@mui/material';
 import { IUser } from '@domain/content';
 
 interface VotersListProps {

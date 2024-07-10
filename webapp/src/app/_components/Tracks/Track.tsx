@@ -5,8 +5,6 @@ import {
   Divider,
   ListItemButton,
   Box,
-  useMediaQuery,
-  useTheme,
   ListItem,
   ListItemText,
   ListItemAvatar,
@@ -27,8 +25,6 @@ interface TrackProps {
 }
 
 export default function Track({ track, divider, onTrackSelected, enhancedView, controls, children }: TrackProps) {
-  const theme = useTheme();
-  const onlyDesktops = useMediaQuery(theme?.breakpoints.up('sm')); // reinstall what was lost
   const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();

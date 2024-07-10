@@ -1,9 +1,9 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Box,  Typography } from '@mui/material';
 import { authOptions } from '@/utils/authentication/authOptions';
 import * as ContentService from '@/utils/content/content.service';
-import BandTeaser from '../_components/Band/BandTeaser';
+
 import type { IBand } from '@domain/content';
 import LoginButton from '../_components/Auth/LoginButton';
 import BandList from '../_components/Band/BandList';
@@ -28,7 +28,7 @@ export default async function Home() {
   return (
     <main>
       <AppBanner title='Welkom' subTitle='fijn dat jij erbij band' />
-      <Box sx={{ padding: '2rem' }}>
+      <Box sx={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {bands && <BandList bands={bands} />}
         {errorMessage && (
           <Typography variant='body1' sx={{ mb: '1rem' }}>

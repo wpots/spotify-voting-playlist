@@ -4,7 +4,7 @@ import List from '@mui/material/List';
 
 import Track from './Track';
 import VoteSummary from '../Votes/VoteSummary';
-import type { ITrack } from '@domain/content';
+import type { ITrack, IVote } from '@domain/content';
 
 import VotingDialog from '../Votes/VotingDialog';
 
@@ -13,13 +13,15 @@ import TrackLink from './TrackLink';
 
 export default function TracksList({
   tracks,
+  stats,
   enhancedView,
   onRefresh,
-}: {
-  tracks: ITrack[];
+}: Readonly<{
+  tracks?: ITrack[];
+  stats?: (v: IVote) => any;
   enhancedView: boolean;
   onRefresh: Function;
-}) {
+}>) {
   const [selectedTrack, setSelectedTrack] = useState<ITrack | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -42,7 +44,8 @@ export default function TracksList({
   return (
     <>
       <List sx={tracksListStyles}>
-        {tracks.map((track: ITrack, idx: number) => {
+        {tracks?.map((track: ITrack, idx: number) => {
+          const votes = stats && track.votes ? stats(track.votes) : undefined;
           return (
             <Track
               track={track}
@@ -51,8 +54,8 @@ export default function TracksList({
               onTrackSelected={enhancedView ? () => handleSelectedTrack(track) : undefined}
               enhancedView={enhancedView}
             >
-              {enhancedView ? (
-                <VoteSummary votes={track.votes} />
+              {enhancedView && votes ? (
+                <VoteSummary votes={votes} />
               ) : (
                 <TrackLink title='luister op spotify' url={track.url} />
               )}

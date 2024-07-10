@@ -1,7 +1,7 @@
 import type { Vote } from '@firebase/api';
 import { useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { UserContext } from '../_context/client-user-provider';
-import { IBand, IPlaylist, ITrack, IUser, IVoteItem } from '@domain/content';
+import { IBand, IPlaylist, ITrack, IUser, IVote, IVoteItem } from '@domain/content';
 import { useParams, useSearchParams } from 'next/navigation';
 import votesMapper from '@/utils/votes/votes.mapper';
 import * as Actions from '../_actions';
@@ -12,10 +12,10 @@ type UseVotingOptions = {
   track?: any;
 };
 export type FilteredPlaylist = {
-  alles: { title: string; tracks: () => ITrack[] };
-  compleet: { title: string; tracks: () => ITrack[] };
-  pendingUserVote: { title: string; tracks: () => ITrack[] };
-  incompleet: { title: string; tracks: () => ITrack[] };
+  alles?: { title: string; tracks: ITrack[]; total: number };
+  compleet?: { title: string; tracks: ITrack[]; total: number; exclude?: boolean };
+  'stem!'?: { title: string; tracks: ITrack[]; total: number; exclude?: boolean };
+  incompleet?: { title: string; tracks: ITrack[]; total: number; exclude?: boolean };
 };
 
 export default function useVoting({ playlist, votes, track }: UseVotingOptions) {
@@ -23,6 +23,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     throw new Error('React Context is unavailable in Server Components');
   }
 
+  console.log('RENDER USEVOTE');
   // side effects are tasks that do not impact render cycle:
   // example : sorting a list , not directly related to rendered JSX
   // infinite loop can occur when setting state.
@@ -65,13 +66,12 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     [votes, bandMembers, findBandMemberVote]
   );
 
-  const memberStats = useMemo(
-    () => ({
-      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
-      voted: extendedVoteMembers?.filter(m => m.vote?.rating),
-    }),
-    [extendedVoteMembers, bandMembers, votes]
-  );
+  const memberStats = (votes: IVote) => ({
+    pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
+    voted: extendedVoteMembers?.filter(m => m.vote?.rating),
+    average: votes?.average ? +votes?.average : undefined,
+    isVetod: votes?.veto && votes.veto.length > 0,
+  });
 
   // PLAYLIST DATA
   const playlistFromSearchUrl = currentBand?.playlists?.find(
@@ -89,8 +89,8 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   // technically playlist is not needed if hook is used per track decoupled from any list
   const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
 
-  const sortPlaylistByPopularity = (tracks: ITrack[]) => {
-    return tracks?.sort((a, b) => {
+  const sortPlaylistByPopularity = useCallback((tracks: ITrack[]) => {
+    return tracks?.toSorted((a, b) => {
       // no votes. move to bottom
       if (!a.votes?.total || !b.votes?.total) return 1;
       // same vote count, which has higher average?
@@ -108,29 +108,59 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
       }
       return 0;
     });
-  };
+  }, []);
 
   const filterPlaylistBy: FilteredPlaylist = useMemo(() => {
     const allTracks = currentPlaylist?.tracks.items;
 
-    return {
-      compleet: {
-        title: 'verkiesbaar/compleet',
-        tracks: () =>
-          allTracks?.filter(track => bandMembers.every(member => findBandMemberVote(member.id, track.votes?.items))),
-      },
-      pendingUserVote: {
-        title: 'stem nu!',
-        tracks: () => allTracks?.filter(track => !findBandMemberVote(userId, track.votes?.items)),
-      },
-      incompleet: {
-        title: 'in afwachting',
-        tracks: () =>
-          allTracks?.filter(track => bandMembers.some(member => !findBandMemberVote(member.id, track.votes?.items))),
-      },
-      alles: { title: 'alle', tracks: () => allTracks },
-    };
+    if (allTracks && allTracks.length > 0) {
+      const allMembersVotes = allTracks?.filter(track =>
+        bandMembers.every(member => findBandMemberVote(member.id, track.votes?.items))
+      );
+      const memberVotesPending = allTracks?.filter(track =>
+        bandMembers.some(member => !findBandMemberVote(member.id, track.votes?.items))
+      );
+      const currentUserVotePending = allTracks?.filter(track => !findBandMemberVote(userId, track.votes?.items));
+      return {
+        compleet:
+          allMembersVotes.length > 0
+            ? {
+                title: 'verkiesbaar/compleet',
+                tracks: sortPlaylistByPopularity(allMembersVotes),
+                total: allMembersVotes.length,
+              }
+            : undefined,
+        incompleet:
+          memberVotesPending.length > 0
+            ? {
+                title: 'in afwachting',
+                tracks: sortPlaylistByPopularity(memberVotesPending),
+                total: memberVotesPending.length,
+              }
+            : undefined,
+        'stem!':
+          currentUserVotePending.length > 0
+            ? {
+                title: 'stem nu!',
+                tracks: sortPlaylistByPopularity(currentUserVotePending),
+                total: currentUserVotePending.length,
+                exclude: true,
+              }
+            : undefined,
+        alles: { title: 'alle', tracks: sortPlaylistByPopularity(allTracks), total: allTracks.length },
+      };
+    }
+    return {};
   }, [userId, currentPlaylist, bandMembers, findBandMemberVote]);
+
+  const playlistFilters = useMemo(() => {
+    return Object.keys(filterPlaylistBy).reduce((acc: string[], key) => {
+      if (filterPlaylistBy[key as keyof FilteredPlaylist]?.tracks) {
+        acc.push(key);
+      }
+      return acc;
+    }, []);
+  }, [filterPlaylistBy]);
 
   const userVote = useMemo(() => {
     return votes?.items.find((i: IVoteItem) => userId === i.userId);
@@ -181,6 +211,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     currentBand,
     currentPlaylist,
     filterPlaylistBy,
+    playlistFilters,
     sortPlaylistByPopularity,
   };
 }

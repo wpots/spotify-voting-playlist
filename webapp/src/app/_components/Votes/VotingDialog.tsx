@@ -1,16 +1,7 @@
 'use client';
 import React, { useCallback, useState } from 'react';
 import type { ITrack } from '@domain/content';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider } from '@mui/material';
 import useVoting from '@/app/_hooks/useVoting';
 import VoteByRatingInput from './VoteRatingInput';
 import VotingDetails from './VotingDetails';
@@ -22,9 +13,10 @@ interface VotingDialogProps {
   onClose: (val: boolean) => void;
 }
 
-export default function VotingDialog({ track, open, onClose }: VotingDialogProps) {
+export default function VotingDialog({ track, open, onClose }: Readonly<VotingDialogProps>) {
   const { memberStats, userVote, setUserVote } = useVoting(track);
   const [voted, setVoted] = useState<Record<string, any>>({ rating: null, comment: null });
+  const stats = track.votes ? memberStats(track.votes) : undefined;
 
   const handleSaveAndClose = async () => {
     if (voted) {
@@ -45,11 +37,11 @@ export default function VotingDialog({ track, open, onClose }: VotingDialogProps
   return (
     <Dialog open={open} onClose={() => onClose(true)}>
       <DialogTitle>
-        {track && track.name} - {track && track.artists}
+        {track?.name} - {track?.artists}
       </DialogTitle>
       <TrackLink title='luister op spotify' url={track.url} />
       <Divider />
-      <VotingDetails memberLists={memberStats} />
+      <VotingDetails details={stats} />
       <Divider />
       <DialogContent dividers>
         <DialogContentText>

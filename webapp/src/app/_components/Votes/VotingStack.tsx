@@ -8,7 +8,7 @@ import VetoIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 
 interface VotingStackProps {
   name: string;
-  value: number;
+  value?: number;
   readonly?: boolean;
   precision?: number;
   onChange?: (e: React.SyntheticEvent, value: number) => void;
@@ -27,8 +27,8 @@ const VotingStack = memo(function VotingStack({ name, value, precision, readonly
         value={rating}
         precision={precision ?? 0.2}
         max={5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        emptyIcon={isVetod ? <VetoIcon /> : <FavoriteBorderIcon fontSize="inherit" />}
+        icon={<FavoriteIcon fontSize='inherit' />}
+        emptyIcon={isVetod ? <VetoIcon /> : <FavoriteBorderIcon fontSize='inherit' />}
         // @ts-ignore
         onChange={onChange}
       />
