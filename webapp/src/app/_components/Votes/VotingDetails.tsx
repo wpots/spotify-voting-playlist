@@ -12,7 +12,7 @@ interface VotingDialogProps {
 
 export default function VotingDetails({ details }: Readonly<VotingDialogProps>) {
   return (
-    <Box sx={{ p: '1rem', backgroundColor: grey[200] }}>
+    <Box sx={{ p: '1rem' }}>
       {details?.voted?.map((member: IUser) => (
         <VotersList
           member={member}

@@ -8,8 +8,6 @@ import AppFooter from './_components/UI/AppFooter';
 import AppHeader from './_components/UI/AppHeader';
 import UserContextProvider from './_context/client-user-provider';
 import { IBand } from '@domain/content';
-import { ThemeProvider } from '@mui/material';
-import theme from '../utils/theme';
 import CustomThemeProvider from './_context/client-theme-provider';
 
 export const metadata: Metadata = {

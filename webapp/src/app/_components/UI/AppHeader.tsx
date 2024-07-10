@@ -27,7 +27,7 @@ export default function AppHeader() {
   const handleMenu = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
   };
-  console.log(userBands);
+
   const handleClose = () => setAnchorEl(null);
 
   return (
