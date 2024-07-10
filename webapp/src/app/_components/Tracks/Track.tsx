@@ -10,6 +10,7 @@ import {
   ListItemAvatar,
   Avatar,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 
 import type { ITrack } from '@domain/content';
@@ -26,6 +27,7 @@ interface TrackProps {
 
 export default function Track({ track, divider, onTrackSelected, enhancedView, controls, children }: TrackProps) {
   const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
+  const preferDark = useMediaQuery('(prefers-color-scheme: dark)');
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();
   };
@@ -50,10 +52,12 @@ export default function Track({ track, divider, onTrackSelected, enhancedView, c
     ? deepOrange['500']
     : grey['100'];
 
+  const backgroundColor = blockedByVeto ? red[`${preferDark ? 900 : 200}`] : 'transparent';
+
   return (
     <>
       {divider > 0 && <Divider component='li' />}
-      <ListItem disablePadding sx={{ backgroundColor: blockedByVeto ? red[200] : 'transparent' }} id={track.id}>
+      <ListItem disablePadding sx={{ backgroundColor }} id={track.id}>
         <ListItemButton
           sx={{ justifyContent: ['flex-start'], flexWrap: 'wrap', gap: '.5rem', padding: '.5rem' }}
           onClick={handleTrackSelected}
