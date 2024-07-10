@@ -88,7 +88,7 @@ export default function AppHeader() {
                 })}
               {userBands && userBands.length > 1 && <Divider />}
               {adminRight && <AdminMenu currentBand={currentBand} />}
-              <MenuItem component='a' href={`https://open.spotify.com/user/${data?.user.id}`}>
+              <MenuItem component='a' href={`https://open.spotify.com/user/${data?.user?.id}`}>
                 <ListItemIcon>
                   <Settings />
                 </ListItemIcon>

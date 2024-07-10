@@ -39,6 +39,7 @@ export default function TracksList({
       onRefresh();
     }
     setOpenDialog(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

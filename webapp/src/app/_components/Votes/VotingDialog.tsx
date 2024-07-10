@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useState, useMemo } from 'react';
-import type { ITrack } from '@domain/content';
+import type { ITrack, IUser } from '@domain/content';
 import {
   Button,
   Dialog,
@@ -30,11 +30,12 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
   const proxyVoteFor = track.votes?.items?.find(v => v.userId === params.memberid);
 
   const { memberStats, userVote, setUserVote, currentBand } = useVoting(track);
+  const members = currentBand?.members as IUser[];
   const [voted, setVoted] = useState<Record<string, any>>({ rating: null, comment: null });
   const stats = track.votes ? memberStats(track.votes) : undefined;
 
-  const setVoteFor = useMemo(() => (isProxyVote ? proxyVoteFor : userVote), [proxyVoteFor, userVote]);
-  const suggestedByMember = currentBand?.members.find(m => m.id === track.added_by);
+  const setVoteFor = useMemo(() => (isProxyVote ? proxyVoteFor : userVote), [proxyVoteFor, userVote, isProxyVote]);
+  const suggestedByMember = members.find(m => m.id === track.added_by.id);
   const handleSaveAndClose = async () => {
     if (voted) {
       await setUserVote(track.id, voted);

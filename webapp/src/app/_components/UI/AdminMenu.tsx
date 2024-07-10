@@ -4,10 +4,11 @@ import { Avatar, MenuItem, Divider, ListItemIcon, ListSubheader } from '@mui/mat
 import { IBand, IUser } from '@domain/content';
 
 export default function AdminMenu({ currentBand }: { currentBand: IBand }) {
+  const members = currentBand.members as IUser[];
   return (
     <>
       {currentBand && <ListSubheader>{currentBand.name}</ListSubheader>}
-      {currentBand?.members.map((m: IUser) => {
+      {members.map((m: IUser) => {
         return (
           <MenuItem key={m.id} href={`/bands/${currentBand.id}/member/${m.id}`} component='a'>
             <ListItemIcon>

@@ -13,7 +13,7 @@ const spotifyMapper = {
           refs: playlist.tracks?.items.map(i => i.track.id),
           items: playlist?.tracks?.items.map(item => ({
             ...item.track,
-            added_by: item.added_by.id,
+            added_by: item.added_by,
             artists: item.track.artists.map(artist => artist.name).toString(),
             url: item.track.external_urls?.spotify,
           })),
