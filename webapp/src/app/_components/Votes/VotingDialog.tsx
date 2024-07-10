@@ -25,15 +25,16 @@ interface VotingDialogProps {
 
 export default function VotingDialog({ track, open, onClose }: Readonly<VotingDialogProps>) {
   const params = useParams();
+
   const isProxyVote = params.memberid;
   const proxyVoteFor = track.votes?.items?.find(v => v.userId === params.memberid);
 
-  const { memberStats, userVote, setUserVote } = useVoting(track);
+  const { memberStats, userVote, setUserVote, currentBand } = useVoting(track);
   const [voted, setVoted] = useState<Record<string, any>>({ rating: null, comment: null });
   const stats = track.votes ? memberStats(track.votes) : undefined;
 
   const setVoteFor = useMemo(() => (isProxyVote ? proxyVoteFor : userVote), [proxyVoteFor, userVote]);
-
+  const suggestedByMember = currentBand?.members.find(m => m.id === track.added_by);
   const handleSaveAndClose = async () => {
     if (voted) {
       await setUserVote(track.id, voted);
@@ -56,6 +57,7 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
       <DialogTitle>
         {track?.name} - {track?.artists}
       </DialogTitle>
+
       <TrackLink title='luister op spotify' url={track.url} />
       <Divider />
       <VotingDetails details={stats} />
@@ -78,6 +80,10 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
           opslaan
         </Button>
       </DialogActions>
+      <Divider />
+      <Typography variant='caption' paddingInline={2} paddingBlock={1}>
+        voorstel van: {suggestedByMember?.name || suggestedByMember?.id}
+      </Typography>
     </Dialog>
   );
 }

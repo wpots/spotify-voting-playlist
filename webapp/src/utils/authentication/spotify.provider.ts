@@ -46,6 +46,7 @@ const providerOptions = {
   },
 
   async profile(profile: SpotifyProfile) {
+    console.log('SPOT', profile);
     const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
     const userProfile = {
       id: profile.id,

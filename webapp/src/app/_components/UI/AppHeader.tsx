@@ -19,6 +19,9 @@ import type { MouseEvent } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import useUser from '@/app/_hooks/useUser';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import Login from '@mui/icons-material/Login';
+import Logout from '@mui/icons-material/Logout';
+import Settings from '@mui/icons-material/Settings';
 import { IUser } from '@domain/content';
 import { useParams } from 'next/navigation';
 import AdminMenu from './AdminMenu';
@@ -85,9 +88,27 @@ export default function AppHeader() {
                 })}
               {userBands && userBands.length > 1 && <Divider />}
               {adminRight && <AdminMenu currentBand={currentBand} />}
-              {status === 'unauthenticated' && <MenuItem onClick={() => signIn('spotify')}>inloggen</MenuItem>}
+              <MenuItem component='a' href={`https://open.spotify.com/user/${data?.user.id}`}>
+                <ListItemIcon>
+                  <Settings />
+                </ListItemIcon>
+                wijzig profielnaam
+              </MenuItem>
+              {status === 'unauthenticated' && (
+                <MenuItem onClick={() => signIn('spotify')}>
+                  <ListItemIcon>
+                    <Login />
+                  </ListItemIcon>
+                  inloggen
+                </MenuItem>
+              )}
               {status === 'authenticated' && (
-                <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>uitloggen</MenuItem>
+                <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+                  <ListItemIcon>
+                    <Logout />
+                  </ListItemIcon>
+                  uitloggen
+                </MenuItem>
               )}
             </MenuList>
           </Menu>
