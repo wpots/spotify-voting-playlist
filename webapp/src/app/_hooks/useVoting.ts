@@ -22,6 +22,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   if (!UserContext) {
     throw new Error('React Context is unavailable in Server Components');
   }
+  const [isReady, setIsReady] = useState(false);
 
   // side effects are tasks that do not impact render cycle:
   // example : sorting a list , not directly related to rendered JSX
@@ -178,6 +179,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
       const updatedPlaylist = votesMapper.resolveVotesForPlaylistTracks(list as IPlaylist, votes);
 
       setCurrentPlaylist(updatedPlaylist);
+      setIsReady(true);
 
       return updatedPlaylist;
     } catch (error) {
@@ -198,6 +200,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   );
 
   return {
+    isReady,
     userVote,
     memberStats,
     setUserVote,

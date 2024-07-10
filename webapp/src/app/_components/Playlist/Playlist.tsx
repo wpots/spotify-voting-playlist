@@ -14,7 +14,9 @@ import { useEffect, useState } from 'react';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [isLoading, setIsLoading] = useState(true);
-  const { fetchVotes, currentPlaylist, filterPlaylistBy, playlistFilters, memberStats } = useVoting({ playlist });
+  const { fetchVotes, currentPlaylist, filterPlaylistBy, playlistFilters, memberStats, isReady } = useVoting({
+    playlist,
+  });
   const [currentFilter, setCurrentFilter] = useState<string>('alles');
   const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
 
@@ -69,7 +71,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
         />
       )}
 
-      {!isLoading && isVotableList && filterPlaylistBy['stem!'] && filterPlaylistBy['stem!'].total > 0 && (
+      {isReady && isVotableList && filterPlaylistBy['stem!'] && filterPlaylistBy['stem!'].total > 0 && (
         <PlaylistAlertBox title={filterPlaylistBy['stem!'].title} isOpen={true}>
           <TracksList
             tracks={filterPlaylistBy['stem!'].tracks}
