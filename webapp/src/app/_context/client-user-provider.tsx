@@ -7,6 +7,7 @@ import React, { createContext, useMemo } from 'react';
 interface IUserDataInput {
   userInfo: any;
   userBands?: IBand[];
+  isAdmin: boolean;
 }
 interface IUserContext extends IUserDataInput {
   currentBand?: IBand;
@@ -20,8 +21,6 @@ export default function UserContextProvider({
   children: React.ReactNode;
   userProfile: IUserDataInput;
 }): React.ReactNode {
-  const params = useParams();
-
   const ctx = {
     ...userProfile,
   };

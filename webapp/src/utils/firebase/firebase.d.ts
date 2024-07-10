@@ -18,5 +18,6 @@ declare module '@firebase/api' {
     userId: string;
     rating?: number;
     comment?: string;
+    timestamp?: number;
   }
 }

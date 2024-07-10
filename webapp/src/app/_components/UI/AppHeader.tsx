@@ -11,6 +11,7 @@ import {
   Divider,
   MenuList,
   ListItemIcon,
+  ListSubheader,
 } from '@mui/material';
 import { teal } from '@mui/material/colors';
 import { useState } from 'react';
@@ -18,10 +19,17 @@ import type { MouseEvent } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import useUser from '@/app/_hooks/useUser';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import { IUser } from '@domain/content';
+import { useParams } from 'next/navigation';
+import AdminMenu from './AdminMenu';
 
 export default function AppHeader() {
   const { data, status } = useSession();
-  const { userBands } = useUser();
+  const { userBands, isAdmin } = useUser();
+  const params = useParams();
+  const proxyVoteFor = params.memberid;
+  const currentBand = userBands?.find(b => b.id === params.uid);
+  const adminRight = isAdmin && currentBand;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleMenu = (e: MouseEvent<HTMLElement>) => {
@@ -31,7 +39,7 @@ export default function AppHeader() {
   const handleClose = () => setAnchorEl(null);
 
   return (
-    <AppBar position='static' sx={{ bgcolor: teal[800] }}>
+    <AppBar position='static' sx={{ border: proxyVoteFor ? '4px solid red' : null }}>
       <Toolbar sx={{ gap: '.5rem' }}>
         <Avatar src='/images/logo-invert.svg' sx={{ mr: '1rem' }} variant='square' />
         <Typography variant='h6' color='inherit' noWrap>
@@ -76,6 +84,7 @@ export default function AppHeader() {
                   );
                 })}
               {userBands && userBands.length > 1 && <Divider />}
+              {adminRight && <AdminMenu currentBand={currentBand} />}
               {status === 'unauthenticated' && <MenuItem onClick={() => signIn('spotify')}>inloggen</MenuItem>}
               {status === 'authenticated' && (
                 <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>uitloggen</MenuItem>

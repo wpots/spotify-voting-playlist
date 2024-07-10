@@ -1,12 +1,22 @@
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import type { ITrack } from '@domain/content';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Typography,
+} from '@mui/material';
 import useVoting from '@/app/_hooks/useVoting';
 import VoteByRatingInput from './VoteRatingInput';
 import VotingDetails from './VotingDetails';
 import VoteCommentInput from './VoteCommentInput';
 import TrackLink from '../Tracks/TrackLink';
+import { useParams } from 'next/navigation';
 interface VotingDialogProps {
   track: ITrack;
   open: boolean;
@@ -14,9 +24,15 @@ interface VotingDialogProps {
 }
 
 export default function VotingDialog({ track, open, onClose }: Readonly<VotingDialogProps>) {
+  const params = useParams();
+  const isProxyVote = params.memberid;
+  const proxyVoteFor = track.votes?.items?.find(v => v.userId === params.memberid);
+
   const { memberStats, userVote, setUserVote } = useVoting(track);
   const [voted, setVoted] = useState<Record<string, any>>({ rating: null, comment: null });
   const stats = track.votes ? memberStats(track.votes) : undefined;
+
+  const setVoteFor = useMemo(() => (isProxyVote ? proxyVoteFor : userVote), [proxyVoteFor, userVote]);
 
   const handleSaveAndClose = async () => {
     if (voted) {
@@ -32,7 +48,8 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
       ...(vote.comment && { comment: vote.comment }),
     }));
   }, []);
-  const voteHasChanged = userVote?.rating !== voted?.rating || userVote?.comment !== voted?.comment;
+
+  const voteHasChanged = setVoteFor?.rating !== voted?.rating || setVoteFor?.comment !== voted?.comment;
 
   return (
     <Dialog open={open} onClose={() => onClose(true)}>
@@ -43,12 +60,15 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
       <Divider />
       <VotingDetails details={stats} />
       <Divider />
-      <DialogContent dividers>
+      <DialogContent dividers sx={{ border: isProxyVote ? '4px solid red' : null }}>
+        <Typography variant='h6' sx={{ color: 'initial' }}>
+          {params.memberid ? params.memberid : 'jouw'} stem:
+        </Typography>
         <DialogContentText>
-          <VoteByRatingInput onVoted={(val: number) => handleVoted({ rating: val })} userVote={userVote?.rating} />
+          <VoteByRatingInput onVoted={(val: number) => handleVoted({ rating: val })} userVote={setVoteFor?.rating} />
           <VoteCommentInput
             onCommented={(val: string) => handleVoted({ comment: val })}
-            userComment={userVote?.comment}
+            userComment={setVoteFor?.comment}
           />
         </DialogContentText>
       </DialogContent>

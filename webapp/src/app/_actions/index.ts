@@ -9,13 +9,15 @@ import { IVote, IVoteItem } from '@domain/content';
  * Actions can be initiated by Form submits or evente handlers, they are the new nextJs way of handling POST requests (data mutations)
  */
 import { revalidatePath } from 'next/cache';
+import { useParams } from 'next/navigation';
 
-export async function setUserVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>) {
+export async function setUserVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>, memberId: string | null) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return { status: 401, message: 'unauthorized' };
-  const payload: IVoteItem = {
+  const userId = session.user.id === 'wietekeozturk' && memberId ? memberId : session.user.id;
+  const payload = {
     ...data,
-    userId: session?.user.id,
+    userId,
   };
   try {
     await FireStoreService.setVote(payload);

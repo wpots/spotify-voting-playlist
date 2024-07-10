@@ -186,18 +186,12 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   }, [bandMembers, currentPlaylist]);
 
   const setUserVote = useCallback(async (trackId: string, vote: Pick<IVoteItem, 'comment' | 'rating'>) => {
+    const voteFor = params.memberid as string;
     try {
-      await Actions.setUserVote({ trackId, ...vote });
+      await Actions.setUserVote({ trackId, ...vote }, voteFor);
     } catch (error) {
       console.error('SET_USER_VOTE ERROR:', error);
     }
-    // try {
-    //   const response = await fetch(`/api/votes/${trackId}?vote=${vote}`, { method: 'POST' });
-    //   const updatedVote = await response.json();
-    //   return updatedVote;
-    // } catch (error) {
-    //   console.error('USEVOTING setVote', error);
-    // }
   }, []);
 
   return {

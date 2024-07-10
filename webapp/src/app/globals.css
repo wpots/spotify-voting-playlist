@@ -74,6 +74,9 @@ a {
     color-scheme: dark;
   }
 }
+.power-user {
+  border: 4px solid red;
+}
 
 .text-ellipses span,
 .text-ellipses p {

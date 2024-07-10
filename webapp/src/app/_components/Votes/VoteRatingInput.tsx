@@ -24,13 +24,10 @@ export default function VoteRatingInput({ onVoted, userVote }: VoteRatingInputPr
   }, []);
   return (
     <Box>
-      <Typography variant="h6" sx={{ color: 'initial' }}>
-        Jouw stem:
-      </Typography>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-        <VotingStack onChange={handleVote} value={vote} name="user-vote" precision={1} />
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
+        <VotingStack onChange={handleVote} value={vote} name='user-vote' precision={1} />
         <Button
-          color="error"
+          color='error'
           startIcon={<VetoIcon />}
           variant={isVetod ? 'outlined' : 'contained'}
           onClick={e => handleVote(e, vote === -1 ? 0 : -1)}

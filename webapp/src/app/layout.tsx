@@ -27,16 +27,19 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const session = await getServerSession(authOptions);
 
   const userId = session?.user?.id;
+  let isAdmin = false;
   let userBands: IBand[] | undefined;
 
   if (userId) {
     // Additional computations are done in hook
     userBands = await ContentService.getBandsByUserId(userId);
+    isAdmin = userId === 'wietekeozturk';
   }
 
   const userProfile = {
     userInfo: session?.user,
     userBands,
+    isAdmin,
   };
   return (
     <html lang='en'>

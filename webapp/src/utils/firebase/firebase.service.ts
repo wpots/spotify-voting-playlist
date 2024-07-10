@@ -81,6 +81,7 @@ const updateVote = async (payload: Vote) => {
   const voteQuery = query(allVotes, where('userId', '==', payload.userId), where('trackId', '==', payload.trackId));
   const voteQuerySnapshot = await getDocs(voteQuery);
   const userVoteRef = doc(fireStore, 'votes', voteQuerySnapshot.docs[0].id);
+  payload.timestamp = Date.now();
   await setDoc(userVoteRef, payload);
 };
 
