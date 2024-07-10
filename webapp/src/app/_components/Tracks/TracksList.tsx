@@ -46,6 +46,8 @@ export default function TracksList({
       <List sx={tracksListStyles}>
         {tracks?.map((track: ITrack, idx: number) => {
           const votes = stats && track.votes ? stats(track.votes) : undefined;
+          console.log(votes);
+
           return (
             <Track
               track={track}

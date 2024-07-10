@@ -58,20 +58,18 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   );
   const bandMembers = currentBand?.members as IUser[];
 
-  const extendedVoteMembers = useMemo(
-    () =>
-      bandMembers?.map(member => {
-        return { ...member, vote: findBandMemberVote(member.id, votes?.items) };
-      }),
-    [votes, bandMembers, findBandMemberVote]
-  );
+  const memberStats = (votes: IVote) => {
+    const extendedVoteMembers = bandMembers?.map(member => {
+      return { ...member, vote: findBandMemberVote(member.id, votes.items) };
+    });
 
-  const memberStats = (votes: IVote) => ({
-    pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
-    voted: extendedVoteMembers?.filter(m => m.vote?.rating),
-    average: votes?.average ? +votes?.average : undefined,
-    isVetod: votes?.veto && votes.veto.length > 0,
-  });
+    return {
+      pending: votes?.items?.length === 0 ? bandMembers : extendedVoteMembers?.filter(m => !m.vote?.rating),
+      voted: extendedVoteMembers?.filter(m => m.vote?.rating),
+      average: votes?.average ? +votes?.average : undefined,
+      isVetod: votes?.veto && votes.veto.length > 0,
+    };
+  };
 
   // PLAYLIST DATA
   const playlistFromSearchUrl = currentBand?.playlists?.find(
@@ -151,7 +149,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
       };
     }
     return {};
-  }, [userId, currentPlaylist, bandMembers, findBandMemberVote]);
+  }, [userId, currentPlaylist, bandMembers, findBandMemberVote, sortPlaylistByPopularity]);
 
   const playlistFilters = useMemo(() => {
     return Object.keys(filterPlaylistBy).reduce((acc: string[], key) => {
