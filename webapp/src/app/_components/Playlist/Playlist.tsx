@@ -41,7 +41,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
       />
       <Box sx={{ py: '1rem' }}>
         <Stack spacing={1} direction='row' justifyContent='flex-end' alignItems='center'>
-          <Typography variant='caption'>filter:</Typography>
+          {isVotableList && playlistFilters.length > 1 && <Typography variant='caption'>filter:</Typography>}
           {isVotableList &&
             playlistFilters.length > 1 &&
             playlistFilters.map(chip => {
