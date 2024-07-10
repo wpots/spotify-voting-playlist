@@ -1,13 +1,35 @@
 'use client';
-import { Typography, AppBar, Toolbar, Avatar, Menu, Box, MenuItem, Button, Divider, MenuList } from '@mui/material';
+import {
+  Typography,
+  AppBar,
+  Toolbar,
+  Avatar,
+  Menu,
+  Box,
+  MenuItem,
+  Button,
+  Divider,
+  MenuList,
+  ListItemIcon,
+} from '@mui/material';
 import { teal } from '@mui/material/colors';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
+import type { MouseEvent } from 'react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import useUser from '@/app/_hooks/useUser';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 
 export default function AppHeader() {
-  const [isOpen, setIsOpen] = useState(false);
-  const handleMenu = useCallback(() => {
-    setIsOpen(prev => !prev);
-  }, []);
+  const { data, status } = useSession();
+  const { userBands } = useUser();
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const open = Boolean(anchorEl);
+  const handleMenu = (e: MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+  console.log(userBands);
+  const handleClose = () => setAnchorEl(null);
+
   return (
     <AppBar position='static' sx={{ bgcolor: teal[800] }}>
       <Toolbar sx={{ gap: '.5rem' }}>
@@ -16,17 +38,48 @@ export default function AppHeader() {
           Votinglist for the band
         </Typography>
         <Box marginLeft='auto'>
-          <Button onClick={handleMenu}>
-            <Avatar src='https://loremflickr.com/100/100/cat' />
+          <Button
+            id='menu-button'
+            onClick={handleMenu}
+            aria-controls={open ? 'menu' : undefined}
+            aria-haspopup='true'
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Avatar src={data?.user?.image ?? undefined} />
           </Button>
-          <Menu open={isOpen}>
+          <Menu
+            id='menu'
+            aria-labelledby='menu-button'
+            open={open}
+            onClose={handleClose}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
             <MenuList>
-              <MenuItem>actie iets</MenuItem>
-              <Divider />
-              <MenuItem>band 1</MenuItem>
-              <MenuItem>band 2</MenuItem>
-              <Divider />
-              <MenuItem>log uit</MenuItem>
+              {userBands &&
+                userBands.length > 1 &&
+                userBands.map(b => {
+                  return (
+                    <MenuItem key={b.id} href={`/bands/${b.id}`} component='a'>
+                      <ListItemIcon>
+                        <LibraryMusicIcon />
+                      </ListItemIcon>
+                      {b.name}
+                    </MenuItem>
+                  );
+                })}
+              {userBands && userBands.length > 1 && <Divider />}
+              {status === 'unauthenticated' && <MenuItem onClick={() => signIn('spotify')}>inloggen</MenuItem>}
+              {status === 'authenticated' && (
+                <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>uitloggen</MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Box>
