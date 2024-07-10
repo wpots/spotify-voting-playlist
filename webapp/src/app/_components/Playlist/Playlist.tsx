@@ -18,14 +18,12 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [currentFilter, setCurrentFilter] = useState<string>('alles');
   const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
 
-  console.log('RENDER', isLoading);
-
   useEffect(() => {
     const initVotes = async () => {
       await fetchVotes();
     };
     initVotes();
-    console.log('VOTES GOTTEN');
+
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

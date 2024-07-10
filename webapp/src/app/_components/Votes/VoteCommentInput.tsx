@@ -28,6 +28,7 @@ export default function VoteCommentInput({ onCommented, userComment }: VoteComme
       <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2}>
         <TextField
           id='comment'
+          defaultValue={undefined}
           value={comment}
           variant='standard'
           multiline

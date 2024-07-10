@@ -23,7 +23,6 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     throw new Error('React Context is unavailable in Server Components');
   }
 
-  console.log('RENDER USEVOTE');
   // side effects are tasks that do not impact render cycle:
   // example : sorting a list , not directly related to rendered JSX
   // infinite loop can occur when setting state.
