@@ -7,7 +7,6 @@ import { Box, Tab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Playlist from './Playlist';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { teal } from '@mui/material/colors';
 
 export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) {
   const router = useRouter();
@@ -26,7 +25,7 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
     setActivePlaylistId(val);
   };
   return (
-    <Box sx={{ width: '100%', maxWidth: '900px', margin: 'auto', bgcolor: teal[900] }}>
+    <Box sx={{ width: '100%', maxWidth: '900px', margin: 'auto' }}>
       {activePlaylistId && (
         <TabContext value={activePlaylistId}>
           {

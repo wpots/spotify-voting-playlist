@@ -10,6 +10,7 @@ import UserContextProvider from './_context/client-user-provider';
 import { IBand } from '@domain/content';
 import { ThemeProvider } from '@mui/material';
 import theme from '../utils/theme';
+import CustomThemeProvider from './_context/client-theme-provider';
 
 export const metadata: Metadata = {
   title: 'BandVoting',
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
  * side effects are all pages will be client side rendered
  */
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerSession(authOptions);
 
   const userId = session?.user?.id;
@@ -44,7 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <Provider session={session}>
           <UserContextProvider userProfile={userProfile}>
-            <ThemeProvider theme={theme}>
+            <CustomThemeProvider>
               <header>
                 <AppHeader />
               </header>
@@ -52,7 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <footer>
                 <AppFooter />
               </footer>
-            </ThemeProvider>
+            </CustomThemeProvider>
           </UserContextProvider>
         </Provider>
       </body>

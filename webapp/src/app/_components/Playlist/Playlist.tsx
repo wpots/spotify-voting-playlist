@@ -9,7 +9,7 @@ import PlaylistFooter from './PlaylistFooter';
 
 import PlaylistAlertBox from './PlaylistAlertBox';
 import TracksList from '../Tracks/TracksList';
-import { Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Divider, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
@@ -39,7 +39,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
         url={currentPlaylist?.url}
         linkTitle={playlistLinkTitle}
       />
-      <Box sx={{ p: '1rem' }}>
+      <Box sx={{ py: '1rem' }}>
         <Stack spacing={1} direction='row' justifyContent='flex-end' alignItems='center'>
           <Typography variant='caption'>filter:</Typography>
           {isVotableList &&
@@ -57,6 +57,7 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
             })}
         </Stack>
       </Box>
+      <Divider />
       {isLoading ? (
         <LoadingIcon sx={{ display: 'flex', mx: 'auto', minHeight: '20vh' }} />
       ) : (

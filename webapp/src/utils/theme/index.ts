@@ -1,18 +1,21 @@
 'use client';
 import { Figtree } from 'next/font/google';
-import { createTheme } from '@mui/material';
-import { teal, green } from '@mui/material/colors';
+import { createTheme, useMediaQuery } from '@mui/material';
+import { teal } from '@mui/material/colors';
 
 const bodyFont = Figtree({ subsets: ['latin'], display: 'swap' });
 
-const theme = createTheme({
+export const myThemeOptions = {
   palette: {
     primary: teal,
   },
   typography: {
     fontFamily: bodyFont.style.fontFamily,
   },
-  components: {},
+};
+const preferDark = useMediaQuery('(prefers-color-scheme: dark)');
+const theme = createTheme({
+  ...myThemeOptions,
 });
 
 export default theme;
