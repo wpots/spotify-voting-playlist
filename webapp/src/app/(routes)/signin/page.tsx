@@ -21,7 +21,9 @@ export default function SignIn(props: PageProps) {
     <Container maxWidth='sm'>
       <Grid2 container>
         <Grid2 xs display='flex' justifyContent='center' alignItems='center'>
-          <LoginWrapper></LoginWrapper>
+          <LoginWrapper>
+            <LoginScreen continueUrl={props.searchParams?.continueUrl} />
+          </LoginWrapper>
         </Grid2>
       </Grid2>
     </Container>

@@ -1,12 +1,10 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/utils/authentication/authOptions';
-import { notFound } from 'next/navigation';
+import { getServerSession } from '@/utils/authentication';
+import { notFound, redirect } from 'next/navigation';
 import * as ContentService from '@/utils/content/content.service';
 import { Typography, Alert } from '@mui/material';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 import { IBand, IPlaylist } from '@domain/content';
 
-import { signIn } from 'next-auth/react';
 import AppBanner from '@/app/_components/UI/AppBanner';
 
 interface BandPageProps {
@@ -14,10 +12,9 @@ interface BandPageProps {
 }
 
 export default async function BandPage({ params }: BandPageProps) {
-  const session = await getServerSession(authOptions);
-  if (session?.error === 'RefreshAccessTokenError') {
-    signIn(); // Force sign in to hopefully resolve error
-  }
+  const session = await getServerSession();
+
+  if (!session) redirect('/signin?unauthenticated=true');
 
   const userId = session?.user?.id;
   let userBands: IBand[] | undefined;

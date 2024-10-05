@@ -9,6 +9,8 @@ import AppHeader from './_components/UI/AppHeader';
 import UserContextProvider from './_context/client-user-provider';
 import { IBand } from '@domain/content';
 import CustomThemeProvider from './_context/client-theme-provider';
+import Head from 'next/head';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'BandVoting',

@@ -10,6 +10,7 @@ import { IVote, IVoteItem } from '@domain/content';
  */
 import { revalidatePath } from 'next/cache';
 import { useParams } from 'next/navigation';
+import { signInWithCredential } from 'firebase/auth';
 
 export async function setUserVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>, memberId: string | null) {
   const session = await getServerSession(authOptions);
@@ -25,4 +26,8 @@ export async function setUserVote(data: Pick<IVoteItem, 'trackId' | 'rating' | '
   } catch (error) {
     return { status: 400, message: 'voting failed', cause: error };
   }
+}
+
+export async function loginAction(formData) {
+  signInWithCredential;
 }

@@ -1,16 +1,19 @@
-import { withAuth } from 'next-auth/middleware';
+import { authMiddleware } from 'next-firebase-auth-edge';
+import { NextRequest } from 'next/server';
+import { serverConfig } from './utils/authentication';
 
-// More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
-export default withAuth(function middleware(req) {}, {
-  pages: {
-    signIn: '/auth/signin',
-  },
-  callbacks: {
-    authorized: ({ req, token }) => {
-      return true;
-    },
-  },
-});
+export async function middleware(request: NextRequest) {
+  return authMiddleware(request, {
+    loginPath: '/api/login',
+    logoutPath: '/api/logout',
+    apiKey: serverConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    cookieSerializeOptions: serverConfig.cookieSerializeOptions,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+}
+
 export const config = {
-  matcher: ['/bands/:path*', '/members/:path*'],
+  matcher: ['/', '/((?!_next|api|.*\\.).*)', '/api/login', '/api/logout'],
 };

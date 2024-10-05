@@ -88,12 +88,7 @@ export default function AppHeader() {
                 })}
               {userBands && userBands.length > 1 && <Divider />}
               {adminRight && <AdminMenu currentBand={currentBand} />}
-              <MenuItem component='a' href={`https://open.spotify.com/user/${data?.user?.id}`}>
-                <ListItemIcon>
-                  <Settings />
-                </ListItemIcon>
-                wijzig profielnaam
-              </MenuItem>
+
               {status === 'unauthenticated' && (
                 <MenuItem onClick={() => signIn('spotify')}>
                   <ListItemIcon>
@@ -103,12 +98,20 @@ export default function AppHeader() {
                 </MenuItem>
               )}
               {status === 'authenticated' && (
-                <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>
-                  <ListItemIcon>
-                    <Logout />
-                  </ListItemIcon>
-                  uitloggen
-                </MenuItem>
+                <>
+                  <MenuItem component='a' href={`https://open.spotify.com/user/${data?.user?.id}`}>
+                    <ListItemIcon>
+                      <Settings />
+                    </ListItemIcon>
+                    wijzig profielnaam
+                  </MenuItem>
+                  <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+                    <ListItemIcon>
+                      <Logout />
+                    </ListItemIcon>
+                    uitloggen
+                  </MenuItem>
+                </>
               )}
             </MenuList>
           </Menu>

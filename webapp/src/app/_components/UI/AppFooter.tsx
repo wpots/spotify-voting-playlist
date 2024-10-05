@@ -7,7 +7,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 export default async function AppFooter() {
   return (
     <>
-      {/* <AppNotificationBar /> */}
       <Typography
         variant='caption'
         component='p'
