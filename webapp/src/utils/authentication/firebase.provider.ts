@@ -1,14 +1,13 @@
-import { getTokens } from 'next-firebase-auth-edge';
-import { cookies } from 'next/headers';
-import { serverConfig } from '../firebase/firebase.config';
+import { sendSignInLinkToEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import { fireAuth } from '../firebase/firebaseClient';
 
-export async function getServerSession() {
-  const tokens = await getTokens(cookies(), {
-    apiKey: serverConfig.apiKey,
-    cookieName: serverConfig.cookieName,
-    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-    serviceAccount: serverConfig.serviceAccount,
+export async function sendEmailLinkForSignIn(email: string) {
+  return await sendSignInLinkToEmail(fireAuth, email, {
+    url: process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://votinglist.pettico.de',
+    handleCodeInApp: true,
   });
+}
 
-  return tokens;
+export async function passwordSignIn(email: string, password: string) {
+  return await signInWithEmailAndPassword(fireAuth, email, password);
 }

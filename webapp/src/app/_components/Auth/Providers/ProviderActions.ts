@@ -1,14 +1,28 @@
 'use server';
-import { fireAuth } from '@/utils/firebase/firebaseClient';
-import { sendSignInLinkToEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import type { FirebaseError } from 'firebase/app';
 import { FormState } from './EmailLinkSignIn';
+import { AuthProvider } from '@/utils/authentication';
+
+function resolveAuthError(code: string) {
+  switch (code) {
+    case 'auth/quota-exceeded':
+      return 'timeout, please try a different login method...';
+
+    case 'auth/admin-restricted-operation':
+      return 'unknown email, please try a known email';
+
+    default:
+      return code;
+  }
+}
 
 export async function PasswordSignInAction(formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
+  // do zod stuff
 
   try {
-    const response = await signInWithEmailAndPassword(fireAuth, email, password);
+    const response = await AuthProvider.passwordSignIn(email, password);
 
     console.log('RESPONSE=======================', response);
   } catch (error) {
@@ -16,42 +30,20 @@ export async function PasswordSignInAction(formData: FormData) {
   }
 }
 
-export async function PhoneSignInAction(formData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-
-  try {
-    const response = await signInWithEmailAndPassword(fireAuth, email, password);
-
-    console.log('RESPONSE=======================', response);
-  } catch (error) {
-    console.log('OOOPS================', error);
-  }
+export async function PhoneSignInAction(formData: FormData) {
+  const tel = formData.get('telephone') as string;
 }
-export async function GoogleSignInAction(formData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+export async function GoogleSignInAction(formData: FormData) {}
 
-  try {
-    const response = await signInWithEmailAndPassword(fireAuth, email, password);
-
-    console.log('RESPONSE=======================', response);
-  } catch (error) {
-    console.log('OOOPS================', error);
-  }
-}
-export async function SendLinkSignInAction(formState: FormState, formData: FormData): Promise<FormState> {
+export async function SendLinkSignInAction(_: FormState, formData: FormData): Promise<FormState> {
   const email = formData.get('email') as string;
 
-  const actionCodeSettings = {
-    url: 'https://votinglist.pettico.de',
-    handleCodeInApp: true,
-  };
-
   try {
-    await sendSignInLinkToEmail(fireAuth, email, actionCodeSettings);
+    await AuthProvider.sendEmailLinkForSignIn(email);
     return { status: 'OK', data: { email } };
   } catch (error) {
-    return { status: 'ERROR', error: JSON.stringify(error) };
+    console.log(error);
+    const message = resolveAuthError((error as FirebaseError).code);
+    return { status: 'ERROR', error: message };
   }
 }
