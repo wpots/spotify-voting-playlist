@@ -16,7 +16,6 @@ import {
 import { teal } from '@mui/material/colors';
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
-import { signIn, signOut, useSession } from 'next-auth/react';
 import useUser from '@/app/_hooks/useUser';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import Login from '@mui/icons-material/Login';
@@ -25,26 +24,34 @@ import Settings from '@mui/icons-material/Settings';
 import { IUser } from '@domain/content';
 import { useParams } from 'next/navigation';
 import AdminMenu from './AdminMenu';
+import { signOut } from '../Auth/Providers/SignInActions';
+import { useAuthentication } from '@/utils/authentication';
 
 export default function AppHeader() {
-  const { data, status } = useSession();
-  const { userBands, isAdmin } = useUser();
+  const { myBands, isAdmin, profile, auth } = useUser();
+  const { logout } = useAuthentication();
   const params = useParams();
   const proxyVoteFor = params.memberid;
-  const currentBand = userBands?.find(b => b.id === params.uid);
+  const currentBand = myBands?.find(b => b.id === params.uid);
   const adminRight = isAdmin && currentBand;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleMenu = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
   };
-
   const handleClose = () => setAnchorEl(null);
+
+  const handleSignOut = async () => {
+    await logout();
+    await signOut();
+  };
 
   return (
     <AppBar position='static' sx={{ border: proxyVoteFor ? '4px solid red' : null }}>
       <Toolbar sx={{ gap: '.5rem' }}>
-        <Avatar src='/images/logo-invert.svg' sx={{ mr: '1rem' }} variant='square' />
+        <Button href='/'>
+          <Avatar src='/images/logo-invert.svg' sx={{ mr: '1rem' }} variant='square' />
+        </Button>
         <Typography variant='h6' color='inherit' noWrap>
           Votinglist for the band
         </Typography>
@@ -56,7 +63,7 @@ export default function AppHeader() {
             aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar src={data?.user?.image ?? undefined} />
+            <Avatar src={profile?.image ?? undefined} />
           </Button>
           <Menu
             id='menu'
@@ -74,9 +81,9 @@ export default function AppHeader() {
             }}
           >
             <MenuList>
-              {userBands &&
-                userBands.length > 1 &&
-                userBands.map(b => {
+              {myBands &&
+                myBands.length > 1 &&
+                myBands.map(b => {
                   return (
                     <MenuItem key={b.id} href={`/bands/${b.id}`} component='a'>
                       <ListItemIcon>
@@ -86,32 +93,33 @@ export default function AppHeader() {
                     </MenuItem>
                   );
                 })}
-              {userBands && userBands.length > 1 && <Divider />}
+              {myBands && myBands.length > 1 && <Divider />}
               {adminRight && <AdminMenu currentBand={currentBand} />}
 
-              {status === 'unauthenticated' && (
-                <MenuItem onClick={() => signIn('spotify')}>
+              {!profile?.uid && (
+                <MenuItem href='/signin'>
                   <ListItemIcon>
                     <Login />
                   </ListItemIcon>
                   inloggen
                 </MenuItem>
               )}
-              {status === 'authenticated' && (
-                <>
-                  <MenuItem component='a' href={`https://open.spotify.com/user/${data?.user?.id}`}>
-                    <ListItemIcon>
-                      <Settings />
-                    </ListItemIcon>
-                    wijzig profielnaam
-                  </MenuItem>
-                  <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>
-                    <ListItemIcon>
-                      <Logout />
-                    </ListItemIcon>
-                    uitloggen
-                  </MenuItem>
-                </>
+
+              {profile?.uid && (
+                <MenuItem component='a' href={`https://open.spotify.com/user/${profile?.spotify?.id}`}>
+                  <ListItemIcon>
+                    <Settings />
+                  </ListItemIcon>
+                  wijzig profielnaam
+                </MenuItem>
+              )}
+              {profile?.uid && (
+                <MenuItem onClick={handleSignOut}>
+                  <ListItemIcon>
+                    <Logout />
+                  </ListItemIcon>
+                  uitloggen
+                </MenuItem>
               )}
             </MenuList>
           </Menu>

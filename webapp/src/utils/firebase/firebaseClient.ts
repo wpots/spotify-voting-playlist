@@ -4,7 +4,6 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const fireStore = getFirestore(firebaseApp);
 const fireAuth = getAuth(firebaseApp);
-
+const fireStore = getFirestore(firebaseApp);
 export { firebaseApp, fireStore, fireAuth };

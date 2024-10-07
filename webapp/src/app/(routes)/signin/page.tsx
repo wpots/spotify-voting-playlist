@@ -1,14 +1,14 @@
-import LoginScreen from '@/app/_components/Auth/LoginScreen';
-import { Container } from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import SignInForm from '@/app/_components/Auth/SignInForm';
 import Welcome from '@/app/_components/Auth/Welcome';
 import UnAuthenticated from '@/app/_components/Auth/UnAuthenticated';
+import { Container } from '@mui/material';
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { PropsWithChildren } from 'react';
 
 type PageProps = {
   searchParams?: {
     unauthenticated?: boolean;
-    continueUrl?: string;
+    returnTo?: string;
   };
 };
 export default function SignIn(props: PageProps) {
@@ -18,11 +18,11 @@ export default function SignIn(props: PageProps) {
   }
 
   return (
-    <Container maxWidth='sm'>
+    <Container maxWidth='sm' sx={{ pt: 2 }}>
       <Grid2 container>
         <Grid2 xs display='flex' justifyContent='center' alignItems='center'>
           <LoginWrapper>
-            <LoginScreen continueUrl={props.searchParams?.continueUrl} />
+            <SignInForm />
           </LoginWrapper>
         </Grid2>
       </Grid2>

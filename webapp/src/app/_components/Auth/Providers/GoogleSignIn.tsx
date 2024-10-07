@@ -2,7 +2,7 @@
 
 import { Box, TextField, Button } from '@mui/material';
 
-import { GoogleSignInAction } from './ProviderActions';
+import { GoogleSignInAction } from './SignInActions';
 
 type GoogleSignInProps = {
   // formState: any; // todo better typing

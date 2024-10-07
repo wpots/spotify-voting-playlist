@@ -40,7 +40,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
 
   // CONTEXT DATA
   const userContext = useContext(UserContext);
-  const userId = userContext?.userInfo.id;
+  const userId = userContext?.profile?.uid;
   const params = useParams();
   const query = useSearchParams();
   const bandId = params.uid;
@@ -49,7 +49,7 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
     throw Error('UseVoting is missing context');
   }
 
-  const currentBand = userContext?.userBands?.find(b => b.id === bandId);
+  const currentBand = userContext?.myBands?.find(b => b.id === bandId);
 
   // MEMBER DATA
   const findBandMemberVote = useCallback(

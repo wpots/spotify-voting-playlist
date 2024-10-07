@@ -2,7 +2,7 @@
 
 import { Box, TextField, Button } from '@mui/material';
 
-import { PhoneSignInAction } from './ProviderActions';
+import { PhoneSignInAction } from './SignInActions';
 
 type PhoneSignInProps = {
   // formState: any; // todo better typing

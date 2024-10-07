@@ -1,13 +1,12 @@
 'use client';
-import { IBand, IVote } from '@domain/content';
-import { useParams } from 'next/navigation';
+import { IBand } from '@domain/content';
 
-import React, { createContext, useMemo } from 'react';
+import React, { createContext } from 'react';
 
 interface IUserDataInput {
-  userInfo: any;
-  userBands?: IBand[];
-  isAdmin: boolean;
+  profile: any;
+  myBands?: IBand[];
+  isAdmin?: boolean;
 }
 interface IUserContext extends IUserDataInput {
   currentBand?: IBand;
@@ -20,7 +19,7 @@ export default function UserContextProvider({
 }: {
   children: React.ReactNode;
   userProfile: IUserDataInput;
-}): React.ReactNode {
+}) {
   const ctx = {
     ...userProfile,
   };

@@ -17,7 +17,8 @@ export default function Welcome({ children }: { children: React.ReactNode }) {
       {children}
 
       <Typography variant='body2' component='p' gutterBottom mt={5}>
-        Log in met je spotify account. Indien je geen toegang hebt, kunnen andere leden met toegang jou uitnodigen.
+        Log in met jouw email, telefoonnummer of gebruik een wachtwoord. Indien je geen toegang hebt, kunnen andere
+        leden met toegang jou uitnodigen.
       </Typography>
     </Paper>
   );

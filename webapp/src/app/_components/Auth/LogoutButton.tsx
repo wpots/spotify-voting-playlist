@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import Button from "@mui/material/Button";
-import { signOut } from "next-auth/react";
+import Button from '@mui/material/Button';
+import { signOut } from './Providers/SignInActions';
 
 export default function LogoutButton({ children }: { children: React.ReactNode }) {
-  const handleLogin = () => signOut({ callbackUrl: "/" });
+  const handleLogout = async () => await signOut();
 
   return (
-    <Button onClick={handleLogin} variant="contained" size="small">
+    <Button onClick={handleLogout} variant='contained' size='small'>
       {children}
     </Button>
   );

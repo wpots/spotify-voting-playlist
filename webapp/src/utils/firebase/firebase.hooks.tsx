@@ -1,16 +1,41 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { fireAuth } from '@/utils/firebase/firebaseClient';
+import { useRouter } from 'next/navigation';
+import { AuthContext } from './firebase.context';
 
 type AuthenticationProps = {
-  email?: string;
+  status: string;
+  data?: Record<string, string>;
 };
 
 const EMAIL_IN_STORAGE = 'emailSignIn';
 
-export function useAuthentication(props?: AuthenticationProps) {
+export function useFirebaseAuthentication(props?: AuthenticationProps) {
+  const router = useRouter();
+
+  const login = useCallback(
+    async (token?: string) => {
+      const authToken = token || props?.data?.userToken;
+      if (authToken) {
+        await fetch('/api/login', {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        router.push('/');
+      }
+    },
+    [props?.data?.userToken]
+  );
+
+  const logout = async () => {
+    await fetch('/api/logout');
+    router.push('/signin');
+  };
+
   useEffect(() => {
     const signInLink = window?.location.href;
 
@@ -23,6 +48,8 @@ export function useAuthentication(props?: AuthenticationProps) {
         try {
           const response = await signInWithEmailLink(fireAuth, email!, signInLink);
           window.localStorage.removeItem(EMAIL_IN_STORAGE);
+          const userToken = await response.user.getIdToken();
+          await login(userToken);
           // You can access the new user by importing getAdditionalUserInfo
           // and calling it with result:
           // getAdditionalUserInfo(result)
@@ -40,12 +67,23 @@ export function useAuthentication(props?: AuthenticationProps) {
   }, []);
 
   useEffect(() => {
-    if (props?.email) {
-      window.localStorage.setItem(EMAIL_IN_STORAGE, props.email);
+    if (props?.data?.email) {
+      window.localStorage.setItem(EMAIL_IN_STORAGE, props.data.email);
     }
-  }, [props]);
+  }, [props?.data?.email]);
+
+  useEffect(() => {
+    async function completeSignIn() {
+      await login();
+    }
+    if (props?.status === 'OK') completeSignIn();
+  }, [props?.status]);
+
+  const user = useContext(AuthContext);
 
   return {
-    hello: true,
+    user,
+    login,
+    logout,
   };
 }

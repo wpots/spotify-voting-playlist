@@ -5,12 +5,12 @@ import { Box, Button, Typography, Container, Stack, ButtonGroup } from '@mui/mat
 import PasswordSignIn from './Providers/PaswordSignIn';
 import GoogleSignIn from './Providers/GoogleSignIn';
 import EmailLinkSignIn from './Providers/EmailLinkSignIn';
-import PhoneSignIn from './Providers/PhoneSignin';
+// import PhoneSignIn from './Providers/PhoneSignIn';
 
 export default function SignInForm() {
   const providers = [
     { id: 'email', component: <EmailLinkSignIn /> },
-    { id: 'phone', component: <PhoneSignIn /> },
+    // { id: 'phone', component: <PhoneSignIn /> },
     { id: 'password', component: <PasswordSignIn /> },
   ];
   const [provider, setProvider] = useState(providers[0]);
@@ -25,9 +25,9 @@ export default function SignInForm() {
         }}
       >
         <Stack spacing={2}>
-          <GoogleSignIn />
+          {/* <GoogleSignIn /> */}
           <Typography align='center' variant='caption' component='p' gutterBottom>
-            or sign in with:
+            sign in with:
           </Typography>
           <ButtonGroup>
             {providers.map(p => (
