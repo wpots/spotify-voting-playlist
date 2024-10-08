@@ -1,6 +1,6 @@
 import 'server-only';
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, query, where } from 'firebase/firestore';
-import { fireStore } from '@/utils/firebase/firebaseClient';
+import { fireStore } from '../firebaseClient.client';
 import type { Band, Vote } from '@firebase/api';
 import type { IUser, IBand } from '@domain/content';
 
@@ -49,6 +49,7 @@ const getBandById = cache(async (id: string) => {
 
 const getBandMembersById = cache(async (ids: string[]) => {
   const members = await _getDocumentsByQuery('users', where('id', 'in', ids));
+
   return members as IUser[];
 });
 

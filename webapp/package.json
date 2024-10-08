@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "debug": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
+    "build": "npm run build-service-worker && next build",
+    "build-service-worker": "npx esbuild ./auth-service-worker.js --bundle --outfile=public/auth-service-worker.js",
     "start": "next start",
     "lint": "next lint"
   },

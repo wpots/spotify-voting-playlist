@@ -1,4 +1,4 @@
-import * as FireStoreService from '@/utils/firebase/firebase.service';
+import * as FireStoreService from '@/libs/firebase/collections/firebase.collections.service';
 import type { SpotifyProfile } from 'next-auth/providers/spotify';
 
 const getRefreshToken = async (token: any) => {
@@ -46,7 +46,6 @@ const providerOptions = {
   },
 
   async profile(profile: SpotifyProfile) {
-    console.log('SPOT', profile);
     const verifiedUser = await FireStoreService.getVerifiedUser(profile.id);
     const userProfile = {
       id: profile.id,

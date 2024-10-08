@@ -1,9 +1,10 @@
 'use client';
 
+import { useAuthentication } from '@/utils/authentication/ui';
 import Button from '@mui/material/Button';
-import { signOut } from './Providers/SignInActions';
 
 export default function LogoutButton({ children }: { children: React.ReactNode }) {
+  const { signOut } = useAuthentication();
   const handleLogout = async () => await signOut();
 
   return (

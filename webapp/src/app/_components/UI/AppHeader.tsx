@@ -11,25 +11,24 @@ import {
   Divider,
   MenuList,
   ListItemIcon,
-  ListSubheader,
 } from '@mui/material';
-import { teal } from '@mui/material/colors';
+
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import useUser from '@/app/_hooks/useUser';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import Login from '@mui/icons-material/Login';
-import Logout from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from '@mui/icons-material/Settings';
-import { IUser } from '@domain/content';
+
 import { useParams } from 'next/navigation';
 import AdminMenu from './AdminMenu';
-import { signOut } from '../Auth/Providers/SignInActions';
-import { useAuthentication } from '@/utils/authentication';
+
+import { useAuthentication } from '@/utils/authentication/ui';
 
 export default function AppHeader() {
-  const { myBands, isAdmin, profile, auth } = useUser();
-  const { logout } = useAuthentication();
+  const { myBands, isAdmin, profile } = useUser();
+  const { signOut } = useAuthentication();
   const params = useParams();
   const proxyVoteFor = params.memberid;
   const currentBand = myBands?.find(b => b.id === params.uid);
@@ -42,7 +41,6 @@ export default function AppHeader() {
   const handleClose = () => setAnchorEl(null);
 
   const handleSignOut = async () => {
-    await logout();
     await signOut();
   };
 
@@ -99,7 +97,7 @@ export default function AppHeader() {
               {!profile?.uid && (
                 <MenuItem href='/signin'>
                   <ListItemIcon>
-                    <Login />
+                    <LoginIcon />
                   </ListItemIcon>
                   inloggen
                 </MenuItem>
@@ -116,7 +114,7 @@ export default function AppHeader() {
               {profile?.uid && (
                 <MenuItem onClick={handleSignOut}>
                   <ListItemIcon>
-                    <Logout />
+                    <LogoutIcon />
                   </ListItemIcon>
                   uitloggen
                 </MenuItem>

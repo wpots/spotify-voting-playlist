@@ -4,7 +4,6 @@ import { IBand } from '@domain/content';
 import React, { createContext } from 'react';
 
 interface IUserDataInput {
-  profile: any;
   myBands?: IBand[];
   isAdmin?: boolean;
 }

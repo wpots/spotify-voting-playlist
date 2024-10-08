@@ -1,6 +1,6 @@
 import { AuthOptions, SessionStrategy } from 'next-auth';
 import SpotifyProvider from 'next-auth/providers/spotify';
-import { providerOptions, getRefreshToken } from '@/utils/authentication/spotify.provider';
+import { providerOptions, getRefreshToken } from './spotify.provider';
 
 /** Route Handler for Authentication
  * https://nextjs.org/docs/app/api-reference/file-conventions/route

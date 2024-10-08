@@ -5,6 +5,8 @@ import { IBand, IPlaylist, ITrack, IUser, IVote, IVoteItem } from '@domain/conte
 import { useParams, useSearchParams } from 'next/navigation';
 import votesMapper from '@/utils/votes/votes.mapper';
 import * as Actions from '../_actions';
+import useUser from './useUser';
+import { useAuthentication } from '@/utils/authentication/ui';
 
 type UseVotingOptions = {
   playlist?: IPlaylist;
@@ -19,9 +21,6 @@ export type FilteredPlaylist = {
 };
 
 export default function useVoting({ playlist, votes, track }: UseVotingOptions) {
-  if (!UserContext) {
-    throw new Error('React Context is unavailable in Server Components');
-  }
   const [isReady, setIsReady] = useState(false);
 
   // side effects are tasks that do not impact render cycle:
@@ -39,17 +38,18 @@ export default function useVoting({ playlist, votes, track }: UseVotingOptions) 
   });
 
   // CONTEXT DATA
-  const userContext = useContext(UserContext);
-  const userId = userContext?.profile?.uid;
+  const { myBands } = useUser();
+  const { auth } = useAuthentication();
+  const userId = auth?.uid;
   const params = useParams();
   const query = useSearchParams();
   const bandId = params.uid;
 
   if (!userId || !bandId) {
-    throw Error('UseVoting is missing context');
+    throw Error(`UseVoting in ${bandId} is missing for ${userId}`);
   }
 
-  const currentBand = userContext?.myBands?.find(b => b.id === bandId);
+  const currentBand = myBands?.find(b => b.id === bandId);
 
   // MEMBER DATA
   const findBandMemberVote = useCallback(

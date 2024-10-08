@@ -1,5 +1,6 @@
-import * as FireStoreService from '@/utils/firebase/firebase.service';
-import SpotifyService from '../spotify/spotify.service';
+import 'server-only';
+import * as FireStoreService from '@/libs/firebase/collections/firebase.collections.service';
+import SpotifyService from '../../libs/spotify/spotify.service';
 import type { IBand, IPlaylist } from '@domain/content';
 import type { Vote } from '@firebase/api';
 

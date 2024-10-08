@@ -1,18 +1,18 @@
 'use client';
 
 import { Box, TextField, Typography } from '@mui/material';
-import { SendLinkSignInAction } from './SignInActions';
 import { useFormState } from 'react-dom';
 import SubmitButton from '../../UI/AppForm/SubmitButton';
 import AppNotificationBar from '../../UI/AppNotificationBar';
-import { useAuthentication } from '@/utils/authentication';
+import { useAuthentication } from '@/utils/authentication/ui';
 
 export default function EmailLinkSignIn() {
-  const [formState, formAction] = useFormState(SendLinkSignInAction, {
+  const { sendLinkSignInAction } = useAuthentication();
+
+  const [formState, formAction] = useFormState(sendLinkSignInAction, {
     status: 'IDLE',
   });
 
-  useAuthentication(formState);
   const isInvalid = formState.status === 'ERROR';
 
   return (

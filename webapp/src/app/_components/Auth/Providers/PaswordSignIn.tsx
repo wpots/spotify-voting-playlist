@@ -1,21 +1,18 @@
 'use client';
 
 import { Box, TextField, Button } from '@mui/material';
-
-import { PasswordResetAction, PasswordSignInAction } from './SignInActions';
-import { useFormState } from 'react-dom';
-import { useAuthentication } from '@/utils/authentication';
-import AppNotificationBar from '../../UI/AppNotificationBar';
 import { useState } from 'react';
+import { useFormState } from 'react-dom';
+import { useAuthentication } from '@/utils/authentication/ui';
+import AppNotificationBar from '@/app/_components/UI/AppNotificationBar';
 
 export default function PasswordSignIn() {
   const [reset, setReset] = useState(false);
-  const action = !reset ? PasswordSignInAction : PasswordResetAction;
+  const { passwordResetAction, passwordSignInAction } = useAuthentication();
+  const action = !reset ? passwordSignInAction : passwordResetAction;
   const [formState, formAction] = useFormState(action, {
     status: 'IDLE',
   });
-
-  useAuthentication(formState);
 
   async function handlePasswordReset() {
     setReset(true);

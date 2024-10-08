@@ -1,8 +1,6 @@
 'use client';
-import React, { useCallback, useState } from 'react';
 
 import { Typography } from '@mui/material';
-import useVoting from '@/app/_hooks/useVoting';
 
 interface TrackLinkProps {
   title: string;
