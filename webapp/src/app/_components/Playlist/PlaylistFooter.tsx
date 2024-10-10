@@ -1,11 +1,6 @@
-import { Box, Link, Paper, Typography } from '@mui/material';
-import { blue } from '@mui/material/colors';
-/**
- *
- * Add:
- * Link to playlist
- */
-export default function PlaylistFooter({ description, url }: { description?: string; url?: string }) {
+import { Box, Link, Typography } from '@mui/material';
+
+export default function PlaylistFooter({ url }: { description?: string; url?: string }) {
   return (
     <Box sx={{ display: 'flex', py: '2rem', flexWrap: 'wrap' }} justifyContent='space-between'>
       <Typography variant='caption'>

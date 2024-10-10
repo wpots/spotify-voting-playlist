@@ -1,7 +1,6 @@
 'use client';
 import React, { memo } from 'react';
-import { Stack, Box, Avatar, Badge, Typography, Tooltip, List } from '@mui/material';
-import { IUser, IVoteItem } from '@domain/content';
+import { Typography, List } from '@mui/material';
 
 interface TrackCommentsProps {
   comments: string[];

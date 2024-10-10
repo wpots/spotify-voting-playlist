@@ -13,7 +13,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-import type { ITrack, IVote } from '@domain/content';
+import type { ITrack } from '@domain/content';
 import VoteSummary from '../Votes/VoteSummary';
 import TrackComments from './TrackComments';
 import TrackLink from './TrackLink';
@@ -21,15 +21,13 @@ import { useTrack } from './Track.hook';
 
 interface TrackProps {
   track: ITrack;
-
   divider: number;
   controls?: React.ReactNode;
   onTrackSelected?: () => void;
   enhancedView?: boolean;
-  children?: React.ReactNode;
 }
 
-export default function Track({ track, divider, onTrackSelected, enhancedView, controls, children }: TrackProps) {
+export default function Track({ track, divider, onTrackSelected, enhancedView, controls }: TrackProps) {
   const { voteStatistics, blockedByVeto } = useTrack(track);
   const preferDark = useMediaQuery('(prefers-color-scheme: dark)');
 

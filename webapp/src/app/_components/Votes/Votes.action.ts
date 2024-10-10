@@ -1,7 +1,7 @@
 'use server';
 
 import { CollectionsService } from '@/utils/collections';
-import { IVoteItem, IError } from '@domain/content';
+import { IVoteItem } from '@domain/content';
 import { headers } from 'next/headers';
 
 export async function setTrackVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>, memberId: string | null) {

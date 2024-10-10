@@ -1,9 +1,9 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import VotingStack from './VotingStack';
-import { useState, useEffect } from 'react';
+
 import VetoIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 interface VoteRatingInputProps {
   onVoted: (val: number) => void;

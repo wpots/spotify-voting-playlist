@@ -13,7 +13,7 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const defaultPlaylist = playlists[0].id;
-  const currentBandSelected = searchParams.get('band');
+
   const [activePlaylistId, setActivePlaylistId] = useState(searchParams.get('playlist') || defaultPlaylist);
   useEffect(() => {
     if (activePlaylistId) {
