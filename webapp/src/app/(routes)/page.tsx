@@ -1,16 +1,12 @@
 'use client';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { Box } from '@mui/material';
 import BandList from '../_components/Band/BandList';
 import AppBanner from '../_components/UI/AppBanner';
 import AppSnack from '../_components/UI/AppSnack';
-import { getAuthSession } from '@/utils/authentication';
-import { getContentByUserId } from '@/utils/content';
-import useUser from '../_hooks/useUser';
+import { useBandCollection } from '../_hooks/useCollections';
 
 export default function Home() {
-  const { myBands } = useUser();
+  const { myBands } = useBandCollection();
   const message = !myBands || myBands?.length === 0 ? 'You are not set up to collaborate.' : false;
 
   return (

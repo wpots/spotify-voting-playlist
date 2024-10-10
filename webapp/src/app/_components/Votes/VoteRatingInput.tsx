@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import VetoIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 interface VoteRatingInputProps {
   onVoted: (val: number) => void;
-  userVote: number;
+  userVote?: number;
 }
 export default function VoteRatingInput({ onVoted, userVote }: VoteRatingInputProps) {
   const [vote, setVote] = useState<number>(userVote || 0);

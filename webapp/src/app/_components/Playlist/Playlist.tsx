@@ -4,33 +4,35 @@ import PlaylistHeader from './PlaylistHeader';
 import LoadingIcon from '@mui/icons-material/Sync';
 import type { IPlaylist } from '@domain/content';
 
-import useVoting, { FilteredPlaylist } from '@/app/_hooks/useVoting';
 import PlaylistFooter from './PlaylistFooter';
 
 import PlaylistAlertBox from './PlaylistAlertBox';
 import TracksList from '../Tracks/TracksList';
 import { Box, Chip, Divider, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import usePlaylist from './Playlist.hook';
+import type { FilteredPlaylist } from './Playlist.hook';
 
 export default function Playlist({ playlist }: { playlist: IPlaylist }) {
   const [isLoading, setIsLoading] = useState(true);
-  const { fetchVotes, currentPlaylist, filterPlaylistBy, playlistFilters, memberStats, isReady } = useVoting({
-    playlist,
-  });
   const [currentFilter, setCurrentFilter] = useState<string>('alles');
-  const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
+
+  const { currentPlaylist, fetchVotes, filterPlaylistBy, playlistFilters, voteStats, isReady, isVotableList } =
+    usePlaylist(playlist);
 
   useEffect(() => {
     const initVotes = async () => {
       await fetchVotes();
     };
-    initVotes();
-
+    if (isVotableList) {
+      initVotes();
+    }
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
+
   const handleFilter = (type: string) => {
     setCurrentFilter(type);
   };
@@ -65,7 +67,6 @@ export default function Playlist({ playlist }: { playlist: IPlaylist }) {
       ) : (
         <TracksList
           tracks={filterPlaylistBy[currentFilter as keyof FilteredPlaylist]?.tracks}
-          stats={memberStats}
           enhancedView={isVotableList}
           onRefresh={() => fetchVotes()}
         />

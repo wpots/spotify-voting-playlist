@@ -1,19 +1,20 @@
 'use client';
 
 import { Box, Typography } from '@mui/material';
-import { grey } from '@mui/material/colors';
 import VotingStack from './VotingStack';
 
 import VotersList from './VotersList';
-import { IUser } from '@domain/content';
+import { ITrack, IUser } from '@domain/content';
+import { useTrack } from '../Tracks/Track.hook';
 interface VotingDialogProps {
-  details?: Record<string, any>;
+  details?: ITrack;
 }
 
 export default function VotingDetails({ details }: Readonly<VotingDialogProps>) {
+  const { voteStatistics } = useTrack(details);
   return (
     <Box sx={{ p: '1rem' }}>
-      {details?.voted?.map((member: IUser) => (
+      {voteStatistics?.voted?.map((member: IUser) => (
         <VotersList
           member={member}
           tooltip={member.vote?.comment}
@@ -21,7 +22,7 @@ export default function VotingDetails({ details }: Readonly<VotingDialogProps>) 
           key={`list-${member.id}`}
         />
       ))}
-      {details?.pending?.map((member: IUser) => (
+      {voteStatistics?.pending?.map((member: IUser) => (
         <VotersList
           member={member}
           feedback={<Typography variant='caption'>...nog geen feedback</Typography>}

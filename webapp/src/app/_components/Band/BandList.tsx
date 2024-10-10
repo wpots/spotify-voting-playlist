@@ -6,6 +6,7 @@ import type { IBand } from '@domain/content';
 export default function BandList({ bands }: { bands: IBand[] }) {
   const theme = useTheme();
   const onlyMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Stack spacing={2} direction={onlyMobile ? 'column' : 'row'} alignItems={onlyMobile ? 'stretch' : 'center'}>
       {bands.map(band => (

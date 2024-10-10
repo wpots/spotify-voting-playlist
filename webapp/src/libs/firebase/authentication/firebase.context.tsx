@@ -1,19 +1,23 @@
 'use client';
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { createContext, ReactNode, useEffect, useState, useContext } from 'react';
 import { fireAuth } from '../firebaseClient.client';
 import { firebaseClientConfig } from '../firebase.config';
 
 interface AuthContext {
-  [key: string]: unknown;
+  user: User;
+  loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContext | undefined>(undefined);
+export const AuthContext = createContext<AuthContext | null>(null);
 
 export default function FirebaseContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<any>();
-  console.log('USER', user);
+  const [loading, setLoading] = useState(true);
+
+  console.log('CONTEXT USER:', user);
+
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       const serializedConfig = encodeURIComponent(JSON.stringify(firebaseClientConfig));
@@ -26,16 +30,12 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(fireAuth, authUser => {
-      console.log('CHANGE', user);
+    const unsubscribe = onAuthStateChanged(fireAuth, async authUser => {
       setUser(authUser);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
-  const ctx = {
-    user,
-  };
-
-  return <AuthContext.Provider value={ctx}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
 }

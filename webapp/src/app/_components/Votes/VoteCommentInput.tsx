@@ -6,11 +6,11 @@ import VotingStack from './VotingStack';
 import { useState, useEffect } from 'react';
 interface VoteCommentInputProps {
   onCommented: (val: string) => void;
-  userComment: string;
+  userComment?: string;
 }
 
 export default function VoteCommentInput({ onCommented, userComment }: VoteCommentInputProps) {
-  const [comment, setComment] = useState<string>(userComment);
+  const [comment, setComment] = useState<string | undefined>(userComment);
 
   useEffect(() => {
     onCommented(comment);

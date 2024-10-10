@@ -1,15 +1,9 @@
 'use server';
 
 import { CollectionsService } from '@/utils/collections';
-import { IVoteItem } from '@domain/content';
+import { IVoteItem, IError } from '@domain/content';
 
-/**
- * https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#event-handlers
- *
- * Actions can be initiated by Form submits or evente handlers, they are the new nextJs way of handling POST requests (data mutations)
- */
-
-export async function setUserVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>, memberId: string | null) {
+export async function setTrackVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>, memberId: string | null) {
   const session = { uid: undefined };
   const listOfAdmins = process.env.ADMIN_ROLES;
   if (!session?.uid) return { status: 401, message: 'unauthorized' };
@@ -23,5 +17,13 @@ export async function setUserVote(data: Pick<IVoteItem, 'trackId' | 'rating' | '
     return { OK: true };
   } catch (error) {
     return { status: 400, message: 'voting failed', cause: error };
+  }
+}
+
+export async function fetchPlaylistVotes(trackIds: Array<string>, memberIds: Array<string>) {
+  try {
+    return await CollectionsService.fetchVotes(trackIds, memberIds);
+  } catch (error) {
+    return { status: 500, message: 'failed fetching votes', cause: error };
   }
 }

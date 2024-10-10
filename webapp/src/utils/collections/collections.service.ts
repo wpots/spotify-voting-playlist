@@ -1,8 +1,9 @@
 import 'server-only';
 import * as FireStoreService from '@/libs/firebase/collections/firebase.collections.service';
 import SpotifyService from '../../libs/spotify/spotify.service';
-import type { IBand, IPlaylist } from '@domain/content';
+import type { IBand, IError, IPlaylist } from '@domain/content';
 import type { Vote } from '@firebase/api';
+import votesMapper from '../votes/votes.mapper';
 
 const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
   if (trackIds && trackIds.length > 0) {
@@ -23,26 +24,40 @@ const getCurrentPlaylist = async (id: string) => {
   }
 };
 
+const getPlaylistWithVotes = async (playlist: IPlaylist, memberIds: Array<string>) => {
+  const trackIds = playlist.tracks?.refs;
+  if (!trackIds || memberIds.length === 0) return;
+  try {
+    const votes = await fetchVotes(trackIds, memberIds);
+    if (!(votes as IError)?.status) return playlist;
+    if (votes && (votes as Array<Vote>).length > 0) {
+      return votes ? votesMapper.resolveVotesForPlaylistTracks(playlist, votes as Array<Vote>) : playlist;
+    }
+  } catch (error) {
+    return playlist;
+  }
+};
+
 const _getBand = async (bandId: string, band?: IBand) => {
   const currentBand: IBand | undefined = band ?? ((await FireStoreService.getBandById(bandId)) as unknown as IBand);
 
   if (!currentBand) return undefined;
-  const hasMembers = currentBand.members?.length > 0; // always 1 -> me
-  const hasPlaylists = currentBand.playlists && currentBand.playlists?.length > 0;
-  let extendedPlaylists: any; // unreliable spotify api, returns error object on fail
-  if (hasPlaylists && hasMembers) {
-    extendedPlaylists = await fetchPlaylists(currentBand.playlists as string[]); // could return error object
+
+  let playlists;
+  if (currentBand.playlistIds && currentBand.playlistIds?.length > 0) {
+    playlists = await fetchPlaylists(currentBand.playlistIds);
   }
 
-  let extendedMembers;
-  if (hasMembers) extendedMembers = await FireStoreService.getBandMembersById(currentBand.members as string[]);
+  let members;
+  if (currentBand.memberIds && currentBand.memberIds.length > 0) {
+    members = await FireStoreService.getBandMembersById(currentBand.memberIds);
+  }
 
   return {
     ...currentBand,
-    logo: !extendedPlaylists?.error ? (extendedPlaylists?.[0] as IPlaylist)?.image : undefined,
-    members: extendedMembers ?? currentBand.members,
-    ...(!extendedPlaylists?.error && { playlists: extendedPlaylists }),
-    error: extendedPlaylists?.error ?? false,
+    logo: playlists?.[0]?.image,
+    members,
+    playlists,
   };
 };
 
@@ -57,8 +72,12 @@ const getBandsByUserId = async (userId: string) => {
   return extendedBands;
 };
 
+const getBandIds = async () => {
+  const allBands = await FireStoreService.getAllBands();
+  return allBands ? allBands.map(b => b.id) : [];
+};
 async function setVote(payload: Vote) {
   return await FireStoreService.setVote(payload);
 }
 
-export { getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes, setVote };
+export { getBandIds, getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes, setVote, getPlaylistWithVotes };

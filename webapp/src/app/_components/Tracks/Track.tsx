@@ -13,11 +13,15 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-import type { ITrack } from '@domain/content';
-import TrackComments from '../Tracks/TrackComments';
+import type { ITrack, IVote } from '@domain/content';
+import VoteSummary from '../Votes/VoteSummary';
+import TrackComments from './TrackComments';
+import TrackLink from './TrackLink';
+import { useTrack } from './Track.hook';
 
 interface TrackProps {
   track: ITrack;
+
   divider: number;
   controls?: React.ReactNode;
   onTrackSelected?: () => void;
@@ -26,8 +30,9 @@ interface TrackProps {
 }
 
 export default function Track({ track, divider, onTrackSelected, enhancedView, controls, children }: TrackProps) {
-  const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
+  const { voteStatistics, blockedByVeto } = useTrack(track);
   const preferDark = useMediaQuery('(prefers-color-scheme: dark)');
+
   const handleTrackSelected = () => {
     if (onTrackSelected) onTrackSelected();
   };
@@ -73,10 +78,8 @@ export default function Track({ track, divider, onTrackSelected, enhancedView, c
             className='text-ellipses'
             sx={{
               flex: '1 1 20%',
-              // maxWidth: ['128px', '268px', '390px'],
               overflow: 'hidden',
               whiteSpace: ['nowrap', 'normal'],
-              // textOverflow: 'ellipsis',
             }}
             primary={track.name}
             secondary={<>{track.artists}</>}
@@ -94,7 +97,11 @@ export default function Track({ track, divider, onTrackSelected, enhancedView, c
               justifyContent: 'flex-end',
             }}
           >
-            {children}
+            {enhancedView && voteStatistics ? (
+              <VoteSummary votes={voteStatistics} />
+            ) : (
+              <TrackLink title='luister op spotify' url={track.url} />
+            )}
           </Box>
           <Box
             sx={{

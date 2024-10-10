@@ -66,6 +66,8 @@ declare module '@domain/content' {
     vote?: IVoteItem;
   }
 
+  // MOVE to service
+
   interface IUserData {
     myBands: Array<IBand>;
   }
@@ -74,8 +76,20 @@ declare module '@domain/content' {
     id: string;
     name: string;
     logo?: string;
-    playlists?: string[] | IPlaylist[]; // first time in Content service before extending
-    members: string[] | IUser[]; // first time in Content service before extending
+    playlistIds?: string[];
+    playlists?: IPlaylist[];
+    memberIds: string[];
+    members: IUser[];
+    veterans?: IUser[];
+    error?: any;
+  }
+  // MOVE to adapter
+  interface IBandData {
+    id: string;
+    name: string;
+    logo?: string;
+    playlists?: string[];
+    members: string[];
     veterans?: IUser[];
     error?: any;
   }

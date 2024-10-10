@@ -57,6 +57,10 @@ const getAllVotes = async () => {
   return await _getDocumentsByCollectionName('votes');
 };
 
+const getAllBands = async () => {
+  return await _getDocumentsByCollectionName('bands');
+};
+
 const getUserVotes = async (id: string) => {
   const allVotes = await getAllVotes();
   return allVotes?.filter(vote => vote.userId === id);
@@ -101,6 +105,7 @@ export {
   getBandById,
   getBandsByUserId,
   getBandMembersById,
+  getAllBands,
   getAllVotes,
   getVotesByBandMembers,
   setVote,

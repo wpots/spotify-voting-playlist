@@ -4,6 +4,7 @@ import UnAuthenticated from '@/app/_components/Auth/UnAuthenticated';
 import { Container } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { PropsWithChildren } from 'react';
+import AppBanner from '@/app/_components/UI/AppBanner';
 
 type PageProps = {
   searchParams?: {
@@ -18,14 +19,17 @@ export default function SignIn(props: PageProps) {
   }
 
   return (
-    <Container maxWidth='sm' sx={{ pt: 2 }}>
-      <Grid2 container>
-        <Grid2 xs display='flex' justifyContent='center' alignItems='center'>
-          <LoginWrapper>
-            <SignInForm />
-          </LoginWrapper>
+    <>
+      <AppBanner title='Sorry, members only...'></AppBanner>
+      <Container maxWidth='sm' sx={{ pt: 2 }}>
+        <Grid2 container>
+          <Grid2 xs display='flex' justifyContent='center' alignItems='center'>
+            <LoginWrapper>
+              <SignInForm />
+            </LoginWrapper>
+          </Grid2>
         </Grid2>
-      </Grid2>
-    </Container>
+      </Container>
+    </>
   );
 }

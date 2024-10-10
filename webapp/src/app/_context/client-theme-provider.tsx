@@ -4,6 +4,7 @@ import React from 'react';
 import { Figtree } from 'next/font/google';
 import { createTheme, useMediaQuery, ThemeProvider } from '@mui/material';
 import { teal } from '@mui/material/colors';
+// https://mui.com/material-ui/customization/color/
 
 const bodyFont = Figtree({ subsets: ['latin'], display: 'swap' });
 
