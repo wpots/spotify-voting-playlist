@@ -110,7 +110,7 @@ export default function usePlaylist(playlist?: IPlaylist) {
     } catch (error) {
       console.error('[USEVOTING]', error);
     }
-  }, [currentBand, currentPlaylist]);
+  }, [currentBand, currentPlaylist, members]);
 
   return {
     fetchVotes,

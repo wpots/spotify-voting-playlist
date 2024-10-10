@@ -13,11 +13,11 @@ import { useEffect, useState } from 'react';
 import usePlaylist from './Playlist.hook';
 import type { FilteredPlaylist } from './Playlist.hook';
 
-export default function Playlist({ playlist }: { playlist: IPlaylist }) {
+export default function Playlist({ playlist }: Readonly<{ playlist: IPlaylist }>) {
   const [isLoading, setIsLoading] = useState(true);
   const [currentFilter, setCurrentFilter] = useState<string>('alles');
 
-  const { currentPlaylist, fetchVotes, filterPlaylistBy, playlistFilters, voteStats, isReady, isVotableList } =
+  const { currentPlaylist, fetchVotes, filterPlaylistBy, playlistFilters, isReady, isVotableList } =
     usePlaylist(playlist);
 
   useEffect(() => {

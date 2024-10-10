@@ -10,7 +10,7 @@ export function useBandCollection() {
 
   const currentBand = useMemo(
     () => (bandId && userContext?.myBands ? userContext.myBands.find(b => b.id === bandId) : null),
-    [bandId]
+    [bandId, userContext]
   );
 
   const memberIds = currentBand?.memberIds ?? [];

@@ -39,7 +39,7 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
 
   useEffect(() => {
     router.refresh();
-  }, [user]);
+  }, [user, router]);
 
   return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
 }
