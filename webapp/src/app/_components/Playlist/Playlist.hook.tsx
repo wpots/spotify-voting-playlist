@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { IPlaylist, ITrack, IUser, IVoteItem } from '@domain/content';
 
 import { useAuthentication } from '@/utils/authentication/ui';
+
 import { useBandCollection } from '@/app/_hooks/useCollections';
 
 import { fetchPlaylistWithVotes } from './Playlist.action';
@@ -15,7 +16,7 @@ export type FilteredPlaylist = {
 
 export default function usePlaylist(playlist?: IPlaylist) {
   const [isReady, setIsReady] = useState(false);
-  const { currentBand, memberIds } = useBandCollection();
+  const { currentBand, members } = useBandCollection();
   const { auth } = useAuthentication();
   const userId = auth?.user?.uid;
 
@@ -105,7 +106,7 @@ export default function usePlaylist(playlist?: IPlaylist) {
   const fetchVotes = useCallback(async () => {
     try {
       const list = structuredClone(currentPlaylist);
-      const updatedPlaylist = list ? await fetchPlaylistWithVotes(list, memberIds) : null;
+      const updatedPlaylist = list ? await fetchPlaylistWithVotes(list, members) : null;
       if (updatedPlaylist !== list) setCurrentPlaylist(updatedPlaylist as IPlaylist);
       setIsReady(true);
     } catch (error) {
