@@ -54,8 +54,8 @@ export function useFirebaseAuthentication() {
     // do zod stuff
     try {
       const userToken = await AuthService.passwordSignIn(email, password);
-      await setSessionCookies(userToken);
-      router.replace((params.returnTo as string) || '/');
+      // await setSessionCookies(userToken);
+      router.replace((params?.returnTo as string) || '/');
       return { status: 'OK', data: { userToken } };
     } catch (error) {
       return { status: 'ERROR', error: error as string };

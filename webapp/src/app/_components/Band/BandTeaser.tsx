@@ -3,19 +3,16 @@ import * as React from 'react';
 import { Box, Card, CardActionArea, CardContent, CardHeader, CardMedia, Typography } from '@mui/material';
 import BandMembers from './BandMembers';
 import { IBand, IPlaylist, IUser } from '@domain/content';
+import Link from 'next/link';
 
 interface BandTeaserProps {
   band: IBand;
 }
-/**
- *  TODO:
- * Add band Logo Firebase Storage / ofzo
- */
 
 export default function BandTeaser({ band }: BandTeaserProps) {
   return (
     <Card sx={{ maxWidth: '345px' }}>
-      <CardActionArea href={`/bands/${band.id}`}>
+      <CardActionArea href={`/bands/${band.id}`} LinkComponent={Link}>
         <CardHeader title={band.name} />
         <CardMedia
           component='img'

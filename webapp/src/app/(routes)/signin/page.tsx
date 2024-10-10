@@ -1,30 +1,36 @@
+'use client';
 import SignInForm from '@/app/_components/Auth/SignInForm';
 import Welcome from '@/app/_components/Auth/Welcome';
-import UnAuthenticated from '@/app/_components/Auth/UnAuthenticated';
 import { Container } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import AppBanner from '@/app/_components/UI/AppBanner';
+import UnAuthorized from '@/app/_components/Auth/UnAuthorized';
+import { getAuthSession } from '@/utils/authentication';
+import { useAuthentication } from '@/libs/firebase/authentication';
+import { useRouter } from 'next/navigation';
 
 type PageProps = {
   searchParams?: {
-    unauthenticated?: boolean;
+    unauthorized?: boolean;
     returnTo?: string;
   };
 };
-export default function SignIn(props: PageProps) {
-  function LoginWrapper({ children }: PropsWithChildren) {
-    if (props.searchParams?.unauthenticated) return <UnAuthenticated>{children}</UnAuthenticated>;
-    return <Welcome>{children}</Welcome>;
-  }
 
+function LoginWrapper({ children, redirect }: PropsWithChildren<{ redirect: boolean }>) {
+  if (redirect) return <UnAuthorized>{children}</UnAuthorized>;
+  return <Welcome>{children}</Welcome>;
+}
+
+export default function SignIn(props: Readonly<PageProps>) {
+  const isRedirected = props.searchParams?.unauthorized || false;
   return (
     <>
-      <AppBanner title='Sorry, members only...'></AppBanner>
+      <AppBanner title='Members only...'></AppBanner>
       <Container maxWidth='sm' sx={{ pt: 2 }}>
         <Grid2 container>
           <Grid2 xs display='flex' justifyContent='center' alignItems='center'>
-            <LoginWrapper>
+            <LoginWrapper redirect={isRedirected}>
               <SignInForm />
             </LoginWrapper>
           </Grid2>

@@ -4,6 +4,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { createContext, ReactNode, useEffect, useState, useContext } from 'react';
 import { fireAuth } from '../firebaseClient.client';
 import { firebaseClientConfig } from '../firebase.config';
+import { useRouter } from 'next/navigation';
 
 interface AuthContext {
   user: User;
@@ -15,8 +16,7 @@ export const AuthContext = createContext<AuthContext | null>(null);
 export default function FirebaseContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState(true);
-
-  console.log('CONTEXT USER:', user);
+  const router = useRouter();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -36,6 +36,10 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    router.refresh();
+  }, [user]);
 
   return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
 }

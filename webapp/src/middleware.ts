@@ -1,10 +1,12 @@
-import { NextRequest } from 'next/server';
-import { withAuthMiddleware } from './utils/authentication';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  return withAuthMiddleware(request);
+  const authToken = request.headers.get('authorization')?.split(`Bearer `)[1];
+  const loginUrl = new URL('/signin', request.url);
+
+  if (!authToken) return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  matcher: ['/', '/((?!_next|api|.*\\.).*)', '/api/login', '/api/logout'],
+  matcher: ['/', '/bands/:path*', '/members/:path*'],
 };

@@ -1,8 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
-import { IPlaylist, ITrack, IUser, IVoteItem } from '@domain/content';
+import { IPlaylist, ITrack, IVoteItem } from '@domain/content';
 
 import { useAuthentication } from '@/utils/authentication/ui';
-
 import { useBandCollection } from '@/app/_hooks/useCollections';
 
 import { fetchPlaylistWithVotes } from './Playlist.action';
@@ -28,7 +27,6 @@ export default function usePlaylist(playlist?: IPlaylist) {
     (memberId: string, voteItems?: IVoteItem[]) => voteItems?.find((v: IVoteItem) => v.userId === memberId),
     []
   );
-  const bandMembers = currentBand?.members as IUser[];
 
   const sortPlaylistByPopularity = useCallback((tracks: ITrack[]) => {
     return tracks?.toSorted((a, b) => {
@@ -56,10 +54,10 @@ export default function usePlaylist(playlist?: IPlaylist) {
 
     if (allTracks && allTracks.length > 0) {
       const allMembersVotes = allTracks?.filter(track =>
-        bandMembers.every(member => findBandMemberVote(member.id, track.votes?.items))
+        members.every(member => findBandMemberVote(member.id, track.votes?.items))
       );
       const memberVotesPending = allTracks?.filter(track =>
-        bandMembers.some(member => !findBandMemberVote(member.id, track.votes?.items))
+        members.some(member => !findBandMemberVote(member.id, track.votes?.items))
       );
       const currentUserVotePending = allTracks?.filter(track => !findBandMemberVote(userId, track.votes?.items));
       return {
@@ -92,7 +90,7 @@ export default function usePlaylist(playlist?: IPlaylist) {
       };
     }
     return {};
-  }, [userId, currentPlaylist, bandMembers, findBandMemberVote, sortPlaylistByPopularity]);
+  }, [userId, currentPlaylist, members, findBandMemberVote, sortPlaylistByPopularity]);
 
   const playlistFilters = useMemo(() => {
     return Object.keys(filterPlaylistBy).reduce((acc: string[], key) => {

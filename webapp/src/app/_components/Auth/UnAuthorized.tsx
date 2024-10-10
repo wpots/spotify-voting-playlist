@@ -1,6 +1,6 @@
 import { Paper, Typography } from '@mui/material';
 
-export default function UnAuthenticated({ children }: { children: React.ReactNode }) {
+export default function UnAuthorized({ children }: { children: React.ReactNode }) {
   const getStyles = {
     padding: '2rem',
   };

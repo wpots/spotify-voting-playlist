@@ -1,15 +1,8 @@
 import { authMiddleware, getTokens } from 'next-firebase-auth-edge';
 import { firebaseAuthClient } from '@/libs/firebase/firebaseClient.server';
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { middlewareConfig, tokenSettings } from '@/libs/firebase/firebase.server.config';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { headers, cookies } from 'next/headers';
-
-async function getAuthServerSession(headers: Headers) {
-  const authToken = headers.get('Authorization')?.split(' ')[1];
-  if (!authToken) return;
-  return await firebaseAuthClient(authToken);
-}
 
 async function getAuthSession() {
   const requestHeaders = headers();
@@ -28,11 +21,13 @@ async function getAuthSession() {
 }
 
 async function withAuthMiddleware(request: NextRequest) {
-  const authToken = request.headers.get('authorization');
+  const authToken = request.headers.get('authorization')?.split(`Bearer `)[1];
   const authCookie = request.cookies.get(middlewareConfig.cookieName);
+  if (!authToken) NextResponse.redirect('/signin');
+
   if (authToken && !authCookie) {
   }
   return authMiddleware(request, { loginPath: '/api/login', logoutPath: '/api/logout', ...middlewareConfig });
 }
 
-export { withAuthMiddleware, getAuthServerSession, getAuthSession };
+export { withAuthMiddleware, getAuthSession };

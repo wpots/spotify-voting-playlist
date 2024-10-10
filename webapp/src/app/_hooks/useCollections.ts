@@ -1,15 +1,16 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { UserContext } from '../_context/client-user-provider';
 import { IBand, IPlaylist } from '@domain/content';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useSearchParams } from 'next/navigation';
 
 export function useBandCollection() {
   const userContext = useContext(UserContext);
   const params = useParams();
+  const bandId = params.uid;
 
   const currentBand = useMemo(
-    () => (params?.uid && userContext?.myBands ? userContext.myBands.find(b => b.id === params.uid) : null),
-    [params, userContext]
+    () => (bandId && userContext?.myBands ? userContext.myBands.find(b => b.id === bandId) : null),
+    [bandId]
   );
 
   const memberIds = currentBand?.memberIds ?? [];

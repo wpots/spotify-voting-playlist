@@ -1,18 +1,21 @@
-'use client';
 import { Box } from '@mui/material';
 import BandList from '../_components/Band/BandList';
 import AppBanner from '../_components/UI/AppBanner';
 import AppSnack from '../_components/UI/AppSnack';
 import { useBandCollection } from '../_hooks/useCollections';
+import { useAuthorized } from '@/libs/firebase/authentication';
+import { redirect, useRouter } from 'next/navigation';
+import { getAuthSession } from '@/utils/authentication';
+import { getDataByUserId } from '@/utils/collections';
 
-export default function Home() {
-  const { myBands } = useBandCollection();
-  const message = !myBands || myBands?.length === 0 ? 'You are not set up to collaborate.' : false;
-
+export default async function Home() {
+  const session = await getAuthSession();
+  if (!session?.currentUser) redirect('/signin?unauthorized=true&returnTo=/');
+  const { myBands } = session.currentUser?.uid ? await getDataByUserId(session?.currentUser?.uid) : {};
+  const message = !myBands || myBands?.length === 0 ? 'Ik kon jouw band niet vinden :(' : false;
   return (
     <main>
-      <AppBanner title='Welkom' subTitle='fijn dat jij erbij band' />
-      {myBands && (
+      {myBands && myBands.length > 0 && (
         <Box sx={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <BandList bands={myBands} />
         </Box>

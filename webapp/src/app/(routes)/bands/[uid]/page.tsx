@@ -1,36 +1,32 @@
-'use client';
-import { Typography, Alert } from '@mui/material';
+import { Alert } from '@mui/material';
 import { IPlaylist } from '@domain/content';
 import AppBanner from '@/app/_components/UI/AppBanner';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
-import { useAuthentication } from '@/utils/authentication/ui';
-import { useRouter } from 'next/navigation';
-import { useBandCollection } from '@/app/_hooks/useCollections';
-import { useEffect } from 'react';
-import { CollectionsService } from '@/utils/collections';
+import { redirect } from 'next/navigation';
+import { getAuthSession } from '@/utils/authentication';
+import { getDataByUserId, CollectionsService } from '@/utils/collections';
 
 interface BandPageProps {
   params: { uid: string };
 }
-export default function BandPage({ params }: BandPageProps) {
-  const { auth } = useAuthentication();
-  const router = useRouter();
-  if (!auth) router.push(`/signin?unauthenticated=true&returnTo=${params.uid}`);
-  const { currentBand } = useBandCollection();
-
+export default async function BandPage({ params }: Readonly<BandPageProps>) {
+  const session = await getAuthSession();
+  if (!session?.currentUser) redirect(`/signin?unauthorized=true&returnTo=/bands/${params.uid}`);
+  const { myBands } = session.currentUser?.uid ? await getDataByUserId(session?.currentUser?.uid) : {};
+  const currentBand = params.uid ? myBands?.find(b => b.id === params.uid) : myBands?.[0];
   if (!currentBand)
     return (
       <AppBanner
         title='Niet gevonden...'
-        subTitle={`we konden geen match vinden tussen jou en band met kenmerk '${params.uid}'`}
+        subTitle={`we konden geen match vinden tussen jou (${session?.currentUser?.email}) en band met kenmerk '${params.uid}'`}
       />
     );
 
   if (!currentBand.playlists || currentBand.playlists?.length === 0)
     return <Alert severity='error'>Deze band heeft nog geen playlists gekoppelt ... </Alert>;
 
-  if (currentBand.playlists?.some(el => (el as IPlaylist).error)) {
-    const isNotCollaborator = currentBand.playlists?.find(el => (el as IPlaylist).error.status === 404);
+  if (currentBand.playlists?.some(el => el.error)) {
+    const isNotCollaborator = currentBand.playlists?.find(el => el.error.status === 404);
 
     if (isNotCollaborator)
       return (
@@ -52,7 +48,7 @@ export default function BandPage({ params }: BandPageProps) {
   );
 }
 
-// export async function generateStaticParams() {
-//   const bandIds = await CollectionsService.getBandIds();
-//   return bandIds.map(band => ({ uid: band.id }));
-// }
+export async function generateStaticParams() {
+  const bandIds = await CollectionsService.getBandIds();
+  return bandIds.map(band => ({ uid: band.id }));
+}

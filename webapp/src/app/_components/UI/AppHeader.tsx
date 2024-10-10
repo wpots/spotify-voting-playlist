@@ -21,16 +21,18 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from '@mui/icons-material/Settings';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import AdminMenu from './AdminMenu';
 
 import { useAuthentication } from '@/utils/authentication/ui';
 import { useBandCollection } from '@/app/_hooks/useCollections';
+import Link from 'next/link';
 
 export default function AppHeader() {
   const { myBands, currentBand } = useBandCollection();
   const { signOut, auth } = useAuthentication();
   const params = useParams();
+  const router = useRouter();
   const proxyVoteFor = params.memberid;
   // REFACTOR
   const adminRight = auth?.user?.uid === 'cyQA2fN4w3hD3aDhY9kDbeVndMR2' && currentBand;
@@ -43,6 +45,7 @@ export default function AppHeader() {
 
   const handleSignOut = async () => {
     await signOut();
+    router.push('/signin');
   };
 
   return (
@@ -96,7 +99,7 @@ export default function AppHeader() {
               {adminRight && <AdminMenu currentBand={currentBand} />}
 
               {!auth?.user?.uid && (
-                <MenuItem href='/signin'>
+                <MenuItem href='/signin' LinkComponent={Link}>
                   <ListItemIcon>
                     <LoginIcon />
                   </ListItemIcon>
