@@ -1,21 +1,26 @@
+'use client';
 import { Typography, Alert } from '@mui/material';
 import { IPlaylist } from '@domain/content';
 import AppBanner from '@/app/_components/UI/AppBanner';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { getAuthSession } from '@/utils/authentication/firebase.provider';
+import { redirect, useSearchParams } from 'next/navigation';
+import { getAuthSession } from '@/utils/authentication';
 import { getContentByUserId } from '@/utils/content';
+import useUser from '@/app/_hooks/useUser';
+import { useAuthentication } from '@/libs/firebase/authentication';
+import { useAuth } from '@/libs/firebase/authentication/firebase.context';
 
 interface BandPageProps {
   params: { uid: string };
 }
+export default function BandPage({ params }: BandPageProps) {
+  const { user } = useAuth();
 
-export default async function BandPage({ params }: BandPageProps) {
-  const session = await getAuthSession(cookies());
-  if (!session) redirect(`/signin?unauthenticated=true&returnTo=/bands/${params.uid}`);
+  const { myBands } = useUser();
 
-  const { myBands } = await getContentByUserId(session?.uid);
+  if (!user) redirect(`/signin?unauthenticated=true&returnTo=/bands/${params.uid}`);
+
   const currentBand = myBands?.find(b => b.id === params.uid);
 
   if (!currentBand) return <Alert severity='error'>Deze band staat niet in jouw lijst...</Alert>;

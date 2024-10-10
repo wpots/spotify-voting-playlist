@@ -1,27 +1,13 @@
 'use client';
-import { IBand } from '@domain/content';
+import { IBand, IUserData } from '@domain/content';
 
-import React, { createContext } from 'react';
+import React, { createContext, PropsWithChildren } from 'react';
 
-interface IUserDataInput {
-  myBands?: IBand[];
-  isAdmin?: boolean;
+interface IUserContext {
+  myBands?: Array<IBand>;
 }
-interface IUserContext extends IUserDataInput {
-  currentBand?: IBand;
-}
-export const UserContext = createContext<IUserContext | undefined>(undefined); //TODO better typing
+export const UserContext = createContext<IUserContext | null>(null);
 
-export default function UserContextProvider({
-  children,
-  userProfile,
-}: {
-  children: React.ReactNode;
-  userProfile: IUserDataInput;
-}) {
-  const ctx = {
-    ...userProfile,
-  };
-
-  return <UserContext.Provider value={ctx}>{children}</UserContext.Provider>;
+export default function UserContextProvider(props: PropsWithChildren<{ data: IUserData | null }>) {
+  return <UserContext.Provider value={props.data}>{props.children}</UserContext.Provider>;
 }

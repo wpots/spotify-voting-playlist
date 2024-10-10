@@ -56,7 +56,7 @@ declare module '@domain/content' {
     };
     error?: any;
   }
-
+  // DEPRECATED
   interface IUser {
     id: string; // spotifyAccountId
     name: string;
@@ -64,6 +64,10 @@ declare module '@domain/content' {
     roles?: string[];
     image?: string;
     vote?: IVoteItem;
+  }
+
+  interface IUserData {
+    myBands: Array<IBand>;
   }
 
   interface IBand {

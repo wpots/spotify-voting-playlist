@@ -57,4 +57,8 @@ const getBandsByUserId = async (userId: string) => {
   return extendedBands;
 };
 
-export { getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes };
+async function setVote(payload: Vote) {
+  return await FireStoreService.setVote(payload);
+}
+
+export { getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes, setVote };

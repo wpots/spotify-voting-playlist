@@ -1,16 +1,8 @@
 import { NextRequest } from 'next/server';
-import { serverConfig, authMiddleware } from './utils/authentication';
+import { withAuthMiddleware } from './utils/authentication';
 
 export async function middleware(request: NextRequest) {
-  return authMiddleware(request, {
-    loginPath: '/api/login',
-    logoutPath: '/api/logout',
-    apiKey: serverConfig.apiKey,
-    cookieName: serverConfig.cookieName,
-    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-    cookieSerializeOptions: serverConfig.cookieSerializeOptions,
-    serviceAccount: serverConfig.serviceAccount,
-  });
+  return withAuthMiddleware(request);
 }
 
 export const config = {
