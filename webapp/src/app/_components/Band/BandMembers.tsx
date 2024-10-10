@@ -11,11 +11,11 @@ interface BandMembersProps {
 export default function BandMembers({ members, action, className }: BandMembersProps) {
   return (
     <AvatarGroup className={className}>
-      {members.map((member, idx) => (
+      {members.map(member => (
         <Avatar
           alt={member.id}
           src={member.image || `https://loremflickr.com/100/100/cat/?${member.id}`}
-          key={`avatar-${idx}`}
+          key={`avatar-${member.id}`}
           sx={{ width: 24, height: 24 }}
         />
       ))}

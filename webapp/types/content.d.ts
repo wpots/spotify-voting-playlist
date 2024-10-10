@@ -64,6 +64,7 @@ declare module '@domain/content' {
     roles?: string[];
     image?: string;
     vote?: IVoteItem;
+    spotifyId: string;
   }
 
   // MOVE to service

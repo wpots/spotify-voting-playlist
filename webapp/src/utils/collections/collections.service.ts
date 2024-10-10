@@ -28,9 +28,7 @@ const getPlaylistWithVotes = async (playlist: IPlaylist, memberIds: Array<string
   const trackIds = playlist.tracks?.refs;
   if (!trackIds || memberIds.length === 0) return;
   try {
-    console.log('PLAYLIST');
     const votes = await fetchVotes(trackIds, memberIds);
-    console.log('votes PLAYLIST', votes);
 
     if ((votes as IError)?.status === 500) return playlist;
     if (votes && (votes as Array<Vote>).length > 0) {

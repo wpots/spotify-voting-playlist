@@ -4,7 +4,6 @@ import { firebaseServerConfig } from './firebase.server.config';
 import { getAuth } from 'firebase/auth';
 
 export async function firebaseAuthClient(idToken?: string) {
-  console.log('GET CLIENT');
   const firebaseServerApp = initializeServerApp(firebaseServerConfig, idToken ? { authIdToken: idToken } : {});
   const auth = getAuth(firebaseServerApp);
   await auth.authStateReady();
