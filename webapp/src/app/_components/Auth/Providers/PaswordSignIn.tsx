@@ -35,11 +35,11 @@ export default function PasswordSignIn() {
             />
           )}
           <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
-            {reset ? 'reset password' : 'sign in'}
+            {reset ? 'reset wachtwoord' : 'sesam, open u!'}
           </Button>
           {!reset && (
             <Button type='button' color='primary' sx={{ mt: 1 }} onClick={handlePasswordReset}>
-              reset password
+              reset wachtwoord
             </Button>
           )}
         </Box>
@@ -47,7 +47,7 @@ export default function PasswordSignIn() {
         reset && (
           <AppNotificationBar
             title='Verzonden!'
-            content={`Er is een mail naar ${formState.data?.email} gestuurd...`}
+            content={`Er is een mail naar ${formState.data?.email} gestuurd. Volg de instructies om een nieuw wachtwoord aan te maken en log daarna opnieuw in.`}
             sx={{ mt: 2 }}
           />
         )

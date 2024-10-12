@@ -21,8 +21,6 @@ export default function usePlaylist(playlist?: IPlaylist) {
 
   const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
 
-  const isVotableList = !currentPlaylist?.name.toUpperCase().includes('REPERTOIRE');
-
   const findBandMemberVote = useCallback(
     (memberId: string, voteItems?: IVoteItem[]) => voteItems?.find((v: IVoteItem) => v.userId === memberId),
     []
@@ -115,7 +113,6 @@ export default function usePlaylist(playlist?: IPlaylist) {
   return {
     fetchVotes,
     isReady,
-    isVotableList,
     currentPlaylist,
     playlistFilters,
     filterPlaylistBy,

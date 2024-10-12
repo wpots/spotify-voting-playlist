@@ -55,7 +55,7 @@ export default function AppHeader() {
           <Avatar src='/images/logo-invert.svg' sx={{ mr: '1rem' }} variant='square' />
         </Button>
         <Typography variant='h6' color='inherit' noWrap>
-          Votinglist for the band
+          Spotify Playlist Voting
         </Typography>
         <Box marginLeft='auto'>
           <Button

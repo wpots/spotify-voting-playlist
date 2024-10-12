@@ -34,12 +34,12 @@ export default function EmailLinkSignIn() {
               {formState.error}
             </Typography>
           )}
-          <SubmitButton buttonText='Send link' />
+          <SubmitButton buttonText='Stuur link' />
         </Box>
       ) : (
         <AppNotificationBar
           title='Gelukt!'
-          content={`Er is een mail naar ${formState.data?.email} gestuurd...`}
+          content={`Er is een mail naar ${formState.data?.email} gestuurd. Volg de link in de email om in te loggen zonder wachtwoord`}
           sx={{ mt: 2 }}
         />
       )}

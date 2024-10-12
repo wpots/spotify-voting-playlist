@@ -13,25 +13,29 @@ import { useEffect, useState } from 'react';
 import usePlaylist from './Playlist.hook';
 import type { FilteredPlaylist } from './Playlist.hook';
 
-export default function Playlist({ playlist }: Readonly<{ playlist: IPlaylist }>) {
+type PlaylistProps = {
+  playlist: IPlaylist;
+  enabledVoting?: boolean;
+};
+
+export default function Playlist({ playlist, enabledVoting }: Readonly<PlaylistProps>) {
   const [isLoading, setIsLoading] = useState(true);
   const [currentFilter, setCurrentFilter] = useState<string>('alles');
 
-  const { currentPlaylist, fetchVotes, filterPlaylistBy, playlistFilters, isReady, isVotableList } =
-    usePlaylist(playlist);
+  const { currentPlaylist, fetchVotes, filterPlaylistBy, playlistFilters, isReady } = usePlaylist(playlist);
 
   useEffect(() => {
     const initVotes = async () => {
       await fetchVotes();
     };
-    if (isVotableList) {
+    if (enabledVoting) {
       initVotes();
     }
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const playlistLinkTitle = isVotableList ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
+  const playlistLinkTitle = enabledVoting ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
 
   const handleFilter = (type: string) => {
     setCurrentFilter(type);
@@ -45,8 +49,8 @@ export default function Playlist({ playlist }: Readonly<{ playlist: IPlaylist }>
       />
       <Box sx={{ py: '1rem' }}>
         <Stack spacing={1} direction='row' justifyContent='flex-end' alignItems='center'>
-          {isVotableList && playlistFilters.length > 1 && <Typography variant='caption'>filter:</Typography>}
-          {isVotableList &&
+          {enabledVoting && playlistFilters.length > 1 && <Typography variant='caption'>filter:</Typography>}
+          {enabledVoting &&
             playlistFilters.length > 1 &&
             playlistFilters.map(chip => {
               return (
@@ -67,21 +71,21 @@ export default function Playlist({ playlist }: Readonly<{ playlist: IPlaylist }>
       ) : (
         <TracksList
           tracks={filterPlaylistBy[currentFilter as keyof FilteredPlaylist]?.tracks}
-          enhancedView={isVotableList}
+          enhancedView={enabledVoting}
           onRefresh={() => fetchVotes()}
         />
       )}
 
-      {isReady && isVotableList && filterPlaylistBy['stem!'] && filterPlaylistBy['stem!'].total > 0 && (
+      {isReady && enabledVoting && filterPlaylistBy['stem!'] && filterPlaylistBy['stem!'].total > 0 && (
         <PlaylistAlertBox title={filterPlaylistBy['stem!'].title} isOpen={true}>
           <TracksList
             tracks={filterPlaylistBy['stem!'].tracks}
-            enhancedView={isVotableList}
+            enhancedView={enabledVoting}
             onRefresh={() => fetchVotes()}
           />
         </PlaylistAlertBox>
       )}
-      {isVotableList && <PlaylistFooter url={currentPlaylist?.url} />}
+      {enabledVoting && <PlaylistFooter url={currentPlaylist?.url} />}
     </>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
-import React, { ChangeEvent,, useCallback } from 'react';
+import React, { ChangeEvent, useCallback } from 'react';
 import Stack from '@mui/material/Stack';
-import { Box,  TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 interface VoteCommentInputProps {
   onCommented: (val: string) => void;

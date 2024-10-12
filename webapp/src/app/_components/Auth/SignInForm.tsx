@@ -8,7 +8,7 @@ import EmailLinkSignIn from './Providers/EmailLinkSignIn';
 export default function SignInForm() {
   const providers = [
     { id: 'email', component: <EmailLinkSignIn /> },
-    { id: 'password', component: <PasswordSignIn /> },
+    { id: 'wachtwoord', component: <PasswordSignIn /> },
   ];
   const [provider, setProvider] = useState(providers[0]);
 
@@ -22,9 +22,6 @@ export default function SignInForm() {
         }}
       >
         <Stack spacing={2}>
-          <Typography align='center' variant='caption' component='p' gutterBottom>
-            sign in with:
-          </Typography>
           <ButtonGroup>
             {providers.map(p => (
               <Button
