@@ -17,6 +17,7 @@ import VotingDetails from './VotingDetails';
 import VoteCommentInput from './VoteCommentInput';
 import TrackLink from '../Tracks/TrackLink';
 import { useParams } from 'next/navigation';
+import { useBandCollection } from '@/app/_hooks/useCollections';
 interface VotingDialogProps {
   track: ITrack;
   open: boolean;
@@ -26,11 +27,11 @@ interface VotingDialogProps {
 
 export default function VotingDialog({ track, open, onClose }: Readonly<VotingDialogProps>) {
   const [voted, setVoted] = useState<Record<string, any>>({ rating: null, comment: null });
-
+  const { getMemberNameById } = useBandCollection();
   const params = useParams();
   const { myVote, setUserVote, suggestedByMember } = useVote(track);
 
-  const isProxyVote = params.memberid;
+  const isProxyVote = params.memberid as string;
   const proxyVoteFor = track.votes?.items?.find(v => v.userId === params.memberid);
 
   const setVoteFor = useMemo(() => (isProxyVote ? proxyVoteFor : myVote), [proxyVoteFor, myVote, isProxyVote]);
@@ -64,7 +65,7 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
       <Divider />
       <DialogContent dividers sx={{ border: isProxyVote ? '4px solid red' : null }}>
         <Typography variant='h6' sx={{ color: 'initial' }}>
-          {params.memberid ? params.memberid : 'jouw'} stem:
+          {isProxyVote ? getMemberNameById(isProxyVote) : 'jouw'} stem:
         </Typography>
         <DialogContentText>
           <VoteByRatingInput onVoted={(val: number) => handleVoted({ rating: val })} userVote={setVoteFor?.rating} />
@@ -81,9 +82,11 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
         </Button>
       </DialogActions>
       <Divider />
-      <Typography variant='caption' paddingInline={2} paddingBlock={1}>
-        voorstel van: {suggestedByMember?.name || suggestedByMember?.id}
-      </Typography>
+      {suggestedByMember && (
+        <Typography variant='caption' paddingInline={2} paddingBlock={1}>
+          voorstel van: {suggestedByMember?.name}
+        </Typography>
+      )}
     </Dialog>
   );
 }

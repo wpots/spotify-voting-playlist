@@ -5,12 +5,10 @@ import { IPlaylist } from '@domain/content';
 
 export async function fetchPlaylistWithVotes(playlist: IPlaylist, members: Array<any>) {
   try {
-    const memberIds: Array<string> = [];
-    members.forEach(m => {
-      memberIds.push(m.id);
-      if (m.spotifyId) memberIds.push(m.spotifyId);
-    });
-    return await CollectionsService.getPlaylistWithVotes(playlist, memberIds);
+    return await CollectionsService.getPlaylistWithVotes(
+      playlist,
+      members.map(m => m.id)
+    );
   } catch (error) {
     return { status: 500, message: 'failed fetching votes', cause: error };
   }

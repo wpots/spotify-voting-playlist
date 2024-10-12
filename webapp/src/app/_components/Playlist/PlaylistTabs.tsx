@@ -13,10 +13,6 @@ export default function PlaylistTabs({ playlists }: { playlists: IPlaylist[] }) 
   const pathName = usePathname();
   const searchParams = useSearchParams();
 
-  function findPlaylistByName(name: string) {
-    return playlists.find(p => p?.name.toUpperCase().includes(name));
-  }
-
   const defaultPlaylist = playlists[0].id;
 
   const [activePlaylistId, setActivePlaylistId] = useState(searchParams.get('playlist') || defaultPlaylist);

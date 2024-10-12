@@ -13,6 +13,11 @@ const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
 
 const fetchPlaylists = async (playlists: string[]) => {
   const lists = (await SpotifyService.getPlaylistsByBulk(playlists)) as IPlaylist[];
+  const sessionListIdx = lists.map(l => l.name.toUpperCase()).indexOf('SESSION');
+  if (sessionListIdx) {
+    const sessionList = lists.splice(sessionListIdx, 1)[0];
+    lists.unshift(sessionList);
+  }
   return lists;
 };
 
@@ -77,6 +82,7 @@ const getBandIds = async () => {
   const allBands = await FireStoreService.getAllBands();
   return allBands ? allBands.map(b => b.id) : [];
 };
+
 async function setVote(payload: Vote) {
   return await FireStoreService.setVote(payload);
 }

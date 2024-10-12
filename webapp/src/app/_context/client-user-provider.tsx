@@ -5,6 +5,7 @@ import React, { createContext, PropsWithChildren } from 'react';
 
 interface IUserContext {
   myBands?: Array<IBand>;
+  isAdmin?: boolean;
 }
 export const UserContext = createContext<IUserContext | null>(null);
 

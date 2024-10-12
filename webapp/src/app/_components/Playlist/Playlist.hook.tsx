@@ -20,6 +20,13 @@ export default function usePlaylist(playlist?: IPlaylist) {
   const userId = auth?.user?.uid;
 
   const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist | undefined>(playlist);
+  const playlistType = currentPlaylist?.name.toUpperCase().includes('SESSION')
+    ? 'SESSION'
+    : currentPlaylist?.name.toUpperCase().includes('PROPOSAL')
+    ? 'PROPOSAL'
+    : currentPlaylist?.name.toUpperCase().includes('REPERTOIRE')
+    ? 'REPERTOIRE'
+    : 'MISC';
 
   const findBandMemberVote = useCallback(
     (memberId: string, voteItems?: IVoteItem[]) => voteItems?.find((v: IVoteItem) => v.userId === memberId),
@@ -111,6 +118,7 @@ export default function usePlaylist(playlist?: IPlaylist) {
   }, [currentBand, currentPlaylist, members]);
 
   return {
+    playlistType,
     fetchVotes,
     isReady,
     currentPlaylist,

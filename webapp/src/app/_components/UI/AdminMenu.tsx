@@ -5,6 +5,7 @@ import { IBand, IUser } from '@domain/content';
 
 export default function AdminMenu({ currentBand }: { currentBand: IBand }) {
   const members = currentBand.members as IUser[];
+
   return (
     <>
       {currentBand && <ListSubheader>{currentBand.name}</ListSubheader>}

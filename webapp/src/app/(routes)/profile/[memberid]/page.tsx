@@ -7,7 +7,7 @@ interface BandPageProps {
 export default function MemberPage({ params }: BandPageProps) {
   return (
     <>
-      <AppBanner title='hello' />
+      <AppBanner title='Coming Soon' />
     </>
   );
 }

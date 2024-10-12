@@ -18,13 +18,7 @@ export type FormState = {
 export function useFirebaseAuthentication() {
   const router = useRouter();
   const params = useParams();
-  async function removeSessionCookies() {
-    await fetch('/api/logout');
-  }
-  async function setSessionCookies(token: string) {
-    const idToken = token;
-    await fetch('/api/login', { headers: { Authorization: `Bearer ${idToken}` } });
-  }
+
   async function sendLinkSignInAction(_: FormState, formData: FormData): Promise<FormState> {
     const email = formData.get('email') as string;
 
@@ -54,7 +48,7 @@ export function useFirebaseAuthentication() {
     // do zod stuff
     try {
       const userToken = await AuthService.passwordSignIn(email, password);
-      // await setSessionCookies(userToken);
+
       router.replace((params?.returnTo as string) || '/');
       return { status: 'OK', data: { userToken } };
     } catch (error) {
@@ -64,7 +58,6 @@ export function useFirebaseAuthentication() {
 
   async function signOut() {
     await AuthService.signOut();
-    await removeSessionCookies();
   }
 
   useEffect(() => {
@@ -73,13 +66,13 @@ export function useFirebaseAuthentication() {
     if (isSignInWithEmailLink(fireAuth, signInLink)) {
       let email = window.localStorage.getItem(EMAIL_IN_STORAGE);
 
-      if (!email) email = window?.prompt('please fill in your email');
+      if (!email) email = window?.prompt('vul je email adres in.');
 
       async function completeSignIn() {
         try {
           const response = await signInWithEmailLink(fireAuth, email!, signInLink);
           const userToken = await response.user.getIdToken();
-          if (userToken) await setSessionCookies(userToken);
+
           window.localStorage.removeItem(EMAIL_IN_STORAGE);
 
           // You can access the new user by importing getAdditionalUserInfo

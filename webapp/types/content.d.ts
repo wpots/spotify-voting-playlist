@@ -64,13 +64,15 @@ declare module '@domain/content' {
     roles?: string[];
     image?: string;
     vote?: IVoteItem;
-    spotifyId: string;
+    spotifyId?: string;
   }
 
   // MOVE to service
 
   interface IUserData {
+    auth: any;
     myBands: Array<IBand>;
+    isAdmin?: boolean;
   }
 
   interface IBand {

@@ -33,7 +33,7 @@ export default function Playlist({ playlist, enabledVoting }: Readonly<PlaylistP
     }
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enabledVoting]);
 
   const playlistLinkTitle = enabledVoting ? 'Pas de spotify lijst aan' : 'luister de hele set op spotify';
 

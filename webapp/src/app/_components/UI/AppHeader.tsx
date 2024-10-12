@@ -29,13 +29,13 @@ import { useBandCollection } from '@/app/_hooks/useCollections';
 import Link from 'next/link';
 
 export default function AppHeader() {
-  const { myBands, currentBand } = useBandCollection();
+  const { myBands, currentBand, isBandAdmin } = useBandCollection();
   const { signOut, auth } = useAuthentication();
   const params = useParams();
   const router = useRouter();
   const proxyVoteFor = params.memberid;
   // REFACTOR
-  const adminRight = auth?.user?.uid === 'cyQA2fN4w3hD3aDhY9kDbeVndMR2' && currentBand;
+  const adminRight = isBandAdmin && currentBand;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleMenu = (e: MouseEvent<HTMLElement>) => {
@@ -108,14 +108,11 @@ export default function AppHeader() {
               )}
 
               {auth?.user?.uid && (
-                <MenuItem
-                  component='a'
-                  href={`https://open.spotify.com/user/${auth?.user?.providerData?.profile?.spotify?.id}`}
-                >
+                <MenuItem href={`/profile/${auth?.user?.uid}`} LinkComponent={Link}>
                   <ListItemIcon>
                     <Settings />
                   </ListItemIcon>
-                  wijzig profielnaam
+                  mijn profiel
                 </MenuItem>
               )}
               {auth?.user?.uid && (
