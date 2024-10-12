@@ -83,8 +83,4 @@ const getBandIds = async () => {
   return allBands ? allBands.map(b => b.id) : [];
 };
 
-async function setVote(payload: Vote) {
-  return await FireStoreService.setVote(payload);
-}
-
-export { getBandIds, getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes, setVote, getPlaylistWithVotes };
+export { getBandIds, getBandsByUserId, getCurrentPlaylist, fetchPlaylists, fetchVotes, getPlaylistWithVotes };

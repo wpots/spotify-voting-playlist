@@ -12,7 +12,7 @@ interface BandPageProps {
 export default async function BandPage({ params }: Readonly<BandPageProps>) {
   const session = await getAuthSession();
   if (!session?.currentUser) redirect(`/signin?unauthorized=true&returnTo=/bands/${params.uid}`);
-  const { myBands } = session.currentUser?.uid ? await getDataByUserId(session?.currentUser?.uid) : {};
+  const { myBands } = await getDataByUserId(session?.currentUser?.uid);
   const currentBand = params.uid ? myBands?.find(b => b.id === params.uid) : myBands?.[0];
   if (!currentBand)
     return (

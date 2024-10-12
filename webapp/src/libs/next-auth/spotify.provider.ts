@@ -1,4 +1,5 @@
 import * as FireStoreService from '@/libs/firebase/collections/firebase.collections.service';
+import { ManagementService } from '@/utils/collections';
 import type { SpotifyProfile } from 'next-auth/providers/spotify';
 
 const getRefreshToken = async (token: any) => {
@@ -55,7 +56,7 @@ const providerOptions = {
     };
     if (verifiedUser) {
       // update users profile info to match spotify
-      await FireStoreService.setUserProfile(userProfile);
+      await ManagementService.setUserProfile(userProfile);
     }
     return userProfile;
   },

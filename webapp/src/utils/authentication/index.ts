@@ -8,7 +8,6 @@ async function getAuthSession() {
   const fireAuth = await firebaseAuthClient(authToken);
 
   const session = {
-    client: fireAuth.fireStore,
     token: authToken,
     currentUser: fireAuth?.currentUser,
   };

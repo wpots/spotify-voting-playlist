@@ -5,7 +5,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { fireAuth } from '../firebaseClient.client';
 import { firebaseClientConfig } from '../firebase.config';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface AuthContext {
   user: User;
@@ -20,6 +20,7 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
   const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -37,42 +38,13 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
       console.log('STATE CHANGE', authUser);
       setUser(authUser);
       setLoading(false);
+      router.refresh();
     });
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
-    const signInLink = window?.location.href;
-    console.log('HERE');
-    if (isSignInWithEmailLink(fireAuth, signInLink)) {
-      let email = window.localStorage.getItem(EMAIL_IN_STORAGE);
-      console.log('THERE');
-      if (!email) email = window?.prompt('vul je email adres in.');
-
-      async function completeSignIn() {
-        try {
-          const response = await signInWithEmailLink(fireAuth, email!, signInLink);
-          const userToken = await response.user.getIdToken();
-          router.replace((params?.returnTo as string) || '/');
-          window.localStorage.removeItem(EMAIL_IN_STORAGE);
-
-          // You can access the new user by importing getAdditionalUserInfo
-          // and calling it with result:
-          // getAdditionalUserInfo(result)
-          // You can access the user's profile via:
-          // getAdditionalUserInfo(result)?.profile
-          // You can check if the user is new or existing:
-          // getAdditionalUserInfo(result)?.isNewUser
-        } catch (error) {
-          // error.code error.message
-        }
-      }
-
-      completeSignIn();
-    }
-  }, []);
-
-  useEffect(() => {
+    console.log('user', user);
     router.refresh();
   }, [user, router]);
 

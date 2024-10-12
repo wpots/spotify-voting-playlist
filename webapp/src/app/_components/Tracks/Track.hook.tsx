@@ -3,16 +3,16 @@ import { ITrack, IVoteItem } from '@domain/content';
 
 import { useBandCollection } from '@/app/_hooks/useCollections';
 
-export function useTrack(track: ITrack) {
+export function useTrack(track?: ITrack) {
   const { members } = useBandCollection();
-  const votes = track.votes;
+  const votes = track?.votes;
 
   const findBandMemberVote = useCallback(
     (memberId: string, voteItems?: IVoteItem[]) => voteItems?.find((v: IVoteItem) => v.userId === memberId),
     []
   );
 
-  const blockedByVeto = track.votes?.veto && track.votes.veto?.length > 0;
+  const blockedByVeto = track?.votes?.veto && track?.votes.veto?.length > 0;
 
   const extendedVoteMembers = members?.map(member => {
     return { ...member, vote: findBandMemberVote(member.id, votes?.items) };

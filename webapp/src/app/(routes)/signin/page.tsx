@@ -1,4 +1,3 @@
-'use client';
 import SignInForm from '@/app/_components/Auth/SignInForm';
 import Welcome from '@/app/_components/Auth/Welcome';
 import { Container } from '@mui/material';
@@ -7,6 +6,7 @@ import { PropsWithChildren } from 'react';
 import AppBanner from '@/app/_components/UI/AppBanner';
 import UnAuthorized from '@/app/_components/Auth/UnAuthorized';
 import { getAuthSession } from '@/utils/authentication';
+import { redirect } from 'next/navigation';
 
 type PageProps = {
   searchParams?: {
@@ -20,9 +20,9 @@ function LoginWrapper({ children, redirect }: PropsWithChildren<{ redirect: bool
   return <Welcome>{children}</Welcome>;
 }
 
-export default function SignIn(props: Readonly<PageProps>) {
-  // const session = await getAuthSession();
-  // console.log('SESSION SIGNIN', session);
+export default async function SignIn(props: Readonly<PageProps>) {
+  const session = await getAuthSession();
+  if (session?.currentUser?.uid) redirect('/');
   const isRedirected = props.searchParams?.unauthorized || false;
   return (
     <>

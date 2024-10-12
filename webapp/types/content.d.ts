@@ -70,7 +70,6 @@ declare module '@domain/content' {
   // MOVE to service
 
   interface IUserData {
-    auth: any;
     myBands: Array<IBand>;
     isAdmin?: boolean;
   }
@@ -81,8 +80,8 @@ declare module '@domain/content' {
     logo?: string;
     playlistIds?: string[];
     playlists?: IPlaylist[];
-    memberIds: string[];
-    members: IUser[];
+    memberIds?: string[];
+    members?: IUser[];
     veterans?: IUser[];
     error?: any;
   }

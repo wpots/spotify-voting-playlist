@@ -67,7 +67,7 @@ export default function AppHeader() {
             aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar src={auth?.user?.profile?.image ?? undefined} />
+            <Avatar src={auth?.user?.photoURL ?? undefined} />
           </Button>
           <Menu
             id='menu'

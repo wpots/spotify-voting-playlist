@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import { Box, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 interface VoteCommentInputProps {
-  onCommented: (val: string) => void;
+  onCommented: (val?: string) => void;
   userComment?: string;
 }
 

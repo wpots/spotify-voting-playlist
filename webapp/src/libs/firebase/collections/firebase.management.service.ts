@@ -5,6 +5,7 @@ import { firebaseAuthClient } from '../firebaseClient.server';
 import type { Vote } from '@firebase/api';
 
 import { cache } from 'react';
+import { IUser } from '@domain/content';
 
 const _getDocumentsByQuery = cache(async (c: string, q: any) => {
   const getColl = collection(fireStore, c);

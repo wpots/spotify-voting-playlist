@@ -8,7 +8,7 @@ import { getDataByUserId } from '@/utils/collections';
 export default async function Home() {
   const session = await getAuthSession();
   if (!session?.currentUser) redirect('/signin?unauthorized=true&returnTo=/');
-  const { myBands } = session.currentUser?.uid ? await getDataByUserId(session?.currentUser?.uid) : {};
+  const { myBands } = await getDataByUserId(session?.currentUser?.uid);
   const message = !myBands || myBands?.length === 0 ? 'Ik kon jouw band niet vinden :(' : false;
   return (
     <main>

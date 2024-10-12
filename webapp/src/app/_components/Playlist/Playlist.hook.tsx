@@ -15,7 +15,7 @@ export type FilteredPlaylist = {
 
 export default function usePlaylist(playlist?: IPlaylist) {
   const [isReady, setIsReady] = useState(false);
-  const { currentBand, members } = useBandCollection();
+  const { members } = useBandCollection();
   const { auth } = useAuthentication();
   const userId = auth?.user?.uid;
 
@@ -64,7 +64,10 @@ export default function usePlaylist(playlist?: IPlaylist) {
       const memberVotesPending = allTracks?.filter(track =>
         members.some(member => !findBandMemberVote(member.id, track.votes?.items))
       );
-      const currentUserVotePending = allTracks?.filter(track => !findBandMemberVote(userId, track.votes?.items));
+      const currentUserVotePending = userId
+        ? allTracks?.filter(track => !findBandMemberVote(userId, track.votes?.items))
+        : [];
+
       return {
         compleet:
           allMembersVotes.length > 0
@@ -115,7 +118,7 @@ export default function usePlaylist(playlist?: IPlaylist) {
     } catch (error) {
       console.error('[USEVOTING]', error);
     }
-  }, [currentBand, currentPlaylist, members]);
+  }, [currentPlaylist, members]);
 
   return {
     playlistType,

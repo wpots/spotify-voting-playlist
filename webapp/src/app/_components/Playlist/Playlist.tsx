@@ -71,7 +71,7 @@ export default function Playlist({ playlist, enabledVoting }: Readonly<PlaylistP
       ) : (
         <TracksList
           tracks={filterPlaylistBy[currentFilter as keyof FilteredPlaylist]?.tracks}
-          enhancedView={enabledVoting}
+          enhancedView={enabledVoting || false}
           onRefresh={() => fetchVotes()}
         />
       )}

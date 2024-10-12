@@ -31,7 +31,7 @@ export async function signOut() {
 
 export async function sendEmailLinkForSignIn(email: string) {
   return await sendSignInLinkToEmail(fireAuth, email, {
-    url: process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://votinglist.pettico.de',
+    url: process.env.NODE_ENV === 'development' ? 'http://localhost:3001/signin' : 'https://votinglist.pettico.de',
     handleCodeInApp: true,
   });
 }

@@ -11,7 +11,7 @@ import {
   Divider,
   Typography,
 } from '@mui/material';
-import useVoting, { useVote } from './Votes.hook';
+import { useVote } from './Votes.hook';
 import VoteByRatingInput from './VoteRatingInput';
 import VotingDetails from './VotingDetails';
 import VoteCommentInput from './VoteCommentInput';
@@ -70,7 +70,7 @@ export default function VotingDialog({ track, open, onClose }: Readonly<VotingDi
         <DialogContentText>
           <VoteByRatingInput onVoted={(val: number) => handleVoted({ rating: val })} userVote={setVoteFor?.rating} />
           <VoteCommentInput
-            onCommented={(val: string) => handleVoted({ comment: val })}
+            onCommented={(val?: string) => handleVoted({ comment: val })}
             userComment={setVoteFor?.comment}
           />
         </DialogContentText>
