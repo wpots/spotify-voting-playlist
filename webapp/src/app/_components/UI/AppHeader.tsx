@@ -38,6 +38,7 @@ export default function AppHeader() {
   const adminRight = isBandAdmin && currentBand;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
+
   const handleMenu = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
   };
@@ -45,6 +46,7 @@ export default function AppHeader() {
 
   const handleSignOut = async () => {
     await signOut();
+
     router.push('/signin');
   };
 

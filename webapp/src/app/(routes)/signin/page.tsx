@@ -3,12 +3,10 @@ import SignInForm from '@/app/_components/Auth/SignInForm';
 import Welcome from '@/app/_components/Auth/Welcome';
 import { Container } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
 import AppBanner from '@/app/_components/UI/AppBanner';
 import UnAuthorized from '@/app/_components/Auth/UnAuthorized';
 import { getAuthSession } from '@/utils/authentication';
-import { useAuthentication } from '@/libs/firebase/authentication';
-import { useRouter } from 'next/navigation';
 
 type PageProps = {
   searchParams?: {
@@ -23,6 +21,8 @@ function LoginWrapper({ children, redirect }: PropsWithChildren<{ redirect: bool
 }
 
 export default function SignIn(props: Readonly<PageProps>) {
+  // const session = await getAuthSession();
+  // console.log('SESSION SIGNIN', session);
   const isRedirected = props.searchParams?.unauthorized || false;
   return (
     <>

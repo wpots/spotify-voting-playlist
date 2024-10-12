@@ -1,10 +1,7 @@
 import { Box } from '@mui/material';
 import BandList from '../_components/Band/BandList';
-import AppBanner from '../_components/UI/AppBanner';
 import AppSnack from '../_components/UI/AppSnack';
-import { useBandCollection } from '../_hooks/useCollections';
-import { useAuthorized } from '@/libs/firebase/authentication';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { getAuthSession } from '@/utils/authentication';
 import { getDataByUserId } from '@/utils/collections';
 

@@ -62,17 +62,17 @@ export function useFirebaseAuthentication() {
 
   useEffect(() => {
     const signInLink = window?.location.href;
-
+    console.log('HERE');
     if (isSignInWithEmailLink(fireAuth, signInLink)) {
       let email = window.localStorage.getItem(EMAIL_IN_STORAGE);
-
+      console.log('THERE');
       if (!email) email = window?.prompt('vul je email adres in.');
 
       async function completeSignIn() {
         try {
           const response = await signInWithEmailLink(fireAuth, email!, signInLink);
           const userToken = await response.user.getIdToken();
-
+          router.replace((params?.returnTo as string) || '/');
           window.localStorage.removeItem(EMAIL_IN_STORAGE);
 
           // You can access the new user by importing getAdditionalUserInfo
