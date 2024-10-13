@@ -22,7 +22,16 @@ export default function PasswordSignIn() {
     <>
       {formState.status !== 'OK' ? (
         <Box component='form' action={formAction}>
-          <TextField fullWidth label='Email' name='email' type='email' variant='outlined' margin='normal' required />
+          <TextField
+            autoComplete='username'
+            fullWidth
+            label='Email'
+            name='email'
+            type='email'
+            variant='outlined'
+            margin='normal'
+            required
+          />
           {!reset && (
             <TextField
               fullWidth
@@ -32,8 +41,10 @@ export default function PasswordSignIn() {
               variant='outlined'
               margin='normal'
               required
+              autoComplete='current-password'
             />
           )}
+          {formState.error && !reset && <AppNotificationBar title='Oops' content={formState.error} type='error' />}
           <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
             {reset ? 'reset wachtwoord' : 'sesam, open u!'}
           </Button>

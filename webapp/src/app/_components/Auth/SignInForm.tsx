@@ -1,16 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Button, Typography, Container, Stack, ButtonGroup } from '@mui/material';
+import { Box, Button, Container, Stack, ButtonGroup } from '@mui/material';
 import PasswordSignIn from './Providers/PaswordSignIn';
 import EmailLinkSignIn from './Providers/EmailLinkSignIn';
+import { useAuthentication } from '@/libs/firebase/authentication';
 
 export default function SignInForm() {
   const providers = [
-    { id: 'email', component: <EmailLinkSignIn /> },
     { id: 'wachtwoord', component: <PasswordSignIn /> },
+    // { id: 'email', component: <EmailLinkSignIn /> },
   ];
   const [provider, setProvider] = useState(providers[0]);
+  const { auth } = useAuthentication();
 
   return (
     <Container maxWidth='sm'>
@@ -21,7 +23,7 @@ export default function SignInForm() {
           alignItems: 'center',
         }}
       >
-        <Stack spacing={2}>
+        {/* <Stack spacing={2}>
           <ButtonGroup>
             {providers.map(p => (
               <Button
@@ -35,7 +37,7 @@ export default function SignInForm() {
               </Button>
             ))}
           </ButtonGroup>
-        </Stack>
+        </Stack> */}
         {provider.component}
       </Box>
     </Container>

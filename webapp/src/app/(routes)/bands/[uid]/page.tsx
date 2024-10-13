@@ -47,8 +47,8 @@ export default async function BandPage({ params }: Readonly<BandPageProps>) {
     </>
   );
 }
-
-export async function generateStaticParams() {
-  const bandIds = await CollectionsService.getBandIds();
-  return bandIds.map(band => ({ uid: band.id }));
-}
+// TODO LATER
+// export async function generateStaticParams() {
+//   const bandIds = await CollectionsService.getBandIds();
+//   return bandIds.map(band => ({ uid: band.id }));
+// }

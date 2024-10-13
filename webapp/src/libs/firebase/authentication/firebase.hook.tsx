@@ -28,7 +28,8 @@ export function useFirebaseAuthentication() {
 
       return { status: 'OK', data: { email } };
     } catch (error) {
-      return { status: 'ERROR', error: error as string };
+      console.log('ERROR', error);
+      return { status: 'ERROR', error: error?.message as string };
     }
   }
 
@@ -38,7 +39,7 @@ export function useFirebaseAuthentication() {
       await AuthService.sendPasswordResetLink(email);
       return { status: 'OK', data: { email } };
     } catch (error) {
-      return { status: 'ERROR', error: error as string };
+      return { status: 'ERROR', error: error.message as string };
     }
   }
 
@@ -48,11 +49,10 @@ export function useFirebaseAuthentication() {
     // do zod stuff
     try {
       const userToken = await AuthService.passwordSignIn(email, password);
-
       router.push((params?.returnTo as string) || '/');
       return { status: 'OK', data: { userToken } };
     } catch (error) {
-      return { status: 'ERROR', error: error as string };
+      return { status: 'ERROR', error: error.message as string };
     }
   }
 
@@ -70,8 +70,10 @@ export function useFirebaseAuthentication() {
       async function completeSignIn() {
         try {
           const response = await signInWithEmailLink(fireAuth, email!, signInLink);
-          router.replace((params?.returnTo as string) || '/');
+          // router.replace((params?.returnTo as string) || '/');
+
           window.localStorage.removeItem(EMAIL_IN_STORAGE);
+          window?.location?.replace('/');
         } catch (error) {}
       }
 

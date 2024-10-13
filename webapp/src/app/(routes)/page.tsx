@@ -9,6 +9,9 @@ export default async function Home() {
   const session = await getAuthSession();
   if (!session?.currentUser) redirect('/signin?unauthorized=true&returnTo=/');
   const { myBands } = await getDataByUserId(session?.currentUser?.uid);
+
+  if (myBands && myBands.length === 1) redirect(`/bands/${myBands[0].id}`);
+
   const message = !myBands || myBands?.length === 0 ? 'Ik kon jouw band niet vinden :(' : false;
   return (
     <main>

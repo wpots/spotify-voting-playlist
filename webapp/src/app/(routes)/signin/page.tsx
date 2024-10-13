@@ -5,8 +5,6 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { PropsWithChildren } from 'react';
 import AppBanner from '@/app/_components/UI/AppBanner';
 import UnAuthorized from '@/app/_components/Auth/UnAuthorized';
-import { getAuthSession } from '@/utils/authentication';
-import { redirect } from 'next/navigation';
 
 type PageProps = {
   searchParams?: {
@@ -21,8 +19,6 @@ function LoginWrapper({ children, redirect }: PropsWithChildren<{ redirect: bool
 }
 
 export default async function SignIn(props: Readonly<PageProps>) {
-  const session = await getAuthSession();
-  if (session?.currentUser?.uid) redirect('/');
   const isRedirected = props.searchParams?.unauthorized || false;
   return (
     <>

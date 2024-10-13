@@ -2,7 +2,7 @@
 
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
+
 import { fireAuth } from '../firebaseClient.client';
 import { firebaseClientConfig } from '../firebase.config';
 import { usePathname, useRouter } from 'next/navigation';
@@ -35,18 +35,16 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(fireAuth, async authUser => {
-      console.log('STATE CHANGE', authUser);
       setUser(authUser);
       setLoading(false);
-      router.refresh();
     });
     return () => unsubscribe();
   }, [router]);
 
   useEffect(() => {
-    console.log('user', user);
+    if (user && pathName === '/signin') router.push('/');
     router.refresh();
-  }, [user, router]);
+  }, [user]);
 
   return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
 }

@@ -17,9 +17,8 @@ export default function Welcome({ children }: { children: React.ReactNode }) {
       {children}
 
       <Typography variant='body2' component='p' gutterBottom mt={5}>
-        Log in met jouw email of gebruik een wachtwoord. Heb je geen wachtwoord? 
-         Via de wachtwoord reset link kun je een nieuwe aanmaken indien jouw email adres in het systeem bekend is. 
-        
+        Log in met jouw email en wachtwoord. Heb je geen wachtwoord? Via de wachtwoord reset link kun je een nieuwe
+        aanmaken indien jouw email adres in het systeem bekend is.
       </Typography>
     </Paper>
   );
