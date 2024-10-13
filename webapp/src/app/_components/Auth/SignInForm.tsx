@@ -5,6 +5,7 @@ import { Box, Button, Container, Stack, ButtonGroup } from '@mui/material';
 import PasswordSignIn from './Providers/PaswordSignIn';
 import EmailLinkSignIn from './Providers/EmailLinkSignIn';
 import { useAuthentication } from '@/libs/firebase/authentication';
+import { useRouter } from 'next/navigation';
 
 export default function SignInForm() {
   const providers = [
@@ -13,6 +14,7 @@ export default function SignInForm() {
   ];
   const [provider, setProvider] = useState(providers[0]);
   const { auth } = useAuthentication();
+  const router = useRouter();
 
   return (
     <Container maxWidth='sm'>
@@ -38,7 +40,13 @@ export default function SignInForm() {
             ))}
           </ButtonGroup>
         </Stack> */}
-        {provider.component}
+        {auth?.user?.uid ? (
+          <Button variant='contained' size='medium' onClick={() => router.push('/')}>
+            mijn band
+          </Button>
+        ) : (
+          provider.component
+        )}
       </Box>
     </Container>
   );

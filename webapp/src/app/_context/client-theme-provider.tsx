@@ -6,7 +6,7 @@ import { createTheme, useMediaQuery, ThemeProvider } from '@mui/material';
 import { teal } from '@mui/material/colors';
 // https://mui.com/material-ui/customization/color/
 
-const bodyFont = Figtree({ subsets: ['latin'], display: 'swap' });
+const bodyFont = Figtree({ subsets: ['latin'], display: 'swap', preload: false });
 
 export default function CustomThemeProvider({ children }: { children: React.ReactNode }): React.ReactNode {
   const preferDark = useMediaQuery('(prefers-color-scheme: dark)');
