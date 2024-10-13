@@ -44,6 +44,7 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
   useEffect(() => {
     if (user && pathName === '/signin') router.push('/');
     router.refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
