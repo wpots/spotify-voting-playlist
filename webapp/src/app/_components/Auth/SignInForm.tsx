@@ -41,7 +41,7 @@ export default function SignInForm() {
           </ButtonGroup>
         </Stack> */}
         {auth?.user?.uid ? (
-          <Button variant='contained' size='medium' onClick={() => router.push('/')}>
+          <Button variant='contained' size='medium' href='/'>
             mijn band
           </Button>
         ) : (
