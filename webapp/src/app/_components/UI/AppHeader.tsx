@@ -110,7 +110,7 @@ export default function AppHeader() {
               )}
 
               {auth?.user?.uid && (
-                <MenuItem href={`/profile/${auth?.user?.uid}`} LinkComponent={Link}>
+                <MenuItem href={`/profile/${auth?.user?.uid}`} component={Link}>
                   <ListItemIcon>
                     <Settings />
                   </ListItemIcon>

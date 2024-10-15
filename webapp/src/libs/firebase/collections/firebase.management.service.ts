@@ -1,3 +1,4 @@
+import { fireAuth } from '@/libs/firebase/firebaseClient.client';
 import 'server-only';
 import { collection, doc, getDocs, setDoc, addDoc, query, where } from 'firebase/firestore';
 import { fireStore } from '../firebaseClient.client';
@@ -7,6 +8,7 @@ import type { Vote } from '@firebase/api';
 
 import { cache } from 'react';
 import { IUser } from '@domain/content';
+import { updateProfile } from 'firebase/auth';
 
 const _getDocumentsByQuery = cache(async (c: string, q: any) => {
   const getColl = collection(fireStore, c);
@@ -55,10 +57,18 @@ const setUserProfile = async (profile: IUser) => {
   return profile;
 };
 
+const setUserDisplayName = async (name: string, token?: string) => {
+  if (!token) return;
+  const { currentUser } = await firebaseAuthClient(token);
+  if (currentUser) {
+    updateProfile(currentUser, { displayName: name });
+  }
+};
+
 const uploadFile = async (name: string, file: File, token: string) => {
   const { currentUser } = await firebaseAuthClient(token);
   if (currentUser) {
-    const fileName = `images/${currentUser.uid}-$name.jpg`;
+    const fileName = `images/${currentUser.uid}-${name}.jpg`;
     try {
       const storage = getStorage();
       const fileRef = storageRef(storage, fileName);
@@ -69,4 +79,4 @@ const uploadFile = async (name: string, file: File, token: string) => {
     }
   }
 };
-export { setVote, setUserProfile, uploadFile };
+export { setVote, setUserProfile, uploadFile, setUserDisplayName };
