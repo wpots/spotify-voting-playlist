@@ -1,6 +1,7 @@
 import 'server-only';
 import { collection, doc, getDocs, setDoc, addDoc, query, where } from 'firebase/firestore';
 import { fireStore } from '../firebaseClient.client';
+import { getStorage, ref as storageRef, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { firebaseAuthClient } from '../firebaseClient.server';
 import type { Vote } from '@firebase/api';
 
@@ -54,4 +55,18 @@ const setUserProfile = async (profile: IUser) => {
   return profile;
 };
 
-export { setVote, setUserProfile };
+const uploadFile = async (name: string, file: File, token: string) => {
+  const { currentUser } = await firebaseAuthClient(token);
+  if (currentUser) {
+    const fileName = `images/${currentUser.uid}-$name.jpg`;
+    try {
+      const storage = getStorage();
+      const fileRef = storageRef(storage, fileName);
+      await uploadBytes(fileRef, file);
+      return await getDownloadURL(fileRef);
+    } catch (error) {
+      throw new Error('UPLOAD ERROR', { cause: error });
+    }
+  }
+};
+export { setVote, setUserProfile, uploadFile };
