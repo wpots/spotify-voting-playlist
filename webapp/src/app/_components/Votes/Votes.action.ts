@@ -5,20 +5,24 @@ import { CollectionsService, ManagementService } from '@/utils/collections';
 import { IVoteItem } from '@domain/content';
 
 export async function setTrackVote(data: Pick<IVoteItem, 'trackId' | 'rating' | 'comment'>, memberId: string | null) {
-  const session = await getAuthSession();
-  const isLoggedIn = session.currentUser;
+  const {token, currentUser} = await getAuthSession();
+
+  const isLoggedIn = currentUser;
   if (!isLoggedIn) return { status: 401, message: 'unauthorized' };
 
   const listOfAdmins = process.env.ADMIN_ROLES;
-  const userId = listOfAdmins?.includes(session!.currentUser!.uid) && memberId ? memberId : session!.currentUser!.uid;
+  const userId = listOfAdmins?.includes(currentUser!.uid) && memberId ? memberId : currentUser!.uid;
   const payload = {
     ...data,
     userId,
   };
+  console.log('SET TRACK', userId);
   try {
-    await ManagementService.setVote(payload, session.token!);
+    await ManagementService.setVote(payload, token!);
+    console.log('SET TRAACK');
     return { OK: true };
   } catch (error) {
+    console.log('ERROR', error);
     return { status: 400, message: 'voting failed', cause: error };
   }
 }
