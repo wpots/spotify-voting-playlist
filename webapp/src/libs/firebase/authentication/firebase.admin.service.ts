@@ -1,3 +1,4 @@
+import 'server-only';
 import { firebaseAdminClient } from '../firebaseClient.server';
 
 async function getUsersById(userIds: Array<string>) {

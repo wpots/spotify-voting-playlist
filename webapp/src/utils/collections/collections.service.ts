@@ -1,13 +1,16 @@
 import 'server-only';
-import * as FireStoreService from '@/libs/firebase/collections/firebase.delivery.service';
+import * as CollectionsService from '@/libs/firebase/collections/firebase.delivery.service';
+import * as UserService from '@/libs/firebase/authentication/firebase.admin.service';
 import SpotifyService from '../../libs/spotify/spotify.service';
 import type { IBand, IError, IPlaylist } from '@domain/content';
 import type { Vote } from '@firebase/api';
 import votesAdapter from './votes.adapter';
 
+const DeliveryService = { ...CollectionsService, ...SpotifyService };
+
 const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
   if (trackIds && trackIds.length > 0) {
-    return (await FireStoreService.getVotesByBandMembers(memberIds, trackIds)) as unknown as Vote[];
+    return (await DeliveryService.getVotesByBandMembers(memberIds, trackIds)) as unknown as Vote[];
   }
 };
 
@@ -45,7 +48,7 @@ const getPlaylistWithVotes = async (playlist: IPlaylist, memberIds: Array<string
 };
 
 const _getBand = async (bandId: string, band?: IBand) => {
-  const currentBand: IBand | undefined = band ?? ((await FireStoreService.getBandById(bandId)) as unknown as IBand);
+  const currentBand: IBand | undefined = band ?? ((await DeliveryService.getBandById(bandId)) as unknown as IBand);
 
   if (!currentBand) return undefined;
 
@@ -56,7 +59,7 @@ const _getBand = async (bandId: string, band?: IBand) => {
 
   let members;
   if (currentBand.memberIds && currentBand.memberIds.length > 0) {
-    members = await FireStoreService.getBandMembersById(currentBand.memberIds);
+    members = await UserService.getUsersById(currentBand.memberIds);
   }
 
   return {
@@ -68,7 +71,7 @@ const _getBand = async (bandId: string, band?: IBand) => {
 };
 
 const getBandsByUserId = async (userId: string) => {
-  const allBands = (await FireStoreService.getBandsByUserId(userId)) as IBand[];
+  const allBands = (await DeliveryService.getBandsByUserId(userId)) as IBand[];
   const extendedBands = [];
   for (const band of allBands) {
     const extendedBand = await _getBand(band.id, band);
@@ -79,7 +82,7 @@ const getBandsByUserId = async (userId: string) => {
 };
 
 const getBandIds = async () => {
-  const allBands = await FireStoreService.getAllBands();
+  const allBands = await DeliveryService.getAllBands();
   return allBands ? allBands.map(b => b.id) : [];
 };
 

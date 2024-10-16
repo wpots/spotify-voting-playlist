@@ -1,6 +1,6 @@
 declare module '@domain/content' {
   type IVoteItem = {
-    trackId: string; // spotifyId
+    trackId: string;
     userId: string | null;
     rating?: number;
     comment?: string;
@@ -9,8 +9,8 @@ declare module '@domain/content' {
   interface IVote {
     total: number;
     average: number;
-    veto?: IVoteItem[];
-    items: IVoteItem[];
+    veto?: Array<IVoteItem>;
+    items: Array<IVoteItem>;
   }
 
   interface ITrack {
@@ -50,49 +50,42 @@ declare module '@domain/content' {
       offset?: number;
       previous?: string;
       total?: number;
-      items: ITrack[];
-      refs?: string[];
+      items: Array<ITrack>;
+      refs?: Array<string>;
       [key]: any;
     };
     error?: any;
   }
-  // DEPRECATED
-  interface IUser {
-    id: string; // spotifyAccountId
-    name: string;
-    email: string;
-    roles?: string[];
-    image?: string;
-    vote?: IVoteItem;
-    spotifyId?: string;
-  }
 
   // MOVE to service
-
   interface IUserData {
     myBands: Array<IBand>;
     isAdmin?: boolean;
   }
 
+  interface IUser {
+    id: string;
+    name: string;
+    photoUrl?: string;
+    disabled: boolean;
+  }
   interface IBand {
     id: string;
     name: string;
     logo?: string;
-    playlistIds?: string[];
-    playlists?: IPlaylist[];
-    memberIds?: string[];
-    members?: IUser[];
-    veterans?: IUser[];
+    playlistIds?: Array<string>;
+    playlists?: Array<IPlaylist>;
+    memberIds?: Array<string>;
+    members?: Array<IUser>;
     error?: any;
   }
   // MOVE to adapter
   interface IBandData {
     id: string;
     name: string;
-    logo?: string;
-    playlists?: string[];
-    members: string[];
-    veterans?: IUser[];
+    playlists?: Array<string>;
+    members: Array<string>;
+    veterans?: Array<string>;
     error?: any;
   }
 

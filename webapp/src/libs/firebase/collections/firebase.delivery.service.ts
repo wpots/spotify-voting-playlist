@@ -22,13 +22,6 @@ const _getDocumentsByQuery = cache(async (c: string, q: any) => {
   }
 });
 
-const getUserById = cache(async (id: string) => {
-  const userRef = doc(fireStore, 'users', id);
-  return (await getDoc(userRef)).data();
-});
-
-const getVerifiedUser = async (id: string) => await getUserById(id);
-
 const getVotesByBandMembers = async (bandMembers: string[], ids: string[]) => {
   const memberVotes = await _getDocumentsByQuery('votes', where('userId', 'in', bandMembers));
   return (memberVotes as Array<Vote>)?.filter(vote => ids.includes(vote.trackId));
@@ -43,14 +36,8 @@ const getBandById = cache(async (id: string) => {
   return bands?.[0] as unknown as Band;
 });
 
-const getBandMembersById = cache(async (ids: string[]) => {
-  const members = await _getDocumentsByQuery('users', where('id', 'in', ids));
-
-  return members as IUser[];
-});
-
 const getAllBands = async () => {
   return await _getDocumentsByCollectionName('bands');
 };
 
-export { getVerifiedUser, getBandById, getBandsByUserId, getBandMembersById, getAllBands, getVotesByBandMembers };
+export { getBandById, getBandsByUserId, getAllBands, getVotesByBandMembers };
