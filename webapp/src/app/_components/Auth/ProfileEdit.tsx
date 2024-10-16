@@ -7,7 +7,7 @@ import { useBandCollection } from '@/app/_hooks/useCollections';
 import { ProfileEditAction } from './ProfileEdit.action';
 
 export default function ProfileEdit() {
-  const { isBandAdmin } = useBandCollection();
+  const { isBandAdmin, memberIds } = useBandCollection();
   const [formState, formAction] = useFormState(ProfileEditAction, {
     status: 'IDLE',
   });

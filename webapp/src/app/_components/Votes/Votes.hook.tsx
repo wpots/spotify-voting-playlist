@@ -13,7 +13,7 @@ export function useVote(track: ITrack) {
   const userId = auth?.user?.uid;
   const votes = track.votes;
 
-  const suggestedByMember = members.find(m => m.spotifyId === track?.added_by.id);
+  const suggestedByMember = members.find(m => m.spotifyId === track?.added_by.id)?.name;
 
   const myVote = useMemo(() => {
     return votes?.items.find((i: IVoteItem) => userId === i.userId);

@@ -1,7 +1,7 @@
 import type { IPlaylist, IUser } from '@domain/content';
 import type { Vote } from '@firebase/api';
 
-const votesMapper = {
+const votesAdapter = {
   resolveVotedAverage(votes: number[]) {
     const avg = votes.reduce((acc, cum) => acc + cum, 0) / votes.length;
     return parseFloat(avg.toFixed(1));
@@ -47,4 +47,4 @@ const votesMapper = {
   },
 };
 
-export default votesMapper;
+export default votesAdapter;

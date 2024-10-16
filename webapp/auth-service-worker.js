@@ -10,7 +10,8 @@ self.addEventListener('install', event => {
   const serializedFirebaseConfig = new URL(location).searchParams.get('firebaseConfig');
 
   if (!serializedFirebaseConfig) {
-    throw new Error('Firebase Config object not found in service worker query string.');
+    return;
+    // throw new Error('Firebase Config object not found in service worker query string.');
   }
 
   firebaseConfig = JSON.parse(serializedFirebaseConfig);
@@ -24,15 +25,20 @@ self.addEventListener('fetch', event => {
 });
 
 async function fetchWithFirebaseHeaders(request) {
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const installations = getInstallations(app);
-  const headers = new Headers(request.headers);
-  const [authIdToken, installationToken] = await Promise.all([getAuthIdToken(auth), getToken(installations)]);
-  headers.append('Firebase-Instance-ID-Token', installationToken);
-  if (authIdToken) headers.append('Authorization', `Bearer ${authIdToken}`);
-  const newRequest = new Request(request, { headers });
-  return await fetch(newRequest);
+  try {
+    console.log('INIT WORKER CLIENT');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const installations = getInstallations(app);
+    const headers = new Headers(request.headers);
+    const [authIdToken, installationToken] = await Promise.all([getAuthIdToken(auth), getToken(installations)]);
+    headers.append('Firebase-Instance-ID-Token', installationToken);
+    if (authIdToken) headers.append('Authorization', `Bearer ${authIdToken}`);
+    const newRequest = new Request(request, { headers });
+    return await fetch(newRequest);
+  } catch (error) {
+    console.log('ERROR SW', error);
+  }
 }
 
 async function getAuthIdToken(auth) {

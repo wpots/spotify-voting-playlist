@@ -3,17 +3,23 @@ import { IPlaylist } from '@domain/content';
 import AppBanner from '@/app/_components/UI/AppBanner';
 import PlaylistTabs from '@/app/_components/Playlist/PlaylistTabs';
 import { redirect } from 'next/navigation';
-import { getAuthSession } from '@/utils/authentication';
-import { getDataByUserId, CollectionsService } from '@/utils/collections';
+import { getAuthSession, AdminService } from '@/utils/authentication';
+import { getDataByUserId, CollectionsService, ManagementService } from '@/utils/collections';
 
 interface BandPageProps {
   params: { uid: string };
 }
 export default async function BandPage({ params }: Readonly<BandPageProps>) {
+  console.log('BAND PAGE');
+
   const session = await getAuthSession();
   if (!session?.currentUser) redirect(`/signin?unauthorized=true&returnTo=/bands/${params.uid}`);
   const { myBands } = await getDataByUserId(session?.currentUser?.uid);
   const currentBand = params.uid ? myBands?.find(b => b.id === params.uid) : myBands?.[0];
+
+  const result = await AdminService.getUsersById(currentBand?.memberIds || []);
+  console.log('BANDPAGE', result);
+
   if (!currentBand)
     return (
       <AppBanner

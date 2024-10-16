@@ -4,7 +4,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { fireAuth } from '../firebaseClient.client';
-import { firebaseClientConfig } from '../firebase.config';
+import { firebaseCollectionConfig as firebaseConfig } from '../firebase.config';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface AuthContext {
@@ -23,13 +23,21 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
   const pathName = usePathname();
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      const serializedConfig = encodeURIComponent(JSON.stringify(firebaseClientConfig));
-      const serviceWorkerUrl = `/auth-service-worker.js?firebaseConfig=${serializedConfig}`;
+    if ('serviceWorker' in navigator && firebaseConfig) {
+      try {
+        const serializedConfig = encodeURIComponent(JSON.stringify(firebaseConfig));
+        const serviceWorkerUrl = `/auth-service-worker.js?firebaseConfig=${serializedConfig}`;
 
-      navigator.serviceWorker
-        .register(serviceWorkerUrl)
-        .then(registration => console.log('service scope is: ', registration.scope));
+        navigator.serviceWorker.register(serviceWorkerUrl).then(registration => {
+          if (registration?.active) {
+            registration.active.onerror = event => {
+              console.log('ERROR CTX on SW', event);
+            };
+          }
+        });
+      } catch (error) {
+        console.log('ERROR CTX', error);
+      }
     }
   }, []);
 

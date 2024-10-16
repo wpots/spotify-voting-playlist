@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  console.log('LAYOUT PAGE');
   const session = await getAuthSession();
 
   const userData = session.currentUser?.uid ? await getDataByUserId(session?.currentUser?.uid) : null;

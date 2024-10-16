@@ -1,9 +1,9 @@
 import 'server-only';
-import * as FireStoreService from '@/libs/firebase/collections/firebase.collections.service';
+import * as FireStoreService from '@/libs/firebase/collections/firebase.delivery.service';
 import SpotifyService from '../../libs/spotify/spotify.service';
 import type { IBand, IError, IPlaylist } from '@domain/content';
 import type { Vote } from '@firebase/api';
-import votesMapper from '../votes/votes.mapper';
+import votesAdapter from './votes.adapter';
 
 const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
   if (trackIds && trackIds.length > 0) {
@@ -37,7 +37,7 @@ const getPlaylistWithVotes = async (playlist: IPlaylist, memberIds: Array<string
 
     if ((votes as IError)?.status === 500) return playlist;
     if (votes && (votes as Array<Vote>).length > 0) {
-      return votes ? votesMapper.resolveVotesForPlaylistTracks(playlist, votes as Array<Vote>) : playlist;
+      return votes ? votesAdapter.resolveVotesForPlaylistTracks(playlist, votes as Array<Vote>) : playlist;
     }
   } catch (error) {
     return playlist;

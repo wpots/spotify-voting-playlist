@@ -1,4 +1,4 @@
-import * as FireStoreService from '@/libs/firebase/collections/firebase.collections.service';
+import * as FireStoreService from '@/libs/firebase/collections/firebase.delivery.service';
 import { ManagementService } from '@/utils/collections';
 import type { SpotifyProfile } from 'next-auth/providers/spotify';
 

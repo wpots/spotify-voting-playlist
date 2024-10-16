@@ -16,13 +16,11 @@ export function useBandCollection() {
   const memberIds = currentBand?.memberIds ?? [];
   const members = currentBand?.members ?? [];
 
-  const getMemberNameById = (id:string) => {
-    return members?.find(m=> m.id === id)?.name;
-
-  }
-
+  const getMemberNameById = (id: string) => {
+    return members?.find(m => m.id === id)?.name;
+  };
 
   const isBandAdmin = userContext?.isAdmin;
 
-  return { ...userContext, currentBand, members, getMemberNameById, isBandAdmin };
+  return { ...userContext, currentBand, members, memberIds, getMemberNameById, isBandAdmin };
 }
