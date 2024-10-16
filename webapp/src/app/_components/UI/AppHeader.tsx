@@ -100,6 +100,16 @@ export default function AppHeader() {
               {myBands && myBands.length > 1 && <Divider />}
               {adminRight && <AdminMenu currentBand={currentBand} />}
 
+              {auth?.user?.uid && (
+                <MenuItem href={`/profile/${auth?.user?.uid}`} component={Link}>
+                  <ListItemIcon>
+                    <Settings />
+                  </ListItemIcon>
+                  mijn profiel
+                </MenuItem>
+              )}
+              <Divider />
+
               {!auth?.user?.uid && (
                 <MenuItem href='/signin' LinkComponent={Link}>
                   <ListItemIcon>
@@ -109,14 +119,6 @@ export default function AppHeader() {
                 </MenuItem>
               )}
 
-              {auth?.user?.uid && (
-                <MenuItem href={`/profile/${auth?.user?.uid}`} component={Link}>
-                  <ListItemIcon>
-                    <Settings />
-                  </ListItemIcon>
-                  mijn profiel
-                </MenuItem>
-              )}
               {auth?.user?.uid && (
                 <MenuItem onClick={handleSignOut}>
                   <ListItemIcon>

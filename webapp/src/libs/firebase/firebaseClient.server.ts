@@ -9,7 +9,6 @@ import { getAuth as getAdminAuth } from 'firebase-admin/auth';
 
 export async function firebaseServerClient(idToken?: string) {
   const firebaseServerApp = initializeServerApp(firebaseManagementConfig, idToken ? { authIdToken: idToken } : {});
-  console.log('INIT SERVER CLIENT', firebaseServerApp);
   const fireAuth = getAuth(firebaseServerApp);
   const fireStore = getFirestore(firebaseServerApp);
   await fireAuth.authStateReady();
@@ -22,7 +21,6 @@ export async function firebaseAdminClient() {
     firebaseAdminApp = initializeApp(
       {
         ...firebaseAdminConfig,
-        //  credential: applicationDefault()
       },
       'adminApp'
     );

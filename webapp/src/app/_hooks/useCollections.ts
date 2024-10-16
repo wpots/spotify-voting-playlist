@@ -8,10 +8,12 @@ export function useBandCollection() {
   const params = useParams();
   const bandId = params.uid;
 
-  const currentBand = useMemo(
-    () => (bandId && userContext?.myBands ? userContext.myBands.find(b => b.id === bandId) : null),
-    [bandId, userContext]
-  );
+  const currentBand = useMemo(() => {
+    if (userContext?.myBands && userContext?.myBands.length > 0) {
+      if (userContext.myBands.length === 1) return userContext.myBands[0];
+      if (bandId) return userContext.myBands.find(b => b.id === bandId);
+    }
+  }, [bandId, userContext]);
 
   const memberIds = currentBand?.memberIds ?? [];
   const members = currentBand?.members ?? [];

@@ -26,7 +26,6 @@ self.addEventListener('fetch', event => {
 
 async function fetchWithFirebaseHeaders(request) {
   try {
-    console.log('INIT WORKER CLIENT');
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const installations = getInstallations(app);

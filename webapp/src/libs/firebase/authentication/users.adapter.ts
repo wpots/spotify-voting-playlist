@@ -6,6 +6,8 @@ export default function userAdapter(dto: UserRecord): IUser {
     id: dto.uid,
     name: dto.displayName || dto.email!,
     photoUrl: dto.photoURL,
-    disabled: dto.disabled,
+    isDisabled: dto.disabled,
+    spotifyId: dto.customClaims?.['spotifyId'],
+    isAdmin: dto.customClaims?.['admin'],
   };
 }

@@ -22,8 +22,9 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
   const router = useRouter();
   const pathName = usePathname();
 
+  console.log('USER RENDERED', user?.uid);
   useEffect(() => {
-    if ('serviceWorker' in navigator && firebaseConfig) {
+    if ('serviceWorker' in navigator) {
       try {
         const serializedConfig = encodeURIComponent(JSON.stringify(firebaseConfig));
         const serviceWorkerUrl = `/auth-service-worker.js?firebaseConfig=${serializedConfig}`;
@@ -31,7 +32,7 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
         navigator.serviceWorker.register(serviceWorkerUrl).then(registration => {
           if (registration?.active) {
             registration.active.onerror = event => {
-              console.log('ERROR CTX on SW', event);
+              console.log('ERROR CTX on SW');
             };
           }
         });
@@ -43,6 +44,7 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(fireAuth, async authUser => {
+      console.log('onChange', fireAuth, user?.uid);
       setUser(authUser);
       setLoading(false);
     });
@@ -50,7 +52,7 @@ export default function FirebaseContextProvider({ children }: { children: ReactN
   }, [router]);
 
   useEffect(() => {
-    if (user && pathName === '/signin') router.push('/');
+    // if (user && pathName === '/signin') router.push('/');
     router.refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);

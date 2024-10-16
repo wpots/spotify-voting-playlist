@@ -57,6 +57,14 @@ async function setUserDisplayName(name: string, token?: string) {
   }
 }
 
+async function setUserAvatar(url: string, token?: string) {
+  if (!token) return;
+  const { currentUser } = await firebaseServerClient(token);
+  if (currentUser) {
+    updateProfile(currentUser, { photoURL: url });
+  }
+}
+
 async function uploadFile(name: string, file: File, token: string) {
   const { currentUser } = await firebaseServerClient(token);
   if (currentUser) {
@@ -71,4 +79,4 @@ async function uploadFile(name: string, file: File, token: string) {
     }
   }
 }
-export { setVote, uploadFile, setUserDisplayName };
+export { setVote, uploadFile, setUserDisplayName, setUserAvatar };

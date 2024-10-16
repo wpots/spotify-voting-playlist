@@ -26,9 +26,9 @@ const SpotifyService = {
     return result.access_token;
   },
   async useSpotifyFetch(uri?: string, options?: any) {
-    const sessionToken = await this.getAccessToken();
-    if (!sessionToken) return { error: { name: 'SPOTIFY_SERVICE_AUTH', status: 401, message: 'Unauthorized' } };
     try {
+      const sessionToken = await this.getAccessToken();
+      if (!sessionToken) return { error: { name: 'SPOTIFY_SERVICE_AUTH', status: 401, message: 'Unauthorized' } };
       const baseUrl = `https://api.spotify.com/v1`;
       const response = await fetch(`${baseUrl}/${uri}`, {
         headers: { Authorization: `Bearer ${sessionToken}` },

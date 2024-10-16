@@ -13,27 +13,25 @@ export default function ProfileEdit() {
   });
 
   return (
-    <>
-      {formState.status !== 'OK' && (
-        <Box component='form' action={formAction}>
-          <TextField
-            autoComplete='on'
-            fullWidth
-            label='Profiel Naam'
-            name='displayName'
-            type='displayName'
-            variant='outlined'
-            margin='normal'
-            required
-          />
-          {/* <FileUpload /> */}
+    formState.status !== 'OK' && (
+      <Box component='form' action={formAction}>
+        <TextField
+          autoComplete='on'
+          fullWidth
+          label='Profiel Naam'
+          name='displayName'
+          type='displayName'
+          variant='outlined'
+          margin='normal'
+          required
+        />
+        {/* <FileUpload /> */}
 
-          {formState.error && <AppNotificationBar title='Oops' content={formState.error} type='error' />}
-          <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
-            update profiel
-          </Button>
-        </Box>
-      )}
-    </>
+        {formState.error && <AppNotificationBar title='Oops' content={formState.error} type='error' />}
+        <Button type='submit' fullWidth variant='contained' color='primary' sx={{ mt: 2 }}>
+          update profiel
+        </Button>
+      </Box>
+    )
   );
 }

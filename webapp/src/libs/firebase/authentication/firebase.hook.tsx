@@ -71,10 +71,8 @@ export function useFirebaseAuthentication() {
       async function completeSignIn() {
         try {
           const response = await signInWithEmailLink(fireAuth, email!, signInLink);
-          // router.replace((params?.returnTo as string) || '/');
-
           window.localStorage.removeItem(EMAIL_IN_STORAGE);
-          window?.location?.replace('/');
+          router.push((params?.returnTo as string) || '/');
         } catch (error) {}
       }
 

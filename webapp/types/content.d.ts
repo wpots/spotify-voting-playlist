@@ -67,7 +67,9 @@ declare module '@domain/content' {
     id: string;
     name: string;
     photoUrl?: string;
-    disabled: boolean;
+    isDisabled: boolean;
+    spotifyId?: string;
+    isAdmin?: boolean;
   }
   interface IBand {
     id: string;

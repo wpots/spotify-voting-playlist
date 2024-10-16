@@ -22,9 +22,16 @@ export default function AppBanner(props: PropsWithChildren<AppBannerProps>) {
       alignItems='center'
       sx={{ px: '2rem', backgroundColor: grey[200], m: '.5rem', mb: '2rem' }}
     >
-      <Typography component='h1' variant='h4' sx={{ p: '1rem', textAlign: 'center' }} className={headerFont.className}>
-        {props.title}
-      </Typography>
+      {props.title && (
+        <Typography
+          component='h1'
+          variant='h4'
+          sx={{ p: '1rem', textAlign: 'center' }}
+          className={headerFont.className}
+        >
+          {props.title}
+        </Typography>
+      )}
       {props.subTitle && (
         <Typography
           component='p'
