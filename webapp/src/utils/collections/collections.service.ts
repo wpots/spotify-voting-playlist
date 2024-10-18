@@ -13,10 +13,16 @@ const fetchVotes = async (trackIds: string[], memberIds: string[]) => {
 
 const fetchPlaylists = async (playlists: string[]) => {
   const lists = (await SpotifyService.getPlaylistsByBulk(playlists)) as IPlaylist[];
-  const sessionListIdx = lists.map(l => l.name.toUpperCase()).indexOf('SESSION');
-  if (sessionListIdx) {
-    const sessionList = lists.splice(sessionListIdx, 1)[0];
+  const listNames = lists.map(l => l.name.toUpperCase().split('LAZY SUNDAY ')[1]);
+  const inSessionListIdx = listNames.indexOf('VOTING SESSION');
+  const sessionListIdx = listNames.indexOf('VOTED SESSION');
+  if (inSessionListIdx > 0) {
+    const sessionList = lists.splice(inSessionListIdx, 1)[0];
     lists.unshift(sessionList);
+  }
+
+  if (sessionListIdx > 0) {
+    lists.splice(sessionListIdx, 1);
   }
   return lists;
 };
